@@ -4,7 +4,7 @@ import dev.dubhe.anvilcraft.api.event.anvil.AnvilFallOnLandEvent;
 import dev.dubhe.anvilcraft.api.hammer.HammerManager;
 import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
-import dev.dubhe.anvilcraft.block.multipart.AbstractMultipartBlock;
+import dev.dubhe.anvilcraft.block.multipart.AbstractMultiPartBlock;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.network.RocketJumpPacket;
 import dev.dubhe.anvilcraft.util.BreakBlockUtil;
@@ -91,7 +91,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         BlockState state = level.getBlockState(pos);
         Block block = state.getBlock();
         if (!state.is(ModBlockTags.HAMMER_REMOVABLE) && !(block instanceof IHammerRemovable)) return;
-        if (block instanceof AbstractMultipartBlock<?> multiplePartBlock) {
+        if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(pos, state);
             BlockState stateMainPart = level.getBlockState(posMainPart);
             if(stateMainPart.is(block)){

@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SimpleMultiPartBlock<P extends Enum<P> & ISimpleMultiPartBlockState<P>>
-    extends AbstractMultipartBlock<P> {
+    extends AbstractMultiPartBlock<P> {
     public SimpleMultiPartBlock(Properties properties) {
         super(properties);
     }
@@ -44,9 +44,8 @@ public abstract class SimpleMultiPartBlock<P extends Enum<P> & ISimpleMultiPartB
 
     @Override
     public boolean isMainPart(BlockState state) {
-        return this.getOffset(state) == this.getMainPartOffset();
+        return this.getOffset(state).equals(this.getMainPartOffset());
     }
-
 
     @Override
     public BlockPos getMainPartPos(BlockPos pos, BlockState state) {

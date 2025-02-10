@@ -20,9 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class AbstractMultipartBlock<P extends Enum<P>> extends Block {
+public abstract class AbstractMultiPartBlock<P extends Enum<P>> extends Block {
 
-    public AbstractMultipartBlock(Properties properties) {
+    public AbstractMultiPartBlock(Properties properties) {
         super(properties);
     }
 

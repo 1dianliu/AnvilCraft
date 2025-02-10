@@ -72,6 +72,6 @@ public enum DirectionCube3x3PartHalf implements IFlexibleMultiPartBlockState<Dir
 
     @Override
     public boolean isMain() {
-        return name.equals("mid_center");
+        return this == MID_CENTER;
     }
 }

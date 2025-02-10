@@ -28,10 +28,10 @@ import java.util.Arrays;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class FlexibleMultiPartBlock<
-    P extends Enum<P> & IFlexibleMultiPartBlockState<P, E>,
-    T extends Property<E>,
-    E extends Comparable<E>
-    > extends AbstractMultipartBlock<P> {
+        P extends Enum<P> & IFlexibleMultiPartBlockState<P, E>,
+        T extends Property<E>,
+        E extends Comparable<E>
+    > extends AbstractMultiPartBlock<P> {
     final P mainPart;
 
     public FlexibleMultiPartBlock(Properties properties) {
@@ -47,11 +47,10 @@ public abstract class FlexibleMultiPartBlock<
 
     public <J extends Property<H>, H extends Comparable<H>> void updateState(Level level, BlockPos pos, J property, H value, int flag) {
         BlockState state = level.getBlockState(pos);
-        E additionalPropertyValue = state.getValue(getAdditionalProperty());
-        Vec3i origin = pos.subtract(state.getValue(getPart()).getOffset(additionalPropertyValue));
+        if(!state.is(this)) return;
+        state = state.setValue(property, value);
         for (P part : getParts()) {
-            Vec3i offset = origin.offset(part.getOffset(additionalPropertyValue));
-            level.setBlock(new BlockPos(offset), state.setValue(getPart(), part).setValue(property, value), flag);
+            level.setBlock(pos.offset(this.offsetFrom(state, part)), state.setValue(getPart(), part), flag);
         }
     }
 
@@ -108,7 +107,7 @@ public abstract class FlexibleMultiPartBlock<
      */
     public boolean hasEnoughSpace(BlockState originState, BlockPos pos, LevelReader level) {
         for (P part : getParts()) {
-            BlockPos pos1 = pos.offset(part.getOffset(originState.getValue(getAdditionalProperty())));
+            BlockPos pos1 = pos.offset(this.offsetFrom(originState, part));
             if (level.isOutsideBuildHeight(pos1)) return false;
             BlockState state = level.getBlockState(pos1);
             if (!state.canBeReplaced()) {
@@ -131,12 +130,12 @@ public abstract class FlexibleMultiPartBlock<
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(
-        @NotNull BlockState pState,
-        @NotNull Level pLevel,
-        @NotNull BlockPos pPos,
-        @NotNull Player pPlayer,
-        @NotNull BlockHitResult pHitResult
+    protected InteractionResult useWithoutItem(
+        BlockState pState,
+        Level pLevel,
+        BlockPos pPos,
+        Player pPlayer,
+        BlockHitResult pHitResult
     ) {
         return this.use(pState, pLevel, pPos, pPlayer, InteractionHand.MAIN_HAND, pHitResult);
     }
