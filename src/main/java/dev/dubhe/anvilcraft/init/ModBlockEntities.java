@@ -9,6 +9,7 @@ import dev.dubhe.anvilcraft.block.entity.ChuteBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CorruptedBeaconBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CrabTrapBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.CreativeGeneratorBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.DeflectionRingBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeaterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.HeliostatsBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.InductionLightBlockEntity;
@@ -195,6 +196,11 @@ public class ModBlockEntities {
     public static final BlockEntityEntry<AccelerationRingBlockEntity> ACCELERATION_RING = REGISTRATE
             .blockEntity("acceleration_ring", AccelerationRingBlockEntity::createBlockEntity)
             .validBlocks(ModBlocks.ACCELERATION_RING)
+            .register();
+
+    public static final BlockEntityEntry<DeflectionRingBlockEntity> DEFLECTION_RING = REGISTRATE
+            .blockEntity("deflection_ring", DeflectionRingBlockEntity::createBlockEntity)
+            .validBlocks(ModBlocks.DEFLECTION_RING)
             .register();
 
     public static void register() {

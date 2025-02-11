@@ -185,5 +185,22 @@ public class MultiBlockRecipeLoader {
                         "AAAAAAAAA")
                 .symbol('A', "anvilcraft:menger_sponge")
                 .save(provider, AnvilCraft.of("multiblock/menger_sponge_2"));
+        MultiblockRecipe.builder("anvilcraft:deflection_ring", 1)
+                .layer("ABA", "BAB", "ABA")
+                .layer("   ", "   ", "   ")
+                .layer("ABA", "BAB", "ABA")
+                .symbol('A', "anvilcraft:magnetoelectric_core")
+                .symbol('B', "anvilcraft:heavy_iron_block")
+                .save(provider);
+
+        MultiblockRecipe.builder("anvilcraft:acceleration_ring", 1)
+                .layer("ABA", "B B", "ABA")
+                .layer("CDC", "D D", "CDC")
+                .layer("ABA", "B B", "ABA")
+                .symbol('A', "minecraft:copper_block")
+                .symbol('B', "anvilcraft:heavy_iron_block")
+                .symbol('C', "anvilcraft:magnetoelectric_core")
+                .symbol('D', "anvilcraft:tungsten_block")
+                .save(provider);
     }
 }

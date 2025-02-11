@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.block;
 
 import dev.dubhe.anvilcraft.api.power.IPowerComponent;
-import dev.dubhe.anvilcraft.block.entity.AccelerationRingBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.DeflectionRingBlockEntity;
 import dev.dubhe.anvilcraft.block.state.DirectionCube3x3PartHalf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,13 +30,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class AccelerationRingBlock extends AbstractStateAddableMultiplePartBlock<DirectionCube3x3PartHalf, DirectionProperty, Direction> implements EntityBlock {
+public class DeflectionRingBlock extends AbstractStateAddableMultiplePartBlock<DirectionCube3x3PartHalf, DirectionProperty, Direction> implements EntityBlock {
     public static final EnumProperty<DirectionCube3x3PartHalf> HALF = EnumProperty.create("half", DirectionCube3x3PartHalf.class);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty OVERLOAD = IPowerComponent.OVERLOAD;
     public static final EnumProperty<IPowerComponent.Switch> SWITCH = IPowerComponent.SWITCH;
 
-    public AccelerationRingBlock(Properties properties) {
+    public DeflectionRingBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition
                 .any()
@@ -116,18 +116,9 @@ public class AccelerationRingBlock extends AbstractStateAddableMultiplePartBlock
     @Override
     protected @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return switch (state.getValue(FACING).getAxis()) {
-            case Z -> switch (state.getValue(HALF)) {
-                case MID_CENTER, MID_S, MID_N -> Shapes.empty();
-                default -> Shapes.block();
-            };
-            case X -> switch (state.getValue(HALF)) {
-                case MID_CENTER, MID_E, MID_W -> Shapes.empty();
-                default -> Shapes.block();
-            };
-            case Y -> switch (state.getValue(HALF)) {
-                case BOTTOM_CENTER, MID_CENTER, TOP_CENTER -> Shapes.empty();
-                default -> Shapes.block();
-            };
+            case Z -> state.getValue(HALF).getOffset().getZ() == 0 ? Shapes.empty() : Shapes.block();
+            case X -> state.getValue(HALF).getOffset().getX() == 0 ? Shapes.empty() : Shapes.block();
+            case Y -> state.getValue(HALF).getOffset().getY() == 1 ? Shapes.empty() : Shapes.block();
         };
     }
 
@@ -138,13 +129,13 @@ public class AccelerationRingBlock extends AbstractStateAddableMultiplePartBlock
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return new AccelerationRingBlockEntity(blockPos, blockState);
+        return new DeflectionRingBlockEntity(blockPos, blockState);
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         return (level1, pos, state1, entity) -> {
-            if (entity instanceof AccelerationRingBlockEntity be) be.tick();
+            if (entity instanceof DeflectionRingBlockEntity be) be.tick();
         };
     }
 }

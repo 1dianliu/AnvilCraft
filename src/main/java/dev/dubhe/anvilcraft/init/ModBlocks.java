@@ -25,6 +25,7 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
+import dev.dubhe.anvilcraft.block.DeflectionRingBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
 import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
@@ -110,7 +111,6 @@ import dev.dubhe.anvilcraft.item.HeliostatsItem;
 import dev.dubhe.anvilcraft.item.PlaceInWaterBlockItem;
 import dev.dubhe.anvilcraft.item.ResinBlockItem;
 import dev.dubhe.anvilcraft.item.TeslaTowerItem;
-import dev.dubhe.anvilcraft.recipe.multiblock.MultiblockRecipe;
 import dev.dubhe.anvilcraft.util.DangerUtil;
 
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
@@ -1443,18 +1443,23 @@ public class ModBlocks {
             .block("acceleration_ring", AccelerationRingBlock::new)
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .loot(AbstractStateAddableMultiplePartBlock::loot)
-            .properties(BlockBehaviour.Properties::noOcclusion)
-            .recipe((ctx, provider) -> {
-                MultiblockRecipe.builder("anvilcraft:acceleration_ring", 1)
-                        .layer("ABA", "B B", "ABA")
-                        .layer("CDC", "D D", "CDC")
-                        .layer("ABA", "B B", "ABA")
-                        .symbol('A', "minecraft:copper_block")
-                        .symbol('B', "anvilcraft:heavy_iron_block")
-                        .symbol('C', "anvilcraft:magnetoelectric_core")
-                        .symbol('D', "anvilcraft:tungsten_block")
-                        .save(provider);
+            .properties(it ->
+                    it.isSuffocating(ModBlocks::never).noOcclusion()
+            )
+            .item(AbstractStateAddableMultiplePartBlockItem<DirectionCube3x3PartHalf, DirectionProperty, Direction>::new)
+            .build()
+            .blockstate((ctx, provider) -> {
             })
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .register();
+
+    public static final BlockEntry<DeflectionRingBlock> DEFLECTION_RING = REGISTRATE
+            .block("deflection_ring", DeflectionRingBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .loot(AbstractStateAddableMultiplePartBlock::loot)
+            .properties(it ->
+                it.isSuffocating(ModBlocks::never).noOcclusion()
+            )
             .item(AbstractStateAddableMultiplePartBlockItem<DirectionCube3x3PartHalf, DirectionProperty, Direction>::new)
             .build()
             .blockstate((ctx, provider) -> {
