@@ -30,6 +30,7 @@ import dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TeslaTowerBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.ThermoelectricConverterBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.TransmissionPoleBlockEntity;
+import dev.dubhe.anvilcraft.block.entity.plate.TimeCountedPressurePlateBlockEntity;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.BatchCrafterRenderer;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.ChargeCollectorRenderer;
 import dev.dubhe.anvilcraft.client.renderer.blockentity.CorruptedBeaconRenderer;
@@ -189,14 +190,24 @@ public class ModBlockEntities {
         .register();
 
     public static final BlockEntityEntry<SpaceOvercompressorBlockEntity> SPACE_OVERCOMPRESSOR = REGISTRATE
-        .<SpaceOvercompressorBlockEntity>blockEntity("space_overcompressor", SpaceOvercompressorBlockEntity::new)
+        .blockEntity("space_overcompressor", SpaceOvercompressorBlockEntity::createBlockEntity)
         .validBlocks(ModBlocks.SPACE_OVERCOMPRESSOR)
         .register();
 
+    public static final BlockEntityEntry<TimeCountedPressurePlateBlockEntity> TIME_COUNTED_PRESSURE_PLATE = REGISTRATE
+        .blockEntity("time_counted_pressure_plate", TimeCountedPressurePlateBlockEntity::createBlockEntity)
+        .validBlocks(
+            ModBlocks.COPPER_PRESSURE_PLATE,
+            ModBlocks.EXPOSED_COPPER_PRESSURE_PLATE,
+            ModBlocks.WEATHERED_COPPER_PRESSURE_PLATE,
+            ModBlocks.OXIDIZED_COPPER_PRESSURE_PLATE
+        )
+        .register();
+
     public static final BlockEntityEntry<AccelerationRingBlockEntity> ACCELERATION_RING = REGISTRATE
-            .blockEntity("acceleration_ring", AccelerationRingBlockEntity::createBlockEntity)
-            .validBlocks(ModBlocks.ACCELERATION_RING)
-            .register();
+        .blockEntity("acceleration_ring", AccelerationRingBlockEntity::createBlockEntity)
+        .validBlocks(ModBlocks.ACCELERATION_RING)
+        .register();
 
     public static final BlockEntityEntry<DeflectionRingBlockEntity> DEFLECTION_RING = REGISTRATE
             .blockEntity("deflection_ring", DeflectionRingBlockEntity::createBlockEntity)

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
-import dev.dubhe.anvilcraft.block.AbstractMultiplePartBlock;
+import dev.dubhe.anvilcraft.block.multipart.AbstractMultiPartBlock;
 import dev.dubhe.anvilcraft.mixin.accessor.CropBlockAccessor;
 import dev.dubhe.anvilcraft.mixin.accessor.GrowingPlantAccessor;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -31,12 +31,14 @@ import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.GrowingPlantBodyBlock;
 import net.minecraft.world.level.block.MultifaceBlock;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.CauldronFluidContent;
@@ -151,7 +153,7 @@ public class BlockStateUtil {
      * @param state 被判定的方块状态
      * @return 炼药锅方块对应的流体桶
      */
-    private static ItemStack checkCauldron(AbstractCauldronBlock cauldron, BlockState state) {
+    private static ItemStack getBucketFromCauldron(AbstractCauldronBlock cauldron, BlockState state) {
         if (cauldron == Blocks.POWDER_SNOW_CAULDRON) {
             return cauldron.isFull(state) ? Items.POWDER_SNOW_BUCKET.getDefaultInstance() : ItemStack.EMPTY;
         }
@@ -186,31 +188,30 @@ public class BlockStateUtil {
             baseItem = ItemStack.EMPTY;
         } else if (state.hasProperty(BED_PART) && state.getValue(BED_PART) != BedPart.HEAD) {
             baseItem = ItemStack.EMPTY;
-        } else if (block instanceof AbstractMultiplePartBlock<?> multiplePartBlock &&
-            !state.getValue(multiplePartBlock.getPart()).getOffset()
-                .equals(multiplePartBlock.getMainPartOffset())) {
+        } else if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock &&
+            !multiplePartBlock.isMainPart(state)) {
             baseItem = ItemStack.EMPTY;
+        } else if (isMultifaceLike(block)) {
+            long faceCount = PipeBlock.PROPERTY_BY_DIRECTION.values().stream()
+                .filter(state::hasProperty)
+                .filter(state::getValue)
+                .count();
+            baseItem.setCount((int) faceCount);
+        } else if (block instanceof SlabBlock && state.getValue(SlabBlock.TYPE) == SlabType.DOUBLE){
+            baseItem.setCount(2);
         } else {
-            ItemStack baseItemRef = baseItem;
+            ItemStack finalBaseItem = baseItem;
             state.getProperties().stream()
-                .filter(p -> p instanceof IntegerProperty)
-                .map(p -> (IntegerProperty) p)
+                .filter(IntegerProperty.class::isInstance)
+                .map(IntegerProperty.class::cast)
                 .filter(COUNT_PROPERTIES::contains)
                 .findFirst()
-                .ifPresent(p -> baseItemRef.setCount(state.getValue(p)));
-
-            if (isMultifaceLike(block)) {
-                long faceCount = PipeBlock.PROPERTY_BY_DIRECTION.values().stream()
-                    .filter(state::hasProperty)
-                    .filter(state::getValue)
-                    .count();
-                baseItem.setCount((int) faceCount);
-            }
+                .ifPresent(p -> finalBaseItem.setCount(state.getValue(p)));
         }
         ItemStack additionalItem = switch (block) {
             case CandleCakeBlock cake -> cake.candleBlock.asItem().getDefaultInstance();
             case FlowerPotBlock pot -> pot.getPotted().asItem().getDefaultInstance();
-            case AbstractCauldronBlock cauldron -> checkCauldron(cauldron, state);
+            case AbstractCauldronBlock cauldron -> getBucketFromCauldron(cauldron, state);
             default -> {
                 FluidState fluidState = state.getFluidState();
                 if (fluidState.isSource()) {
