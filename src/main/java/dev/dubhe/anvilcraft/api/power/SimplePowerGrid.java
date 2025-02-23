@@ -90,6 +90,18 @@ public class SimplePowerGrid {
         buf.writeNbt(data);
     }
 
+    public boolean collideFast(AABB aabb){
+        for (PowerComponentInfo it : this.powerComponentInfoList) {
+            if (new AABB(
+                it.pos().offset(-it.range(), -it.range(), -it.range()).getCenter(),
+                it.pos().offset(it.range(), it.range(), it.range()).getCenter()
+            ).intersects(aabb)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 获得指定坐标的电网元件信息
      */
@@ -97,6 +109,10 @@ public class SimplePowerGrid {
         return powerComponentInfoList.stream()
             .filter(it -> it.pos().equals(pos))
             .findFirst();
+    }
+
+    public boolean isOverloaded(){
+        return this.getConsume() > this.getGenerate();
     }
 
     /**

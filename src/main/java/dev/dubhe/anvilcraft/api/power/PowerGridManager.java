@@ -81,7 +81,7 @@ public class PowerGridManager {
         }
     }
 
-    private Set<PowerGrid> getGridSet(Level level) {
+    public Set<PowerGrid> getGridSet(Level level) {
         if (gridMap.containsKey(level)) {
             return gridMap.get(level);
         } else {
