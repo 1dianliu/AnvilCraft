@@ -25,8 +25,8 @@ import dev.dubhe.anvilcraft.item.EmberMetalPickaxeItem;
 import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.IonocraftBackpackItem;
 import dev.dubhe.anvilcraft.item.IonoCraftItem;
+import dev.dubhe.anvilcraft.item.IonocraftBackpackItem;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
@@ -46,16 +46,16 @@ import dev.dubhe.anvilcraft.item.RoyalPickaxeItem;
 import dev.dubhe.anvilcraft.item.RoyalShovelItem;
 import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.amulet.FeatherAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.SuperHeavyItem;
-import dev.dubhe.anvilcraft.item.amulet.SilenceAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
+import dev.dubhe.anvilcraft.item.amulet.FeatherAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.SilenceAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -511,6 +511,9 @@ public class ModItems {
         .model((ctx, provider) -> {
         })
         .register();
+
+    public static final ItemEntry<Item> AMULET_BOX =
+        REGISTRATE.item("amulet_box", Item::new).register();
 
     public static <T extends AbstractAmuletItem> ItemEntry<T> createAmuletItem(
         String type, NonNullFunction<Item.Properties, T> factory,
@@ -1508,9 +1511,6 @@ public class ModItems {
                 .save(provider);
         })
         .register();
-
-    public static final ItemEntry<Item> AMULET_BOX =
-        REGISTRATE.item("amulet_box", Item::new).register();
 
     public static final ItemEntry<Item> NETHERITE_CRYSTAL_NUCLEUS = REGISTRATE
         .item("netherite_crystal_nucleus", Item::new)
