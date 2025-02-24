@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -104,7 +105,6 @@ public class SimpleChuteBlock
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING, WATERLOGGED, ENABLED, TALL);
     }
-
 
     @Override
     public void neighborChanged(
@@ -177,7 +177,6 @@ public class SimpleChuteBlock
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
-
 
     @Override
     public void onRemove(
@@ -256,6 +255,11 @@ public class SimpleChuteBlock
                 default -> AABB_TALL;
             };
         }
+    }
+
+    @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        return false;
     }
 
     @Override

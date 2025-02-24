@@ -1,21 +1,25 @@
 package dev.dubhe.anvilcraft.block;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.stream.Stream;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class SlidingRailStopBlock extends Block {
     public static final VoxelShape SHAPE = Stream.of(
             Block.box(11, 6, 11, 16, 16, 16),
@@ -30,21 +34,26 @@ public class SlidingRailStopBlock extends Block {
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(
-            @NotNull BlockState state,
-            @NotNull BlockGetter level,
-            @NotNull BlockPos pos,
-            @NotNull CollisionContext context
+    protected VoxelShape getShape(
+        BlockState state,
+        BlockGetter level,
+        BlockPos pos,
+        CollisionContext context
     ) {
         return SHAPE;
     }
 
     @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        return false;
+    }
+
+    @Override
     public void stepOn(
-            @NotNull Level level,
-            @NotNull BlockPos pos,
-            @NotNull BlockState state,
-            @NotNull Entity entity
+        Level level,
+        BlockPos pos,
+        BlockState state,
+        Entity entity
     ) {
         Vec3 blockPos = pos.getCenter();
         Vec3 entityPos = entity.position();

@@ -4,7 +4,6 @@ import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.block.state.Color;
 import dev.dubhe.anvilcraft.data.AnvilCraftDatagen;
@@ -26,13 +25,6 @@ import dev.dubhe.anvilcraft.item.EmberMetalPickaxeItem;
 import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.CogwheelAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.DogAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
 import dev.dubhe.anvilcraft.item.EmptyCapacitorItem;
 import dev.dubhe.anvilcraft.item.GeodeItem;
 import dev.dubhe.anvilcraft.item.GuideBookItem;
@@ -46,16 +38,22 @@ import dev.dubhe.anvilcraft.item.RoyalPickaxeItem;
 import dev.dubhe.anvilcraft.item.RoyalShovelItem;
 import dev.dubhe.anvilcraft.item.RoyalSwordItem;
 import dev.dubhe.anvilcraft.item.RoyalUpgradeTemplateItem;
-import dev.dubhe.anvilcraft.item.amulet.FeatherAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
 import dev.dubhe.anvilcraft.item.SeedsPackItem;
 import dev.dubhe.anvilcraft.item.StructureToolItem;
 import dev.dubhe.anvilcraft.item.SuperHeavyItem;
-import dev.dubhe.anvilcraft.item.amulet.SilenceAmuletItem;
-import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.item.TopazItem;
 import dev.dubhe.anvilcraft.item.UtusanItem;
+import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.ComradeAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.DogAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.EmeraldAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.FeatherAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.RubyAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.SapphireAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.SilenceAmuletItem;
+import dev.dubhe.anvilcraft.item.amulet.TopazAmuletItem;
 import dev.dubhe.anvilcraft.recipe.JewelCraftingRecipe;
 import dev.dubhe.anvilcraft.util.ModelProviderUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -79,11 +77,7 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-
-import java.util.function.Supplier;
 
 import static dev.dubhe.anvilcraft.AnvilCraft.REGISTRATE;
 
@@ -449,6 +443,9 @@ public class ModItems {
         .model((ctx, provider) -> {
         })
         .register();
+
+    public static final ItemEntry<Item> AMULET_BOX =
+        REGISTRATE.item("amulet_box", Item::new).register();
 
     public static <T extends AbstractAmuletItem> ItemEntry<T> createAmuletItem(
         String type, NonNullFunction<Item.Properties, T> factory,
@@ -1446,9 +1443,6 @@ public class ModItems {
                 .save(provider);
         })
         .register();
-
-    public static final ItemEntry<Item> AMULET_BOX =
-        REGISTRATE.item("amulet_box", Item::new).register();
 
     public static final ItemEntry<Item> NETHERITE_CRYSTAL_NUCLEUS = REGISTRATE
         .item("netherite_crystal_nucleus", Item::new)

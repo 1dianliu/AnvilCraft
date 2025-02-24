@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -97,10 +98,10 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
 
     @Override
     protected void onPlace(BlockState state,
-                           Level level,
-                           BlockPos pos,
-                           BlockState oldState,
-                           boolean movedByPiston) {
+        Level level,
+        BlockPos pos,
+        BlockState oldState,
+        boolean movedByPiston) {
         if (!level.isClientSide) {
             checkIfTriggered(level, state, pos);
         }
@@ -169,6 +170,11 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
             case DOWN_WEST -> DOWN_WEST_SHAPE;
             case DOWN_EAST -> DOWN_EAST_SHAPE;
         };
+    }
+
+    @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        return false;
     }
 
     @Override
