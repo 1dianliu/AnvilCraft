@@ -135,18 +135,22 @@ public class IonocraftEntity extends VehicleEntity {
     }
 
     @Override
-    public void move(MoverType type, Vec3 pos) {
-        super.move(type, pos);
-        if (pos.x == 0 && pos.y == 0 && pos.z == 0) return;
+    public void move(MoverType type, Vec3 motion) {
+        super.move(type, motion);
+        if (motion.x == 0 && motion.y == 0 && motion.z == 0) return;
         List<Entity> list = this.level().getEntities(
             this,
-            this.getBoundingBox().inflate(0, 1F, 0),
+            this.getBoundingBox().expandTowards(0, 1F, 0),
             EntitySelector.pushableBy(this)
         );
         if (!list.isEmpty()) {
             for (Entity entity : list) {
                 if (entity instanceof IonocraftEntity) continue;
-                entity.move(MoverType.SELF, pos.multiply(1, 2, 1));
+                entity.setDeltaMovement(
+                    entity.getDeltaMovement().x,
+                    entity.getDeltaMovement().y > 0 ? motion.y : entity.getDeltaMovement().y + motion.y * 2.5,
+                    entity.getDeltaMovement().z
+                );
             }
         }
     }
