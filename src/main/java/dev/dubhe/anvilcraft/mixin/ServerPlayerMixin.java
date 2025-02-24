@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -97,6 +98,12 @@ public abstract class ServerPlayerMixin extends Player implements IDynamicPowerC
             flightTime = Math.clamp(flightTime + IonocraftBackpackItem.FLIGHT_MAX_TIME / 120, 0, IonocraftBackpackItem.FLIGHT_MAX_TIME);
             itemStack.set(ModComponents.FLIGHT_TIME, flightTime);
         }
+    }
+
+    @Override
+    public void remove(Entity.RemovalReason reason) {
+        super.remove(reason);
+        anvilCraft$component.switchTo(null);
     }
 
     @Override
