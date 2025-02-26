@@ -43,12 +43,14 @@ public class PowerGridRenderer {
             if (!grid.getLevel().equals(level)) continue;
             random.setSeed(grid.getId());
             int[] rgb = ColorUtil.hsvToRgb(random.nextInt(360), 80, 80);
+            VoxelShape shape = grid.getCachedOutlineShape();
+            if (shape == null)continue;
             PowerGridRenderer.renderOutline(
                 poseStack,
                 consumer,
                 camera,
                 grid.getPos(),
-                grid.getCachedOutlineShape(),
+                shape,
                 rgb[0] / 255f,
                 rgb[1] / 255f,
                 rgb[2] / 255f,
@@ -99,6 +101,10 @@ public class PowerGridRenderer {
     }
 
     public static void clearAllGrid() {
+        SimplePowerGrid.recreateExecutor();
+        for (SimplePowerGrid value : GRID_MAP.values()) {
+            value.destroy();
+        }
         GRID_MAP.clear();
     }
 

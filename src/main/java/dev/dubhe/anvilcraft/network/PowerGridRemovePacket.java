@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.network;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
+import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
 import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,7 +40,11 @@ public class PowerGridRemovePacket implements CustomPacketPayload {
         return TYPE;
     }
 
-    public static void clientHandler(PowerGridRemovePacket data, IPayloadContext context) {
-        context.enqueueWork(() -> PowerGridRenderer.getGridMap().remove(data.grid));
+    public void clientHandler(IPayloadContext context) {
+        context.enqueueWork(() -> {
+            SimplePowerGrid powerGrid = PowerGridRenderer.getGridMap().get(this.grid);
+            powerGrid.destroy();
+            PowerGridRenderer.getGridMap().remove(this.grid);
+        });
     }
 }

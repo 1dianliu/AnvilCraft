@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -59,7 +60,7 @@ public class PowerGrid {
     final Set<DynamicPowerComponent> dynamicComponents = Collections.synchronizedSet(new HashSet<>());
 
     @Getter
-    private VoxelShape shape = null;
+    private FastShape shape = null;
 
     @Getter
     private BlockPos pos = null;
@@ -199,27 +200,11 @@ public class PowerGrid {
     }
 
     public boolean inRangeFast(Vec3 pos) {
-        for (IPowerComponent it : this.getComponents()) {
-            if (new AABB(
-                it.getPos().offset(-it.getRange(), -it.getRange(), -it.getRange()).getCenter(),
-                it.getPos().offset(it.getRange(), it.getRange(), it.getRange()).getCenter()
-            ).contains(pos)) {
-                return true;
-            }
-        }
-        return false;
+        return shape.inRange(pos);
     }
 
     public boolean collideFast(AABB box) {
-        for (IPowerComponent it : this.getComponents()) {
-            if (new AABB(
-                it.getPos().offset(-it.getRange(), -it.getRange(), -it.getRange()).getCenter(),
-                it.getPos().offset(it.getRange(), it.getRange(), it.getRange()).getCenter()
-            ).intersects(box)) {
-                return true;
-            }
-        }
-        return false;
+        return shape.intersects(box);
     }
 
     /**
@@ -260,25 +245,15 @@ public class PowerGrid {
 
     private void addRange(IPowerComponent component) {
         if (this.shape == null) {
-            this.shape = component.getShape();
+            this.shape = new FastShape(List.of(component.getShape()));
             this.pos = component.getPos();
             return;
         }
-        BlockPos center = this.pos;
-        BlockPos vec3 = component.getPos();
-        VoxelShape range = component
-            .getShape()
-            .move(
-                vec3.getX() - center.getX(),
-                vec3.getY() - center.getY(),
-                vec3.getZ() - center.getZ()
-            );
-        this.shape = Shapes.join(this.shape, range, BooleanOp.OR);
+        this.shape.add(component.getShape());
     }
 
     public void notifyLeaving(DynamicPowerComponent component) {
         this.dynamicComponents.remove(component);
-
     }
 
     public void notifyEntering(DynamicPowerComponent component) {
@@ -349,17 +324,7 @@ public class PowerGrid {
      * @return 元件是否在电网范围内
      */
     public boolean isInRange(@NotNull IPowerComponent component) {
-        BlockPos vec3 = component.getPos().subtract(this.getPos());
-        VoxelShape range = Shapes.join(
-            this.shape,
-            component.getShape().move(
-                vec3.getX(),
-                vec3.getY(),
-                vec3.getZ()
-            ),
-            BooleanOp.AND
-        );
-        return !range.isEmpty();
+        return collideFast(component.getShape());
     }
 
     /**

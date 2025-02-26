@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.client.event;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.sound.SoundHelper;
+import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
 import dev.dubhe.anvilcraft.util.BlockHighlightUtil;
 
 import net.minecraft.client.Minecraft;
