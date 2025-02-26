@@ -2,6 +2,7 @@ package dev.dubhe.anvilcraft.block;
 
 import dev.dubhe.anvilcraft.api.power.IPowerComponent;
 import dev.dubhe.anvilcraft.block.entity.DeflectionRingBlockEntity;
+import dev.dubhe.anvilcraft.block.multipart.FlexibleMultiPartBlock;
 import dev.dubhe.anvilcraft.block.state.DirectionCube3x3PartHalf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class DeflectionRingBlock extends AbstractStateAddableMultiplePartBlock<DirectionCube3x3PartHalf, DirectionProperty, Direction> implements EntityBlock {
+public class DeflectionRingBlock extends FlexibleMultiPartBlock<DirectionCube3x3PartHalf, DirectionProperty, Direction> implements EntityBlock {
     public static final EnumProperty<DirectionCube3x3PartHalf> HALF = EnumProperty.create("half", DirectionCube3x3PartHalf.class);
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty OVERLOAD = IPowerComponent.OVERLOAD;
@@ -66,17 +67,17 @@ public class DeflectionRingBlock extends AbstractStateAddableMultiplePartBlock<D
     }
 
     @Override
-    public Property<DirectionCube3x3PartHalf> getPart() {
+    public @NotNull Property<DirectionCube3x3PartHalf> getPart() {
         return HALF;
     }
 
     @Override
-    public DirectionCube3x3PartHalf[] getParts() {
+    public DirectionCube3x3PartHalf @NotNull [] getParts() {
         return DirectionCube3x3PartHalf.values();
     }
 
     @Override
-    public DirectionProperty getAdditionalProperty() {
+    public @NotNull DirectionProperty getAdditionalProperty() {
         return FACING;
     }
 
@@ -85,7 +86,7 @@ public class DeflectionRingBlock extends AbstractStateAddableMultiplePartBlock<D
     }
 
     @Override
-    protected BlockState placedState(DirectionCube3x3PartHalf part, BlockState state) {
+    protected @NotNull BlockState placedState(@NotNull DirectionCube3x3PartHalf part, BlockState state) {
         return state
                 .setValue(this.getPart(), part);
     }
