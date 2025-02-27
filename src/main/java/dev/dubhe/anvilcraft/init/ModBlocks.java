@@ -28,6 +28,17 @@ import dev.dubhe.anvilcraft.block.CorruptedBeaconBlock;
 import dev.dubhe.anvilcraft.block.CrabTrapBlock;
 import dev.dubhe.anvilcraft.block.CreamBlock;
 import dev.dubhe.anvilcraft.block.CreativeGeneratorBlock;
+import dev.dubhe.anvilcraft.block.DeflectionRingBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronDoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronTrapdoorBlock;
+import dev.dubhe.anvilcraft.block.HeavyIronWallBlock;
+import dev.dubhe.anvilcraft.block.ItemDetectorBlock;
+import dev.dubhe.anvilcraft.block.MagnetoElectricCoreBlock;
+import dev.dubhe.anvilcraft.block.NegativeMatterBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailBlock;
+import dev.dubhe.anvilcraft.block.SlidingRailStopBlock;
+import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
+import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
 import dev.dubhe.anvilcraft.block.CrushingTableBlock;
 import dev.dubhe.anvilcraft.block.DischargerBlock;
 import dev.dubhe.anvilcraft.block.EmberAnvilBlock;
@@ -1505,6 +1516,20 @@ public class ModBlocks {
         })
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .register();
+
+    public static final BlockEntry<DeflectionRingBlock> DEFLECTION_RING = REGISTRATE
+            .block("deflection_ring", DeflectionRingBlock::new)
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .loot(FlexibleMultiPartBlock::loot)
+            .properties(it ->
+                it.isSuffocating(ModBlocks::never).noOcclusion()
+            )
+            .item(FlexibleMultiPartBlockItem<DirectionCube3x3PartHalf, DirectionProperty, Direction>::new)
+            .build()
+            .blockstate((ctx, provider) -> {
+            })
+            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .register();
 
     public static final BlockEntry<MagnetoElectricCoreBlock> MAGNETO_ELECTRIC_CORE_BLOCK = REGISTRATE
         .block("magnetoelectric_core", MagnetoElectricCoreBlock::new)
