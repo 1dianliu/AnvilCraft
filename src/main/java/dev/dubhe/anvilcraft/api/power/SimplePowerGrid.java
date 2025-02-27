@@ -1,8 +1,10 @@
 package dev.dubhe.anvilcraft.api.power;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.renderer.Line;
 import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
 
+import dev.dubhe.anvilcraft.util.ThreadFactoryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -29,9 +31,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Getter
 public class SimplePowerGrid {
+    private static ExecutorService EXECUTOR;
+
+    static {
+        recreateExecutor();
+    }
 
     public static final Codec<SimplePowerGrid> CODEC = RecordCodecBuilder.create(ins -> ins.group(
             Codec.INT.fieldOf("hash").forGetter(o -> o.id),
@@ -55,8 +68,8 @@ public class SimplePowerGrid {
     private final int generate; // 发电功率
     private final int consume; // 耗电功率
 
-    @Getter
-    private final VoxelShape cachedOutlineShape;
+    private Future<VoxelShape> shapeFuture;
+    private VoxelShape cachedOutlineShape;
 
     /**
      * 简单电网
@@ -76,7 +89,7 @@ public class SimplePowerGrid {
         this.consume = consume;
         blocks.addAll(powerComponentInfoList.stream().map(PowerComponentInfo::pos).toList());
         this.powerComponentInfoList.addAll(powerComponentInfoList);
-        cachedOutlineShape = createMergedOutlineShape();
+        this.shapeFuture = createMergedOutlineShape();
         createTransmitterVisualLines();
     }
 
@@ -90,6 +103,18 @@ public class SimplePowerGrid {
         buf.writeNbt(data);
     }
 
+    public boolean collideFast(AABB aabb) {
+        for (PowerComponentInfo it : this.powerComponentInfoList) {
+            if (new AABB(
+                it.pos().offset(-it.range(), -it.range(), -it.range()).getCenter(),
+                it.pos().offset(it.range(), it.range(), it.range()).getCenter()
+            ).intersects(aabb)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 获得指定坐标的电网元件信息
      */
@@ -97,6 +122,10 @@ public class SimplePowerGrid {
         return powerComponentInfoList.stream()
             .filter(it -> it.pos().equals(pos))
             .findFirst();
+    }
+
+    public boolean isOverloaded() {
+        return this.getConsume() > this.getGenerate();
     }
 
     /**
@@ -225,8 +254,8 @@ public class SimplePowerGrid {
         }
     }
 
-    private VoxelShape createMergedOutlineShape() {
-        return this.powerComponentInfoList.stream()
+    private Future<VoxelShape> createMergedOutlineShape() {
+        return EXECUTOR.submit(() -> powerComponentInfoList.stream()
             .map(it -> Shapes.box(
                     -it.range(),
                     -it.range(),
@@ -235,12 +264,13 @@ public class SimplePowerGrid {
                     it.range() + 1,
                     it.range() + 1
                 ).move(
-                    this.offset(it.pos()).getX(),
-                    this.offset(it.pos()).getY(),
-                    this.offset(it.pos()).getZ()
+                    offset(it.pos()).getX(),
+                    offset(it.pos()).getY(),
+                    offset(it.pos()).getZ()
                 )
             ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR))
-            .orElse(Shapes.block());
+            .orElse(Shapes.block())
+        );
     }
 
     private @NotNull BlockPos offset(@NotNull BlockPos pos) {
@@ -261,5 +291,37 @@ public class SimplePowerGrid {
         return Optional.empty();
     }
 
+    public VoxelShape getCachedOutlineShape() {
+        if (this.cachedOutlineShape != null) return cachedOutlineShape;
+        if (shapeFuture.isCancelled()) {
+            return cachedOutlineShape;
+        }
+        try {
+            if (this.cachedOutlineShape == null && shapeFuture.isDone()) {
+                this.cachedOutlineShape = shapeFuture.get();
+            }
+            return cachedOutlineShape;
+        } catch (Throwable e) {
+            if (e instanceof ExecutionException) {
+                AnvilCraft.LOGGER.error("Exception thrown while building power grid shape.", e);
+            }
+            return null;
+        }
+    }
 
+    public void destroy() {
+        if (!shapeFuture.isDone()) {
+            shapeFuture.cancel(true);
+        }
+    }
+
+    public static void recreateExecutor() {
+        if (EXECUTOR != null){
+            EXECUTOR.shutdownNow();
+        }
+        EXECUTOR = Executors.newFixedThreadPool(
+            Math.clamp(Runtime.getRuntime().availableProcessors() - 1, 1, Integer.MAX_VALUE),
+            new ThreadFactoryImpl()
+        );
+    }
 }
