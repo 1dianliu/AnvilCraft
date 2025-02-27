@@ -1,10 +1,11 @@
-package dev.dubhe.anvilcraft.client.renderer;
+package dev.dubhe.anvilcraft.client;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
 
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import dev.dubhe.anvilcraft.util.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -23,11 +24,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PowerGridRenderer {
+public class PowerGridClient {
     private static final Map<Integer, SimplePowerGrid> GRID_MAP = Collections.synchronizedMap(new HashMap<>());
 
     public static Map<Integer, SimplePowerGrid> getGridMap() {
-        return PowerGridRenderer.GRID_MAP;
+        return PowerGridClient.GRID_MAP;
     }
 
     /**
@@ -38,14 +39,13 @@ public class PowerGridRenderer {
         RandomSource random = Minecraft.getInstance().level.random;
         String level = Minecraft.getInstance().level.dimension().location().toString();
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
-        for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
+        for (SimplePowerGrid grid : PowerGridClient.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;
             if (!grid.getLevel().equals(level)) continue;
-            random.setSeed(grid.getId());
-            int[] rgb = ColorUtil.hsvToRgb(random.nextInt(360), 80, 80);
             VoxelShape shape = grid.getCachedOutlineShape();
-            if (shape == null)continue;
-            PowerGridRenderer.renderOutline(
+            int[] rgb = grid.getColor();
+            if (shape == null) continue;
+            PowerGridClient.renderOutline(
                 poseStack,
                 consumer,
                 camera,
@@ -75,7 +75,7 @@ public class PowerGridRenderer {
         String level = Minecraft.getInstance().level.dimension().location().toString();
 
         VertexConsumer consumer1 = bufferSource.getBuffer(ModRenderTypes.LINE_BLOOM);
-        for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
+        for (SimplePowerGrid grid : PowerGridClient.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;
             if (!grid.getLevel().equals(level)) continue;
             grid.getPowerTransmitterLines().forEach(it -> it.render(poseStack, consumer1, camera, 0x9966ccff));
@@ -93,7 +93,7 @@ public class PowerGridRenderer {
         if (Minecraft.getInstance().level == null) return;
         String level = Minecraft.getInstance().level.dimension().location().toString();
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.LINES);
-        for (SimplePowerGrid grid : PowerGridRenderer.GRID_MAP.values()) {
+        for (SimplePowerGrid grid : PowerGridClient.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;
             if (!grid.getLevel().equals(level)) continue;
             grid.getPowerTransmitterLines().forEach(it -> it.render(poseStack, consumer, camera, 0x9966ccff));
@@ -119,7 +119,7 @@ public class PowerGridRenderer {
         float green,
         float blue,
         float alpha) {
-        PowerGridRenderer.renderShape(
+        PowerGridClient.renderShape(
             poseStack,
             consumer,
             shape,
