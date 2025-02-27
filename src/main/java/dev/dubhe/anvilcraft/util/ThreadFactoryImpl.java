@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ThreadFactoryImpl implements java.util.concurrent.ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final ThreadGroup group;
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
 
     @SuppressWarnings("removal")
@@ -15,7 +16,7 @@ public class ThreadFactoryImpl implements java.util.concurrent.ThreadFactory {
         group = (s != null)
             ? s.getThreadGroup()
             : Thread.currentThread().getThreadGroup();
-        namePrefix = "AnvilCraftWorker-" + poolNumber.getAndIncrement();
+        namePrefix = "AnvilCraftWorker-" + poolNumber.getAndIncrement() + "-thread-";
     }
 
     @Override
@@ -23,7 +24,7 @@ public class ThreadFactoryImpl implements java.util.concurrent.ThreadFactory {
         Thread t = new Thread(
             group,
             r,
-            namePrefix,
+            namePrefix + threadNumber.getAndIncrement(),
             0
         );
         t.setDaemon(true);

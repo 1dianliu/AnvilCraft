@@ -6,7 +6,6 @@ import dev.dubhe.anvilcraft.client.PowerGridClient;
 
 import dev.dubhe.anvilcraft.util.ColorUtil;
 import dev.dubhe.anvilcraft.util.ShapeUtil;
-import dev.dubhe.anvilcraft.util.ThreadFactoryImpl;
 import dev.dubhe.anvilcraft.util.VirtualThreadFactoryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -14,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -66,12 +66,12 @@ public class SimplePowerGrid {
     private final List<BlockPos> blocks = new ArrayList<>();
     private final List<PowerComponentInfo> powerComponentInfoList = new ArrayList<>();
     private final List<Line> powerTransmitterLines = new ArrayList<>();
+    private List<Line> powerGridBoundLines = new ArrayList<>();
     private final int generate; // 发电功率
     private final int consume; // 耗电功率
-    private final int[] color;
+    private final int color;
 
-    private Future<VoxelShape> shapeFuture;
-    private VoxelShape cachedOutlineShape;
+    private Future<?> shapeFuture;
 
     /**
      * 简单电网
@@ -88,12 +88,13 @@ public class SimplePowerGrid {
         this.level = level;
         this.id = id;
         random.setSeed(id);
-        this.color = ColorUtil.hsvToRgb(random.nextInt(360), 80, 80);
+        int[] colors = ColorUtil.hsvToRgb(random.nextInt(360), 80, 80);
+        this.color = FastColor.ARGB32.color((int) (0.4 * 255), colors[0], colors[1], colors[2]);
         this.generate = generate;
         this.consume = consume;
         blocks.addAll(powerComponentInfoList.stream().map(PowerComponentInfo::pos).toList());
         this.powerComponentInfoList.addAll(powerComponentInfoList);
-        this.shapeFuture = createMergedOutlineShape();
+        createMergedOutlineShape();
         createTransmitterVisualLines();
     }
 
@@ -144,7 +145,7 @@ public class SimplePowerGrid {
         powerComponents.addAll(grid.producers);
         powerComponents.addAll(grid.consumers);
         powerComponents.addAll(grid.transmitters);
-        this.color = EMPTY;
+        this.color = 0;
         for (IPowerComponent component : powerComponents) {
             switch (component.getComponentType()) {
                 case STORAGE -> {
@@ -220,7 +221,6 @@ public class SimplePowerGrid {
         }
         this.consume = grid.getConsume();
         this.generate = grid.getGenerate();
-        cachedOutlineShape = Shapes.block();
     }
 
     public boolean shouldRender(Vec3 cameraPos) {
@@ -259,23 +259,30 @@ public class SimplePowerGrid {
         }
     }
 
-    private Future<VoxelShape> createMergedOutlineShape() {
-        List<VoxelShape> input = new ArrayList<>();
-        for (PowerComponentInfo it : powerComponentInfoList) {
-            input.add(Shapes.box(
-                -it.range(),
-                -it.range(),
-                -it.range(),
-                it.range() + 1,
-                it.range() + 1,
-                it.range() + 1
-            ).move(
-                offset(it.pos()).getX(),
-                offset(it.pos()).getY(),
-                offset(it.pos()).getZ()
-            ));
-        }
-        return ShapeUtil.threadedJoin(input, BooleanOp.OR, EXECUTOR);
+    private void createMergedOutlineShape() {
+        this.shapeFuture = EXECUTOR.submit(() -> {
+            List<VoxelShape> input = new ArrayList<>();
+            for (PowerComponentInfo it : powerComponentInfoList) {
+                Vec3 center = it.pos().getCenter();
+                float size = it.range() * 2 + 1;
+                input.add(Shapes.create(AABB.ofSize(center, size, size, size)));
+            }
+            Future<VoxelShape> future = ShapeUtil.threadedJoin(input, BooleanOp.OR, EXECUTOR);
+            try {
+                VoxelShape shape = future.get();
+                List<Line> lines = new ArrayList<>();
+                shape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
+                    Vec3 min = new Vec3(minX, minY, minZ);
+                    Vec3 max = new Vec3(maxX, maxY, maxZ);
+                    lines.add(new Line(min, max, (float) min.distanceTo(max)));
+                });
+                this.powerGridBoundLines = lines;
+            } catch (Throwable e) {
+                if (e instanceof ExecutionException) {
+                    AnvilCraft.LOGGER.error("Exception thrown while building power grid shape.", e);
+                }
+            }
+        });
     }
 
     private @NotNull BlockPos offset(@NotNull BlockPos pos) {
@@ -296,24 +303,6 @@ public class SimplePowerGrid {
         return Optional.empty();
     }
 
-    public VoxelShape getCachedOutlineShape() {
-        if (this.cachedOutlineShape != null) return cachedOutlineShape;
-        if (shapeFuture.isCancelled()) {
-            return cachedOutlineShape;
-        }
-        try {
-            if (this.cachedOutlineShape == null && shapeFuture.isDone()) {
-                this.cachedOutlineShape = shapeFuture.get();
-            }
-            return cachedOutlineShape;
-        } catch (Throwable e) {
-            if (e instanceof ExecutionException) {
-                AnvilCraft.LOGGER.error("Exception thrown while building power grid shape.", e);
-            }
-            return null;
-        }
-    }
-
     public void destroy() {
         if (!shapeFuture.isDone()) {
             shapeFuture.cancel(true);
@@ -321,7 +310,7 @@ public class SimplePowerGrid {
     }
 
     public static void recreateExecutor() {
-        if (EXECUTOR != null){
+        if (EXECUTOR != null) {
             EXECUTOR.shutdownNow();
         }
         EXECUTOR = Executors.newThreadPerTaskExecutor(new VirtualThreadFactoryImpl());

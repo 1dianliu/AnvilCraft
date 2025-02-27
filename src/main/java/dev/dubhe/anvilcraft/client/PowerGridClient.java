@@ -5,20 +5,15 @@ import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
 
 import dev.dubhe.anvilcraft.client.init.ModRenderTargets;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
+import dev.dubhe.anvilcraft.client.renderer.Line;
 import dev.dubhe.anvilcraft.client.renderer.RenderState;
-import dev.dubhe.anvilcraft.util.ColorUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,26 +31,14 @@ public class PowerGridClient {
      */
     public static void render(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 camera) {
         if (Minecraft.getInstance().level == null) return;
-        RandomSource random = Minecraft.getInstance().level.random;
         String level = Minecraft.getInstance().level.dimension().location().toString();
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
         for (SimplePowerGrid grid : PowerGridClient.GRID_MAP.values()) {
             if (!grid.shouldRender(camera)) continue;
             if (!grid.getLevel().equals(level)) continue;
-            VoxelShape shape = grid.getCachedOutlineShape();
-            int[] rgb = grid.getColor();
-            if (shape == null) continue;
-            PowerGridClient.renderOutline(
-                poseStack,
-                consumer,
-                camera,
-                grid.getPos(),
-                shape,
-                rgb[0] / 255f,
-                rgb[1] / 255f,
-                rgb[2] / 255f,
-                0.4f
-            );
+            for (Line line : grid.getPowerGridBoundLines()) {
+                line.render(poseStack, consumer, camera, grid.getColor());
+            }
         }
     }
 
@@ -106,56 +89,5 @@ public class PowerGridClient {
             value.destroy();
         }
         GRID_MAP.clear();
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static void renderOutline(
-        PoseStack poseStack,
-        VertexConsumer consumer,
-        Vec3 camera,
-        @NotNull BlockPos pos,
-        @NotNull VoxelShape shape,
-        float red,
-        float green,
-        float blue,
-        float alpha) {
-        PowerGridClient.renderShape(
-            poseStack,
-            consumer,
-            shape,
-            (double) pos.getX() - camera.x,
-            (double) pos.getY() - camera.y,
-            (double) pos.getZ() - camera.z,
-            red,
-            green,
-            blue,
-            alpha
-        );
-    }
-
-    private static void renderShape(
-        @NotNull PoseStack poseStack,
-        VertexConsumer consumer,
-        @NotNull VoxelShape shape,
-        double x,
-        double y,
-        double z,
-        float red,
-        float green,
-        float blue,
-        float alpha) {
-        PoseStack.Pose pose = poseStack.last();
-        shape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            float dx = (float) (maxX - minX);
-            float dy = (float) (maxY - minY);
-            float dz = (float) (maxZ - minZ);
-            float distance = Mth.sqrt(dx * dx + dy * dy + dz * dz);
-            consumer.addVertex(pose.pose(), (float) (minX + x), (float) (minY + y), (float) (minZ + z))
-                .setColor(red, green, blue, alpha)
-                .setNormal(pose.copy(), dx /= distance, dy /= distance, dz /= distance);
-            consumer.addVertex(pose.pose(), (float) (maxX + x), (float) (maxY + y), (float) (maxZ + z))
-                .setColor(red, green, blue, alpha)
-                .setNormal(pose.copy(), dx, dy, dz);
-        });
     }
 }
