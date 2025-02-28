@@ -1,10 +1,10 @@
 package dev.dubhe.anvilcraft.mixin;
 
 import com.mojang.authlib.GameProfile;
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.DynamicPowerComponent;
 import dev.dubhe.anvilcraft.api.power.IDynamicPowerComponentHolder;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
-import dev.dubhe.anvilcraft.init.ModComponents;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.IonocraftBackpackItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -65,24 +65,24 @@ public abstract class ServerPlayerMixin extends Player implements IDynamicPowerC
         if (this.getAbilities().flying) {
             ItemStack itemStack = this.getItemBySlot(EquipmentSlot.CHEST);
             if (itemStack.is(ModItems.IONOCRAFT_BACKPACK)) {
-                int flightTime = itemStack.getOrDefault(ModComponents.FLIGHT_TIME, IonocraftBackpackItem.FLIGHT_MAX_TIME);
+                int flightTime = IonocraftBackpackItem.getFlightTime(itemStack);
                 flightTime--;
                 if (!(anvilCraft$component.getPowerGrid() != null && anvilCraft$component.getPowerGrid().isWorking())) {
-                    if (flightTime <= IonocraftBackpackItem.FLIGHT_MAX_TIME / 2) {
+                    if (flightTime <= AnvilCraft.config.ionoCraftBackpackMaxFlightTime / 2) {
                         Inventory inventory = getInventory();
                         int slot = inventory.findSlotMatchingItem(ModItems.CAPACITOR.asStack());
                         if (slot != -1) {
                             inventory.removeItem(slot, 1);
                             inventory.placeItemBackInInventory(ModItems.CAPACITOR_EMPTY.asStack());
                             flightTime = Math.clamp(
-                                flightTime + IonocraftBackpackItem.FLIGHT_MAX_TIME / 2,
+                                flightTime + AnvilCraft.config.ionoCraftBackpackMaxFlightTime / 2,
                                 0,
-                                IonocraftBackpackItem.FLIGHT_MAX_TIME
+                                AnvilCraft.config.ionoCraftBackpackMaxFlightTime
                             );
                         }
                     }
                 }
-                itemStack.set(ModComponents.FLIGHT_TIME, Math.clamp(flightTime, 0, IonocraftBackpackItem.FLIGHT_MAX_TIME));
+                IonocraftBackpackItem.setFlightTime(itemStack, flightTime);
             }
         }
     }
@@ -94,9 +94,9 @@ public abstract class ServerPlayerMixin extends Player implements IDynamicPowerC
             && anvilCraft$component.getPowerGrid() != null
             && anvilCraft$component.getPowerGrid().isWorking()
         ) {
-            int flightTime = itemStack.getOrDefault(ModComponents.FLIGHT_TIME, IonocraftBackpackItem.FLIGHT_MAX_TIME);
-            flightTime = Math.clamp(flightTime + IonocraftBackpackItem.FLIGHT_MAX_TIME / 120, 0, IonocraftBackpackItem.FLIGHT_MAX_TIME);
-            itemStack.set(ModComponents.FLIGHT_TIME, flightTime);
+            int flightTime = IonocraftBackpackItem.getFlightTime(itemStack);
+            flightTime = flightTime + AnvilCraft.config.ionoCraftBackpackMaxFlightTime / 120;
+            IonocraftBackpackItem.setFlightTime(itemStack, flightTime);
         }
     }
 

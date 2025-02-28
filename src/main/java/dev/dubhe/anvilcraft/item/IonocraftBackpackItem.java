@@ -37,7 +37,6 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class IonocraftBackpackItem extends ArmorItem {
     public static final DynamicPowerComponent.PowerConsumption CONSUMPTION = new DynamicPowerComponent.PowerConsumption(64);
-    public static final int FLIGHT_MAX_TIME = 1200 * 20;
 
     public static final ResourceLocation TEXTURE = AnvilCraft.of("textures/entity/equipment/ionocraft_backpack.png");
     public static final ResourceLocation TEXTURE_OFF = AnvilCraft.of("textures/entity/equipment/ionocraft_backpack_off.png");
@@ -120,6 +119,10 @@ public class IonocraftBackpackItem extends ArmorItem {
 
     public static int getFlightTime(ItemStack stack) {
         return stack.getOrDefault(ModComponents.FLIGHT_TIME, 0);
+    }
+
+    public static void setFlightTime(ItemStack stack, int time) {
+        stack.set(ModComponents.FLIGHT_TIME, Math.clamp(time, 0, AnvilCraft.config.ionoCraftBackpackMaxFlightTime));
     }
 
     @Override
