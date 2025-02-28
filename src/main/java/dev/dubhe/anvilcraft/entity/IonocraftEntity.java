@@ -3,13 +3,12 @@ package dev.dubhe.anvilcraft.entity;
 import dev.dubhe.anvilcraft.api.power.DynamicPowerComponent;
 import dev.dubhe.anvilcraft.api.power.PowerGrid;
 import dev.dubhe.anvilcraft.api.power.SimplePowerGrid;
-import dev.dubhe.anvilcraft.client.renderer.PowerGridRenderer;
+import dev.dubhe.anvilcraft.client.PowerGridClient;
 import dev.dubhe.anvilcraft.init.ModEntities;
 import dev.dubhe.anvilcraft.init.ModItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.entity.Attackable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -108,7 +107,7 @@ public class IonocraftEntity extends VehicleEntity {
 
     @OnlyIn(Dist.CLIENT)
     private Optional<SimplePowerGrid> clientFindPowerGridContains(AABB aabb) {
-        Collection<SimplePowerGrid> powerGrids = PowerGridRenderer.getGridMap().values();
+        Collection<SimplePowerGrid> powerGrids = PowerGridClient.getGridMap().values();
         for (SimplePowerGrid it : powerGrids) {
             if (it.collideFast(aabb)) {
                 return Optional.of(it);
