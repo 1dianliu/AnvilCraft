@@ -15,7 +15,7 @@ public class RenderState {
     private static final Logger logger = LogUtils.getLogger();
 
     static {
-        IRIS_PRESENT = Util.isLoaded("iris");
+        IRIS_PRESENT = Util.isLoaded("iris") || Util.isLoaded("oculus");
     }
 
     public static boolean isIrisPresent() {
