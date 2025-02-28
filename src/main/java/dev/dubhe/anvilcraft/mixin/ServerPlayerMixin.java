@@ -74,11 +74,7 @@ public abstract class ServerPlayerMixin extends Player implements IDynamicPowerC
                         if (slot != -1) {
                             inventory.removeItem(slot, 1);
                             inventory.placeItemBackInInventory(ModItems.CAPACITOR_EMPTY.asStack());
-                            flightTime = Math.clamp(
-                                flightTime + AnvilCraft.config.ionoCraftBackpackMaxFlightTime / 2,
-                                0,
-                                AnvilCraft.config.ionoCraftBackpackMaxFlightTime
-                            );
+                            flightTime = flightTime + AnvilCraft.config.ionoCraftBackpackMaxFlightTime / 2;
                         }
                     }
                 }
