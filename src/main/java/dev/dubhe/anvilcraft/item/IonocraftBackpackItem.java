@@ -4,8 +4,10 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.DynamicPowerComponent;
 import dev.dubhe.anvilcraft.api.power.IDynamicPowerComponentHolder;
 import dev.dubhe.anvilcraft.init.ModComponents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -22,12 +24,14 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,7 +53,7 @@ public class IonocraftBackpackItem extends ArmorItem {
         super(
             ArmorMaterials.IRON,
             Type.CHESTPLATE,
-            properties.component(ModComponents.FLIGHT_TIME, FLIGHT_MAX_TIME)
+            properties.component(ModComponents.FLIGHT_TIME, 0)
         );
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
     }
@@ -78,7 +82,7 @@ public class IonocraftBackpackItem extends ArmorItem {
         } else {
             powerComponent.getPowerConsumptions().remove(CONSUMPTION);
         }
-        if (stack.getOrDefault(ModComponents.FLIGHT_TIME, FLIGHT_MAX_TIME) > 0) {
+        if (getFlightTime(stack) > 0) {
             AttributeInstance instance = serverPlayer.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
             if (!instance.hasModifier(CREATIVE_FLIGHT_ID)) {
                 instance.addTransientModifier(CREATIVE_FLIGHT);
@@ -108,9 +112,22 @@ public class IonocraftBackpackItem extends ArmorItem {
 
     @Override
     public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
-        if (stack.getOrDefault(ModComponents.FLIGHT_TIME, FLIGHT_MAX_TIME) > 0) {
+        if (getFlightTime(stack) > 0) {
             return TEXTURE;
         }
         return TEXTURE_OFF;
+    }
+
+    public static int getFlightTime(ItemStack stack) {
+        return stack.getOrDefault(ModComponents.FLIGHT_TIME, 0);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.add(Component.translatable(
+            "item.anvilcraft.ionocraft_backpack.flight_time",
+            Component.literal(String.valueOf(getFlightTime(stack) / 20)).withStyle(ChatFormatting.GOLD)
+        ));
     }
 }

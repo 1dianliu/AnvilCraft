@@ -402,6 +402,7 @@
   "item.anvilcraft.inherent_enchantment.tooltip": "Inherent enchantments:",
   "item.anvilcraft.ionocraft": "Ionocraft",
   "item.anvilcraft.ionocraft_backpack": "Ionocraft Backpack",
+  "item.anvilcraft.ionocraft_backpack.flight_time": "Flight Time: %ds",
   "item.anvilcraft.lead_ingot": "Lead Ingot",
   "item.anvilcraft.lead_nugget": "Lead Nugget",
   "item.anvilcraft.levitation_powder": "Levitation Powder",
