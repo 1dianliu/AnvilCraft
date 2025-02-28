@@ -4,6 +4,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.client.event.GuiLayerRegistrationEventListener;
 import dev.dubhe.anvilcraft.client.init.ModModelLayers;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
+import dev.dubhe.anvilcraft.client.renderer.item.decoration.IonocraftBackpackDecoration;
 import dev.dubhe.anvilcraft.config.AnvilCraftConfig;
 
 import dev.dubhe.anvilcraft.init.ModFluids;
@@ -17,6 +18,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -36,6 +38,7 @@ public class AnvilCraftClient {
             (c, s) -> AutoConfig.getConfigScreen(AnvilCraftConfig.class, s).get()
         );
         modBus.addListener(AnvilCraftClient::registerClientExtensions);
+        modBus.addListener(AnvilCraftClient::registerCustomItemDecorations);
         modBus.addListener(ModShaders::register);
         modBus.addListener(ModModelLayers::register);
         modBus.addListener(ModModelLayers::createModel);
@@ -45,6 +48,10 @@ public class AnvilCraftClient {
     public static void registerClientExtensions(RegisterClientExtensionsEvent e) {
         ModFluids.onRegisterFluidType(e);
         e.registerItem(new ItemExtensionImpl(), ModItems.IONOCRAFT_BACKPACK);
+    }
+
+    public static void registerCustomItemDecorations(RegisterItemDecorationsEvent e) {
+        e.register(ModItems.IONOCRAFT_BACKPACK, new IonocraftBackpackDecoration());
     }
 
     @ParametersAreNonnullByDefault

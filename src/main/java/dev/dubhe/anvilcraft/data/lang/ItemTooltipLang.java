@@ -37,5 +37,7 @@ public class ItemTooltipLang {
         provider.add("tooltip.anvilcraft.item.disk.store", "Right click block to copy its setting");
         provider.add("tooltip.anvilcraft.item.disk.clear", "Shift + Right click to clear data stored");
         provider.add("tooltip.anvilcraft.heliostats.adjacent_heliostats", "Adjacent heliostats detected.");
+
+        provider.add("item.anvilcraft.ionocraft_backpack.flight_time", "Flight Time: %ds");
     }
 }
