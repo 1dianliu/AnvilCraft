@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.client.renderer.item.decoration;
 
+import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.item.IonocraftBackpackItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.gui.Font;
@@ -16,7 +17,7 @@ public class IonocraftBackpackDecoration implements IItemDecorator {
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         int flightTime = IonocraftBackpackItem.getFlightTime(stack);
         if (flightTime > 0) {
-            int percent = Math.round((float) flightTime / IonocraftBackpackItem.FLIGHT_MAX_TIME * 100);
+            int percent = Math.round((float) flightTime / AnvilCraft.config.ionoCraftBackpackMaxFlightTime * 100);
 
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(xOffset, yOffset, 200.0F);

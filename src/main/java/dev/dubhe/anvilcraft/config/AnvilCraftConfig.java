@@ -145,6 +145,10 @@ public class AnvilCraftConfig implements ConfigData {
     @Comment("Bloom effect on laser and power transmitter lines.")
     public boolean renderBloomEffect = false;
 
+    @ConfigEntry.Gui.Tooltip
+    @Comment("Iono Craft Backpack Max Flight Time in ticks")
+    public int ionoCraftBackpackMaxFlightTime = 1200 * 20;
+
     public static class PowerConverter implements ConfigData {
         @Comment("The working interval of power converters")
         @ConfigEntry.Gui.Tooltip
