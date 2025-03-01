@@ -580,6 +580,8 @@
   "text.autoconfig.anvilcraft.option.heliostatsSunflowerModel.@Tooltip": "在向日葵平原生物群系中，定日镜头部模型变为向日葵",
   "text.autoconfig.anvilcraft.option.inductionLightBlockRipeningCooldown": "高松灯催熟冷却",
   "text.autoconfig.anvilcraft.option.inductionLightBlockRipeningRange": "高松灯催熟范围",
+  "text.autoconfig.anvilcraft.option.ionoCraftBackpackMaxFlightTime": "Iono Craft Backpack Max Flight Time",
+  "text.autoconfig.anvilcraft.option.ionoCraftBackpackMaxFlightTime.@Tooltip": "Iono Craft Backpack Max Flight Time in ticks",
   "text.autoconfig.anvilcraft.option.isLaserDoImpactChecking": "激光碰撞箱检测",
   "text.autoconfig.anvilcraft.option.lightningStrikeDepth": "雷击深度",
   "text.autoconfig.anvilcraft.option.lightningStrikeDepth.@Tooltip": "雷击可以达到的最大深度",
