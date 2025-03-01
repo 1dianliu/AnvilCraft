@@ -11,11 +11,12 @@ import java.util.Objects;
 @Slf4j
 public final class IntegrationInstance {
     private final String modid;
-    private final Class<?> clazz;
+    private final String className;
+    private Class<?> clazz;
     private Object instance;
-    private final MethodHandle constructor;
-    private final MethodHandle loader;
-    private final MethodHandle clientLoader;
+    private MethodHandle constructor;
+    private MethodHandle loader;
+    private MethodHandle clientLoader;
 
     @SneakyThrows
     public IntegrationInstance(
@@ -23,30 +24,33 @@ public final class IntegrationInstance {
         String className
     ) {
         this.modid = modid;
-        this.clazz = Class.forName(className);
-        MethodHandles.Lookup lookup = MethodHandles.lookup();
-        this.constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
-        MethodHandle loader;
-        try {
-            loader = lookup.findVirtual(clazz,"apply", MethodType.methodType(void.class));
-        }catch (Throwable e){
-            loader = null;
-        }
-        this.loader = loader;
-        try {
-            loader = lookup.findVirtual(clazz,"applyClient", MethodType.methodType(void.class));
-        }catch (Throwable e){
-            loader = null;
-        }
-        this.clientLoader = loader;
-        if (this.loader == null && this.clientLoader == null){
-            log.warn("Integration {} does not declare any loader method.", className);
-        }
+        this.className = className;
     }
 
     @SneakyThrows
     public void newInstance() {
-        if (instance == null){
+        if (this.clazz == null) {
+            this.clazz = Class.forName(className);
+            MethodHandles.Lookup lookup = MethodHandles.lookup();
+            this.constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
+            MethodHandle loader;
+            try {
+                loader = lookup.findVirtual(clazz, "apply", MethodType.methodType(void.class));
+            } catch (Throwable e) {
+                loader = null;
+            }
+            this.loader = loader;
+            try {
+                loader = lookup.findVirtual(clazz, "applyClient", MethodType.methodType(void.class));
+            } catch (Throwable e) {
+                loader = null;
+            }
+            this.clientLoader = loader;
+            if (this.loader == null && this.clientLoader == null) {
+                log.warn("Integration {} does not declare any loader method.", className);
+            }
+        }
+        if (instance == null) {
             instance = constructor.invoke();
         }
     }
