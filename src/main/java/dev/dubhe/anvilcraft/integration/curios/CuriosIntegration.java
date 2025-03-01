@@ -1,7 +1,7 @@
 package dev.dubhe.anvilcraft.integration.curios;
 
-import dev.anvilcraft.lib.integration.Integration;
 import dev.dubhe.anvilcraft.AnvilCraft;
+import dev.dubhe.anvilcraft.api.integration.Integration;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.item.IEngineerGoggles;
 import net.minecraft.client.Minecraft;
@@ -17,8 +17,8 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 import java.util.Optional;
 
-public class CuriosIntegration implements Integration {
-    @Override
+@Integration("curios")
+public class CuriosIntegration {
     public void apply() {
         Optional<IEventBus> optional = ModList.get()
             .getModContainerById(AnvilCraft.MOD_ID)
@@ -34,7 +34,7 @@ public class CuriosIntegration implements Integration {
         CuriosApi.registerCurio(ModItems.EMBER_ANVIL_HAMMER.get(), new GogglesCurioItem());
     }
 
-    @Override
+
     public void applyClient() {
         CuriosRendererRegistry.register(
             ModItems.ANVIL_HAMMER.get(),
