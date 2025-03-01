@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.integration.curios;
+package dev.dubhe.anvilcraft.integration.curios.item;
 
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;

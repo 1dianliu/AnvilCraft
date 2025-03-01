@@ -25,8 +25,8 @@ import dev.dubhe.anvilcraft.item.EmberMetalPickaxeItem;
 import dev.dubhe.anvilcraft.item.EmberMetalShovelItem;
 import dev.dubhe.anvilcraft.item.EmberMetalSwordItem;
 import dev.dubhe.anvilcraft.item.EmberMetalUpgradeTemplateItem;
+import dev.dubhe.anvilcraft.item.IonoCraftBackpackItem;
 import dev.dubhe.anvilcraft.item.IonoCraftItem;
-import dev.dubhe.anvilcraft.item.IonocraftBackpackItem;
 import dev.dubhe.anvilcraft.item.amulet.AbstractAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.AnvilAmuletItem;
 import dev.dubhe.anvilcraft.item.amulet.CatAmuletItem;
@@ -440,8 +440,8 @@ public class ModItems {
         })
         .register();
 
-    public static final ItemEntry<? extends IonocraftBackpackItem> IONOCRAFT_BACKPACK = REGISTRATE
-        .item("ionocraft_backpack", IonocraftBackpackItem::new)
+    public static final ItemEntry<? extends IonoCraftBackpackItem> IONOCRAFT_BACKPACK = REGISTRATE
+        .item("ionocraft_backpack", IonoCraftBackpackItem::new)
         .initialProperties(() -> new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(15)))
         .model((ctx, prov) -> {
             ItemModelBuilder offModel = prov.getBuilder(prov.name(ctx.lazy()))
