@@ -41,6 +41,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.loading.progress.StartupNotificationManager;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -88,8 +89,8 @@ public class AnvilCraft {
         AnvilCraftDatagen.init();
 
         registerEvents(modEventBus);
+        StartupNotificationManager.addModMessage("[AnvilCraft] Ciallo～");
         LOGGER.info("Ciallo～(∠・ω< )⌒★");
-        LOGGER.info("let's 0721!");
     }
 
     private static void registerEvents(@NotNull IEventBus eventBus) {
