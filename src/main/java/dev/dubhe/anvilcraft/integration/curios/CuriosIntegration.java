@@ -2,10 +2,7 @@ package dev.dubhe.anvilcraft.integration.curios;
 
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.integration.Integration;
-import dev.dubhe.anvilcraft.client.init.ModModelLayers;
 import dev.dubhe.anvilcraft.init.ModItems;
-import dev.dubhe.anvilcraft.integration.curios.item.GogglesCurioItem;
-import dev.dubhe.anvilcraft.integration.curios.item.IonoCraftBackpackCurioItem;
 import dev.dubhe.anvilcraft.integration.curios.renderer.GogglesCurioRenderer;
 import dev.dubhe.anvilcraft.integration.curios.renderer.IonoCraftBackpackCurioRenderer;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
@@ -14,9 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -28,19 +27,27 @@ public class CuriosIntegration {
     public void apply() {
         AnvilCraft.MOD_BUS.addListener(this::setup);
         AnvilCraft.MOD_BUS.addListener(this::onLayerRegister);
+        AnvilCraft.MOD_BUS.addListener(this::registerCapabilities);
     }
 
     private void setup(FMLCommonSetupEvent event) {
         AnvilHammerItem.addIsWearingPredicate(player ->
             CuriosApi.getCuriosInventory(player).map(this::isAnvilHammerWearing).orElse(false)
         );
-        CuriosApi.registerCurio(ModItems.ANVIL_HAMMER.get(), new GogglesCurioItem());
-        CuriosApi.registerCurio(ModItems.ROYAL_ANVIL_HAMMER.get(), new GogglesCurioItem());
-        CuriosApi.registerCurio(ModItems.EMBER_ANVIL_HAMMER.get(), new GogglesCurioItem());
         IonoCraftBackpackItem.addStackProvider(player ->
             CuriosApi.getCuriosInventory(player).map(this::getIonoCraftBackpackWearing).orElse(ItemStack.EMPTY)
         );
-        CuriosApi.registerCurio(ModItems.IONOCRAFT_BACKPACK.get(), new IonoCraftBackpackCurioItem());
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(
+            CuriosCapability.ITEM,
+            (stack, context) -> () -> stack,
+            ModItems.ANVIL_HAMMER,
+            ModItems.ROYAL_ANVIL_HAMMER,
+            ModItems.EMBER_ANVIL_HAMMER,
+            ModItems.IONOCRAFT_BACKPACK
+        );
     }
 
     private boolean isAnvilHammerWearing(ICuriosItemHandler itemHandler) {
