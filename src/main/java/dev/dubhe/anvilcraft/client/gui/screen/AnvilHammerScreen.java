@@ -8,27 +8,30 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Axis;
 import dev.dubhe.anvilcraft.api.hammer.IHasHammerEffect;
 import dev.dubhe.anvilcraft.api.input.IMouseHandlerExtension;
 import dev.dubhe.anvilcraft.block.multipart.IMultiPartBlockModelHolder;
 import dev.dubhe.anvilcraft.client.init.ModRenderTypes;
 import dev.dubhe.anvilcraft.client.init.ModShaders;
-import dev.dubhe.anvilcraft.client.renderer.RenderState;
 import dev.dubhe.anvilcraft.integration.iris.IrisState;
 import dev.dubhe.anvilcraft.network.HammerChangeBlockPacket;
 import dev.dubhe.anvilcraft.util.MathUtil;
 import dev.dubhe.anvilcraft.util.RenderHelper;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -85,6 +88,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
     private final BlockPos targetBlockPos;
     private final Property<?> property;
     private final List<BlockState> possibleStates;
+    private final Camera camera;
 
     private BlockState currentBlockState;
     private final List<SelectionItem> items = new ArrayList<>();
@@ -103,6 +107,7 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         this.currentBlockState = initialBlockState;
         this.property = property;
         this.possibleStates = possibleStates;
+        this.camera = Minecraft.getInstance().gameRenderer.getMainCamera();
     }
 
     @Override
@@ -227,6 +232,34 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         renderProgressAnimation(guiGraphics, progress, centerX, centerY);
     }
 
+    private void renderRotatedBlock(
+        PoseStack poseStack,
+        GuiGraphics guiGraphics,
+        BlockState block,
+        float x,
+        float y,
+        float z,
+        float scale
+    ) {
+        poseStack.pushPose();
+        poseStack.translate(-7, 7, 0);
+        poseStack.translate(x, y, z);
+        poseStack.scale(scale, scale, scale);
+        poseStack.mulPose(new Matrix4f().scaling(1, -1, 1));
+        poseStack.translate(0.5f, 0.5f, 0.5f);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+        poseStack.mulPose(Axis.XP.rotationDegrees(camera.getEntity().getXRot()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(camera.getEntity().getYRot() + 180f));
+        poseStack.translate(-0.5f, -0.5f, -0.5f);
+
+        RenderHelper.renderBlockWithRotationNoTranslate(
+            guiGraphics,
+            block,
+            RenderHelper.SINGLE_BLOCK
+        );
+        poseStack.popPose();
+    }
+
     private void renderProgressAnimation(GuiGraphics guiGraphics, float progress, float centerX, float centerY) {
         progress = (float) (-Math.pow(progress, 2) + 2 * progress);
         if (progress == 0) return;
@@ -267,14 +300,14 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
                 .add(centerX, centerY);
             float x = center.x;
             float y = center.y;
-            RenderHelper.renderBlock(
+            renderRotatedBlock(
+                poseStack,
                 guiGraphics,
                 value.modelBlock,
                 x,
-                y - 4f,
+                y,
                 100,
-                ZOOM,
-                RenderHelper.SINGLE_BLOCK
+                ZOOM
             );
             int textAlpha = (int) (progress * 0xff) << 24;
             poseStack.pushPose();
@@ -335,14 +368,14 @@ public class AnvilHammerScreen extends Screen implements IHasHammerEffect {
         for (SelectionItem value : items) {
             float x = value.center.x;
             float y = value.center.y;
-            RenderHelper.renderBlock(
+            renderRotatedBlock(
+                poseStack,
                 guiGraphics,
                 value.modelBlock,
                 x,
-                y - 4f,
+                y,
                 -100,
-                ZOOM,
-                RenderHelper.SINGLE_BLOCK
+                ZOOM
             );
             poseStack.pushPose();
             float coordinateScale = 0.7f;

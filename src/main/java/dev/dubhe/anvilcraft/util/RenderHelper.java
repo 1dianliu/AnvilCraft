@@ -52,6 +52,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -98,16 +99,63 @@ public class RenderHelper {
         });
     };
 
+    public static void renderBlockWithRotationNoTranslate(
+        GuiGraphics guiGraphics,
+        BlockState block,
+        BlockRenderFunction fn
+    ) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (currentClientLevel != level) {
+            airLevelLike = new LevelLike.AirLevelLike(level);
+            currentClientLevel = level;
+        }
+        PoseStack poseStack = guiGraphics.pose();
 
+        poseStack.pushPose();
 
-    public static void renderBlock(
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+
+        FluidState fluidState = block.getFluidState();
+        MultiBufferSource.BufferSource buffers =
+            Minecraft.getInstance().renderBuffers().bufferSource();
+
+        RenderSystem.setupGui3DDiffuseLighting(L1, L2);
+        fn.renderBlock(block, poseStack, buffers);
+        buffers.endLastBatch();
+        if (!fluidState.isEmpty()) {
+            if (block.getBlock() instanceof LiquidBlock) {
+                block = block.setValue(LiquidBlock.LEVEL, block.getFluidState().getAmount());
+            }
+            BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+            blockRenderDispatcher.renderLiquid(
+                BlockPos.ZERO,
+                airLevelLike,
+                new VertexConsumerWithPose(
+                    buffers.getBuffer(ItemBlockRenderTypes.getRenderLayer(fluidState)),
+                    poseStack.last(),
+                    BlockPos.ZERO
+                ),
+                block,
+                fluidState
+            );
+            buffers.endLastBatch();
+        }
+
+        poseStack.popPose();
+    }
+
+    public static void renderBlockWithRotation(
         GuiGraphics guiGraphics,
         BlockState block,
         float x,
         float y,
         float z,
         float scale,
-        BlockRenderFunction fn
+        BlockRenderFunction fn,
+        Quaternionf rotationX,
+        Quaternionf rotationY
     ) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -122,9 +170,9 @@ public class RenderHelper {
         poseStack.translate(x, y, z);
         poseStack.scale(-scale, -scale, -scale);
         poseStack.translate(-0.5f, -0.5f, 0);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-30F));
+        poseStack.mulPose(rotationX);
         poseStack.translate(0.5F, 0, -0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(45f));
+        poseStack.mulPose(rotationY);
         poseStack.translate(-0.5F, 0, 0.5F);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -157,6 +205,30 @@ public class RenderHelper {
         }
 
         poseStack.popPose();
+    }
+
+
+
+    public static void renderBlock(
+        GuiGraphics guiGraphics,
+        BlockState block,
+        float x,
+        float y,
+        float z,
+        float scale,
+        BlockRenderFunction fn
+    ) {
+        renderBlockWithRotation(
+            guiGraphics,
+            block,
+            x,
+            y,
+            z,
+            scale,
+            fn,
+            Axis.XP.rotationDegrees(-30F),
+            Axis.YP.rotationDegrees(45f)
+        );
     }
 
     public static void renderLevelLike(

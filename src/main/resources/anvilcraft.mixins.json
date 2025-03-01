@@ -52,7 +52,6 @@
     "GameRendererMixin",
     "GuiGraphicsMixin",
     "ItemInHandRendererMixin",
-    "ItemPropertiesMixin",
     "LevelChunkMixin",
     "LevelRendererMixin",
     "MinecraftClientMixin",
