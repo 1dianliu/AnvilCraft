@@ -70,7 +70,7 @@ public class CuriosIntegration {
         );
         CuriosRendererRegistry.register(
             ModItems.IONOCRAFT_BACKPACK.get(),
-            () -> new IonoCraftBackpackCurioRenderer(Minecraft.getInstance().getEntityModels().bakeLayer(ModModelLayers.IONOCRAFT_BACKPACK))
+            IonoCraftBackpackCurioRenderer::new
         );
     }
 
