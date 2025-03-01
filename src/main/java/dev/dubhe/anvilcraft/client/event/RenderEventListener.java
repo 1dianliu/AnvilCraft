@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.dubhe.anvilcraft.api.tooltip.HudTooltipManager;
 import dev.dubhe.anvilcraft.client.ModInspectionClient;
 import dev.dubhe.anvilcraft.client.PowerGridClient;
-import dev.dubhe.anvilcraft.item.IEngineerGoggles;
+import dev.dubhe.anvilcraft.item.AnvilHammerItem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -69,7 +69,7 @@ public class RenderEventListener {
             }
         }
         if (!(entity instanceof Player player)) return;
-        if (!IEngineerGoggles.hasGoggles(player)) return;
+        if (!AnvilHammerItem.isWearing(player)) return;
         PowerGridClient.render(event.getPoseStack(), bufferSource, vec3);
         HitResult hit = Minecraft.getInstance().hitResult;
         if (hit == null || hit.getType() != HitResult.Type.BLOCK) {

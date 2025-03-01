@@ -3,37 +3,35 @@ package dev.dubhe.anvilcraft.integration.curios;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.integration.Integration;
 import dev.dubhe.anvilcraft.init.ModItems;
-import dev.dubhe.anvilcraft.item.IEngineerGoggles;
+import dev.dubhe.anvilcraft.item.AnvilHammerItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
-
-import java.util.Optional;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 @Integration("curios")
 public class CuriosIntegration {
     public void apply() {
-        Optional<IEventBus> optional = ModList.get()
-            .getModContainerById(AnvilCraft.MOD_ID)
-            .map(ModContainer::getEventBus);
-        optional.ifPresent(iEventBus -> iEventBus.addListener(CuriosIntegration::setup));
-        optional.ifPresent(iEventBus -> iEventBus.addListener(CuriosIntegration::onLayerRegister));
+        AnvilCraft.MOD_BUS.addListener(this::setup);
+        AnvilCraft.MOD_BUS.addListener(this::onLayerRegister);
     }
 
-    public static void setup(FMLCommonSetupEvent event) {
-        IEngineerGoggles.HAS_GOGGLES_SET.add(GogglesCurioItem::hasGoggles);
+    private void setup(FMLCommonSetupEvent event) {
+        AnvilHammerItem.addIsWearingPredicate(player ->
+            CuriosApi.getCuriosInventory(player).map(this::isWearing).orElse(false)
+        );
         CuriosApi.registerCurio(ModItems.ANVIL_HAMMER.get(), new GogglesCurioItem());
         CuriosApi.registerCurio(ModItems.ROYAL_ANVIL_HAMMER.get(), new GogglesCurioItem());
         CuriosApi.registerCurio(ModItems.EMBER_ANVIL_HAMMER.get(), new GogglesCurioItem());
     }
 
+    private boolean isWearing(ICuriosItemHandler itemHandler) {
+        return !itemHandler.findCurios(it -> it.getItem() instanceof AnvilHammerItem).isEmpty();
+    }
 
     public void applyClient() {
         CuriosRendererRegistry.register(
@@ -50,7 +48,7 @@ public class CuriosIntegration {
         );
     }
 
-    public static void onLayerRegister(final EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
+    public void onLayerRegister(final EntityRenderersEvent.@NotNull RegisterLayerDefinitions event) {
         event.registerLayerDefinition(
             GogglesCurioRenderer.LAYER,
             () -> LayerDefinition.create(GogglesCurioRenderer.mesh(), 1, 1)
