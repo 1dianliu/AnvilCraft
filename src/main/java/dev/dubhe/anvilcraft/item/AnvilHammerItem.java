@@ -42,7 +42,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING;
 import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING_HOPPER;
@@ -50,8 +52,13 @@ import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.HORIZONTAL_FA
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles {
+public class AnvilHammerItem extends Item implements Equipable {
+    private static final List<Predicate<Player>> isWearingPredicates = new ArrayList<>();
     private final ItemAttributeModifiers modifiers;
+
+    static {
+        isWearingPredicates.add(player -> player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof AnvilHammerItem);
+    }
 
     /**
      * 初始化铁砧锤
@@ -83,7 +90,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         return 5;
     }
 
-    public Block getAnvil(){
+    public Block getAnvil() {
         return Blocks.ANVIL;
     }
 
@@ -94,15 +101,15 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(pos, state);
             BlockState stateMainPart = level.getBlockState(posMainPart);
-            if(stateMainPart.is(block)){
+            if (stateMainPart.is(block)) {
                 pos = posMainPart;
                 state = stateMainPart;
             }
-        }else if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) &&
+        } else if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) &&
             state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             BlockPos posMainPart = pos.below();
             BlockState stateMainPart = level.getBlockState(posMainPart);
-            if(stateMainPart.is(block)){
+            if (stateMainPart.is(block)) {
                 pos = posMainPart;
                 state = stateMainPart;
             }
@@ -160,7 +167,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         if (player == null || level.isClientSide) return false;
         ItemStack itemStack = player.getItemInHand(player.getUsedItemHand());
         Item item = itemStack.getItem();
-        if(!(item instanceof AnvilHammerItem anvilHammerItem)) return false;
+        if (!(item instanceof AnvilHammerItem anvilHammerItem)) return false;
         if (player.getCooldowns().isOnCooldown(anvilHammerItem)) {
             return false;
         }
@@ -287,5 +294,18 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
     @Override
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.HEAD;
+    }
+
+    public static void addIsWearingPredicate(Predicate<Player> predicate) {
+        isWearingPredicates.add(predicate);
+    }
+
+    public static boolean isWearing(Player player) {
+        for (Predicate<Player> it : isWearingPredicates) {
+            if (it.test(player)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

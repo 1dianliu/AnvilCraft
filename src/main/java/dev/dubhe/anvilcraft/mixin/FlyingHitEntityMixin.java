@@ -47,7 +47,7 @@ public abstract class FlyingHitEntityMixin extends Entity {
     @SuppressWarnings("UnreachableCode")
     private void onFlyingHitEntity(Vec3 travelVector, CallbackInfo ci) {
         if (!((Object) this instanceof ServerPlayer)) return;
-        if (!(this.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof AnvilHammerItem)
+        if (!AnvilHammerItem.isWearing((Player)(Object) this)
                 && !this.getItemBySlot(EquipmentSlot.HEAD).is(ModItems.ROYAL_ANVIL_HAMMER.get())) return;
         AABB headBlockBoundBox = AABB.ofSize(this.getEyePosition(), 1, 1, 1);
         List<LivingEntity> entities =
