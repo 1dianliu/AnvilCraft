@@ -580,6 +580,8 @@
   "text.autoconfig.anvilcraft.option.heliostatsSunflowerModel.@Tooltip": "Heliostats render sunflower head model in Sunflower Plains biome",
   "text.autoconfig.anvilcraft.option.inductionLightBlockRipeningCooldown": "Enfriamiento de Maduración del Bloque de Luz Inductiva",
   "text.autoconfig.anvilcraft.option.inductionLightBlockRipeningRange": "Rango de Maduración del Bloque de Luz Inductiva",
+  "text.autoconfig.anvilcraft.option.ionoCraftBackpackMaxFlightTime": "Iono Craft Backpack Max Flight Time",
+  "text.autoconfig.anvilcraft.option.ionoCraftBackpackMaxFlightTime.@Tooltip": "Iono Craft Backpack Max Flight Time in ticks",
   "text.autoconfig.anvilcraft.option.isLaserDoImpactChecking": "Realizar Comprobación de Impacto del Láser?",
   "text.autoconfig.anvilcraft.option.lightningStrikeDepth": "Profundidad del rayo",
   "text.autoconfig.anvilcraft.option.lightningStrikeDepth.@Tooltip": "Profundidad máxima que puede alcanzar un rayo",
