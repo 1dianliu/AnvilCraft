@@ -32,14 +32,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
 
-import static dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity.NEUTRONIUM_INGOT_MASS;
 import static dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity.DISPLAYED_MASS;
+import static dev.dubhe.anvilcraft.block.entity.SpaceOvercompressorBlockEntity.NEUTRONIUM_INGOT_MASS;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -51,7 +50,6 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
     private final String KEY_MASS_NEEDED = "gui.anvilcraft.category.mass_inject.mass_needed";
     private final String KEY_ITEMS_NEEDED = "gui.anvilcraft.category.mass_inject.items_needed";
 
-    private final Lazy<IDrawable> background;
     private final IDrawable icon;
     private final IDrawable slot;
     private final Component title;
@@ -61,7 +59,6 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
     private final IDrawable arrowOut;
 
     public MassInjectCategory(IGuiHelper helper) {
-        background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
         icon = new DrawableBlockStateIcon(Blocks.ANVIL.defaultBlockState(),
             ModBlocks.SPACE_OVERCOMPRESSOR.getDefaultState());
         slot = helper.getSlotDrawable();
@@ -83,8 +80,13 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background.get();
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     @Override

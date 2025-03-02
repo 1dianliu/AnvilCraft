@@ -8,15 +8,6 @@ import dev.dubhe.anvilcraft.integration.jei.util.JeiRecipeUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.JeiRenderHelper;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import dev.dubhe.anvilcraft.util.RenderHelper;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.util.Lazy;
-
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
@@ -29,6 +20,12 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -41,7 +38,6 @@ public class MeshRecipeCategory implements IRecipeCategory<MeshRecipeGroup> {
     public static final int WIDTH = 162;
     public static final int ROW_START = 44;
 
-    private final Lazy<IDrawable> background;
     private final IDrawable slot;
     private final IDrawable icon;
     private final Component title;
@@ -50,7 +46,6 @@ public class MeshRecipeCategory implements IRecipeCategory<MeshRecipeGroup> {
     private final IDrawable arrowIn;
 
     public MeshRecipeCategory(IGuiHelper helper) {
-        this.background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, ROW_START + MeshRecipeGroup.maxRows * 18));
         this.slot = helper.getSlotDrawable();
         this.icon =
                 new DrawableBlockStateIcon(Blocks.ANVIL.defaultBlockState(), Blocks.SCAFFOLDING.defaultBlockState());
@@ -71,8 +66,13 @@ public class MeshRecipeCategory implements IRecipeCategory<MeshRecipeGroup> {
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background.get();
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return ROW_START + MeshRecipeGroup.maxRows * 18;
     }
 
     @Override
