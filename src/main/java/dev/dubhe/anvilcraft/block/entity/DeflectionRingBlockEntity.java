@@ -155,7 +155,8 @@ public class DeflectionRingBlockEntity extends BlockEntity implements IPowerCons
     }
 
     private double fixPos(double p1, double p2, double p3) {
-        return p1 * 0.8/(Math.sqrt(p2*p2+p3*p3));
+        double d = p1 * 1.01/(Math.sqrt(p2*p2+p3*p3));
+        return Double.isNaN(d) ? 0 : d;
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
@@ -194,7 +195,8 @@ public class DeflectionRingBlockEntity extends BlockEntity implements IPowerCons
                         || entity instanceof Projectile)
         );
         for (Entity entity : entities) {
-            entity.setDeltaMovement(entity.getDeltaMovement().add(0, entity.getGravity()/2, 0));
+            if (entity.position().y - getBlockPos().getCenter().y -(entity instanceof FallingBlockEntity ? 0.5 : 0) >= entity.getGravity()) return;
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0, entity.getGravity(), 0));
         }
     }
 

@@ -1,6 +1,7 @@
 package dev.dubhe.anvilcraft.mixin;
 
 import dev.dubhe.anvilcraft.block.entity.DeflectionRingBlockEntity;
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("DuplicatedCode")
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
@@ -44,13 +46,15 @@ public abstract class EntityMixin {
 
     @Shadow protected abstract AABB makeBoundingBox();
 
-    @Redirect(method = "Lnet/minecraft/world/entity/Entity;move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V", ordinal = 1))
+    @Shadow public abstract float distanceTo(Entity entity);
+
+    @Redirect(method = "move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V", ordinal = 1))
     public void fixMove(Entity instance, double x, double y, double z) {
         Vec3 vec3 = new Vec3(x-getX(), y-getY(), z-getZ());
         if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98 ) {
             Vec3 s = position();
             Vec3 e = vec3.add(s);
-            ArrayList<BlockPos> blockPosList = new ArrayList<>();
+            ArrayList<Pair<BlockPos,Double>> blockPosList = new ArrayList<>();
             for (BlockPos blockPos : DeflectionRingBlockEntity.getAllBlocks(level)) {
                 Vec3 q = blockPos.getCenter();
                 double a = s.distanceTo(q);
@@ -58,15 +62,15 @@ public abstract class EntityMixin {
                 double c = s.distanceTo(e);
                 double d = -(b*b-c*c-a*a)/(2*c);
                 double distance = Math.sqrt(a*a-d*d);
-                if (distance <= 0.56747)
-                    blockPosList.add(blockPos);
+                if (distance <= 0.56747 && d > 0)
+                    blockPosList.add(Pair.of(blockPos, d));
             }
             double distance = Double.MAX_VALUE;
             BlockPos blockPos = null;
-            for (BlockPos blockPos2 : blockPosList) {
-                if (distance > blockPos2.getCenter().distanceTo(s)) {
-                    distance = blockPos2.getCenter().distanceTo(s);
-                    blockPos = blockPos2;
+            for (Pair<BlockPos,Double> pos : blockPosList) {
+                if (distance > pos.right()) {
+                    distance = pos.right();
+                    blockPos = pos.left();
                 }
             }
             if (blockPos == null) {
@@ -93,7 +97,7 @@ public abstract class EntityMixin {
         if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98 ) {
             Vec3 s = position();
             Vec3 e = vec3.add(s);
-            ArrayList<BlockPos> blockPosList = new ArrayList<>();
+            ArrayList<Pair<BlockPos,Double>> blockPosList = new ArrayList<>();
             for (BlockPos blockPos : DeflectionRingBlockEntity.getAllBlocks(level)) {
                 Vec3 q = blockPos.getCenter();
                 double a = s.distanceTo(q);
@@ -101,15 +105,15 @@ public abstract class EntityMixin {
                 double c = s.distanceTo(e);
                 double d = -(b*b-c*c-a*a)/(2*c);
                 double distance = Math.sqrt(a*a-d*d);
-                if (distance <= 0.56747)
-                    blockPosList.add(blockPos);
+                if (distance <= 0.56747 && d > 0)
+                    blockPosList.add(Pair.of(blockPos, d));
             }
             double distance = Double.MAX_VALUE;
             BlockPos blockPos = null;
-            for (BlockPos blockPos2 : blockPosList) {
-                if (distance > blockPos2.getCenter().distanceTo(s)) {
-                    distance = blockPos2.getCenter().distanceTo(s);
-                    blockPos = blockPos2;
+            for (Pair<BlockPos,Double> pos : blockPosList) {
+                if (distance > pos.right()) {
+                    distance = pos.right();
+                    blockPos = pos.left();
                 }
             }
             if (blockPos == null) return;

@@ -128,7 +128,7 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
         checkPos.set(getBlockPos());
         boolean found = false;
         checkPos.move(direction);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 14; i++) {
             checkPos.move(direction);
             BlockState checkState = level.getBlockState(checkPos);
             if (checkState.is(BlockTags.ANVIL) && !checkState.is(ModBlockTags.NON_MAGNETIC)) {
