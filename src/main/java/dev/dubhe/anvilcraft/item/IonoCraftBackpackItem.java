@@ -163,7 +163,7 @@ public class IonoCraftBackpackItem extends ArmorItem {
     public static ItemStack getByPlayer(Player player) {
         for (var provider : STACK_PROVIDERS) {
             var stack = provider.apply(player);
-            if (!stack.isEmpty()) return stack;
+            if (stack.is(ModItems.IONOCRAFT_BACKPACK)) return stack;
         }
         return ItemStack.EMPTY;
     }
