@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,7 +71,6 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     public static final int SCALE_FAC = 80;
     private final Map<RecipeHolder<MultiblockRecipe>, LevelLike> cache = new HashMap<>();
 
-    private final Lazy<IDrawable> background;
     private final IDrawable icon;
     private final IDrawable slot;
     private final IDrawable layerUp;
@@ -84,7 +82,6 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     private final IDrawable arrowOut;
 
     public MultiBlockCraftingCategory(IGuiHelper helper) {
-        background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, START_HEIGHT + ROWS * 18));
         icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.GIANT_ANVIL));
         arrowOut = helper.createDrawable(TextureConstants.ANVIL_CRAFT_SPRITES, 0, 31, 16, 8);
         slot = helper.getSlotDrawable();
@@ -125,8 +122,13 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background.get();
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return START_HEIGHT + ROWS * 18;
     }
 
     @Override

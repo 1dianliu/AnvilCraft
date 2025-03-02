@@ -29,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,7 +39,6 @@ public class BoilingCategory implements IRecipeCategory<RecipeHolder<BoilingReci
     public static final int WIDTH = 162;
     public static final int HEIGHT = 64;
 
-    private final Lazy<IDrawable> background;
     private final IDrawable icon;
     private final IDrawable slot;
     private final Component title;
@@ -50,7 +48,6 @@ public class BoilingCategory implements IRecipeCategory<RecipeHolder<BoilingReci
     private final IDrawable arrowOut;
 
     public BoilingCategory(IGuiHelper helper) {
-        background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
         icon = new DrawableBlockStateIcon(CauldronUtil.fullState(Blocks.WATER_CAULDRON),
                 Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true));
         slot = helper.getSlotDrawable();
@@ -72,8 +69,13 @@ public class BoilingCategory implements IRecipeCategory<RecipeHolder<BoilingReci
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background.get();
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     @Override

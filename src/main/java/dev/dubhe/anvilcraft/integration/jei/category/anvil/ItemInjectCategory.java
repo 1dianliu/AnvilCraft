@@ -9,16 +9,6 @@ import dev.dubhe.anvilcraft.integration.jei.util.JeiSlotUtil;
 import dev.dubhe.anvilcraft.integration.jei.util.TextureConstants;
 import dev.dubhe.anvilcraft.recipe.anvil.ItemInjectRecipe;
 import dev.dubhe.anvilcraft.util.RenderHelper;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.util.Lazy;
-
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -31,6 +21,13 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -40,7 +37,6 @@ public class ItemInjectCategory implements IRecipeCategory<RecipeHolder<ItemInje
     public static final int WIDTH = 162;
     public static final int HEIGHT = 64;
 
-    private final Lazy<IDrawable> background;
     private final IDrawable icon;
     private final IDrawable slot;
     private final Component title;
@@ -50,7 +46,6 @@ public class ItemInjectCategory implements IRecipeCategory<RecipeHolder<ItemInje
     private final IDrawable arrowOut;
 
     public ItemInjectCategory(IGuiHelper helper) {
-        background = Lazy.of(() -> helper.createBlankDrawable(WIDTH, HEIGHT));
         icon = helper.createDrawableItemStack(new ItemStack(Items.ANVIL));
         slot = helper.getSlotDrawable();
         title = Component.translatable("gui.anvilcraft.category.item_inject");
@@ -71,8 +66,13 @@ public class ItemInjectCategory implements IRecipeCategory<RecipeHolder<ItemInje
     }
 
     @Override
-    public IDrawable getBackground() {
-        return background.get();
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
     }
 
     @Override
