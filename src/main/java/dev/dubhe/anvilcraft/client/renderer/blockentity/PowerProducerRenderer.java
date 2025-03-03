@@ -60,5 +60,5 @@ public abstract class PowerProducerRenderer<T extends BlockEntity & IPowerProduc
         return ROTATION_MAGIC;
     }
 
-    abstract protected ModelResourceLocation getModel();
+    protected abstract ModelResourceLocation getModel();
 }

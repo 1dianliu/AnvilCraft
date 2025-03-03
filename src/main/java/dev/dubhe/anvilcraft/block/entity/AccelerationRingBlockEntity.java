@@ -14,6 +14,7 @@ import dev.dubhe.anvilcraft.entity.FallingGiantAnvilEntity;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
+import dev.dubhe.anvilcraft.util.DistanceComparator;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -34,23 +35,10 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 public class AccelerationRingBlockEntity extends BlockEntity implements IPowerConsumer {
-    private final Comparator<Entity> ENTITY_SORTER = new Comparator<>() {
-        private final Vec3 blockPosVec = getBlockPos().getCenter();
-
-        @Override
-        public int compare(Entity entity, Entity t1) {
-            double d1 = entity.position().distanceTo(blockPosVec);
-            double d2 = t1.position().distanceTo(blockPosVec);
-            if (d1 == d2)
-                return 0;
-            else return d1 < d2 ? -1 : 1;
-        }
-    };
     @Getter
     @Setter
     private PowerGrid grid;
@@ -134,11 +122,15 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
             if (checkState.is(BlockTags.ANVIL) && !checkState.is(ModBlockTags.NON_MAGNETIC)) {
                 blockPoses.add(checkPos.east(0));
             }
-            if ((checkState.hasProperty(AccelerationRingBlock.HALF) && checkState.getValue(AccelerationRingBlock.HALF) == DirectionCube3x3PartHalf.MID_CENTER
-                && checkState.getValue(AccelerationRingBlock.SWITCH) == IPowerComponent.Switch.ON && !checkState.getValue(AccelerationRingBlock.OVERLOAD)
-                && checkState.getValue(AccelerationRingBlock.FACING) == direction) ||
-                (checkState.hasProperty(DeflectionRingBlock.HALF) && checkState.getValue(DeflectionRingBlock.HALF) == DirectionCube3x3PartHalf.MID_CENTER
-                    && checkState.getValue(DeflectionRingBlock.SWITCH) == IPowerComponent.Switch.ON && !checkState.getValue(DeflectionRingBlock.OVERLOAD))
+            if ((checkState.hasProperty(AccelerationRingBlock.HALF)
+                && checkState.getValue(AccelerationRingBlock.HALF) == DirectionCube3x3PartHalf.MID_CENTER
+                && checkState.getValue(AccelerationRingBlock.SWITCH) == IPowerComponent.Switch.ON
+                && !checkState.getValue(AccelerationRingBlock.OVERLOAD)
+                && checkState.getValue(AccelerationRingBlock.FACING) == direction)
+                || (checkState.hasProperty(DeflectionRingBlock.HALF)
+                && checkState.getValue(DeflectionRingBlock.HALF) == DirectionCube3x3PartHalf.MID_CENTER
+                && checkState.getValue(DeflectionRingBlock.SWITCH) == IPowerComponent.Switch.ON
+                && !checkState.getValue(DeflectionRingBlock.OVERLOAD))
             ) {
                 found = true;
                 break;
@@ -221,7 +213,7 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
                 getBlockPos().getY() - 12,
                 getBlockPos().getZ() + 1
             )).stream()
-            .sorted(ENTITY_SORTER)
+            .sorted((e1, e2) -> new DistanceComparator(getBlockPos().getCenter()).compare(e1.position(), e2.position()))
             .filter(entity -> vector2d.distance(entity.position().x, entity.position().z) <= 0.25)
             .findFirst();
         if (fallingGiantAnvilEntity.isPresent()) {

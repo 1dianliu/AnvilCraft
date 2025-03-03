@@ -4,7 +4,6 @@ import dev.dubhe.anvilcraft.api.chargecollector.ChargeCollectorManager;
 import dev.dubhe.anvilcraft.api.chargecollector.ChargeCollectorManager.Entry;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.block.entity.ChargeCollectorBlockEntity;
-
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -20,12 +19,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

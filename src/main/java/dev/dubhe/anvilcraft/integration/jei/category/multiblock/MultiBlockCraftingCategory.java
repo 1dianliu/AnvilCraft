@@ -61,7 +61,7 @@ public class MultiBlockCraftingCategory implements IRecipeCategory<RecipeHolder<
     private static final Component TITLE = Component.translatable("gui.anvilcraft.category.multiblock");
     private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
 
-    private final static Comparator<ItemStack> BY_COUNT_DECREASING =
+    private static final Comparator<ItemStack> BY_COUNT_DECREASING =
         Comparator.comparing(ItemStack::getCount).thenComparing(ItemStack::getDescriptionId).reversed();
 
     public static final int WIDTH = 162;

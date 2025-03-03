@@ -1,14 +1,11 @@
 package dev.dubhe.anvilcraft.data.recipe;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import dev.dubhe.anvilcraft.recipe.transform.MobTransformRecipe;
 import dev.dubhe.anvilcraft.recipe.transform.NumericTagValuePredicate;
 import dev.dubhe.anvilcraft.recipe.transform.TagModification;
-import dev.dubhe.anvilcraft.recipe.transform.TransformOptions;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 
 public class MobTransformRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {

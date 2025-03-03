@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static dev.dubhe.anvilcraft.init.ModDataAttachments.DISCOUNT_RATE;
 
 @Mixin(Villager.class)
-abstract public class VillagerMixin extends AbstractVillager {
+public abstract class VillagerMixin extends AbstractVillager {
     public VillagerMixin(EntityType<? extends AbstractVillager> entityType, Level level) {
         super(entityType, level);
     }
@@ -22,11 +22,8 @@ abstract public class VillagerMixin extends AbstractVillager {
     @Inject(
         method = "updateSpecialPrices",
         at =
-        @At(
-            value = "TAIL"),
-        //"INVOKE",
-        //target = "Lnet/minecraft/world/entity/npc/Villager;getPlayerReputation(Lnet/minecraft/world/entity/player/Player;)I"),
-        cancellable = true)
+        @At(value = "TAIL")
+    )
     private void updateAmuletSpecialPrices(Player player, CallbackInfo ci) {
         //如果需要不叠加，就加上&& !player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)
         if (player.hasData(DISCOUNT_RATE)) {

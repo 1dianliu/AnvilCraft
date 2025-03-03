@@ -154,16 +154,16 @@ public class AmuletUtil {
         return 0;
     }
 
-    public static int getStoredRaffleProbability(Player player, Type type) {
-        return player.getData(ModDataAttachments.AMULET_RAFFLE_PROBABILITY).getInt(type.getTypeId());
-    }
-
     public static int getRaffleProbability(Player player, Type type, boolean isConsumeAmuletBox) {
         if (!hasAmuletInInventory(player, type)) {
             return getStoredRaffleProbability(player, type) + (isConsumeAmuletBox ? 20 : 5);
         } else {
             return 0;
         }
+    }
+
+    public static int getStoredRaffleProbability(Player player, Type type) {
+        return player.getData(ModDataAttachments.AMULET_RAFFLE_PROBABILITY).getInt(type.getTypeId());
     }
 
     public static void setRaffleProbability(Player player, DamageSource source, NonNullUnaryOperator<Integer> modifier) {

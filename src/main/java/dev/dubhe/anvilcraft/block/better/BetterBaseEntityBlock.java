@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.block.better;
 
 import dev.dubhe.anvilcraft.util.Util;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;

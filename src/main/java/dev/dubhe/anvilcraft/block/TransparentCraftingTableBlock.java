@@ -116,14 +116,22 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
         BlockPos.MutableBlockPos mpos = pos.mutable();
         int xMin = x0;
         int xMax = x0;
-        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) xMin--;
-        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) xMax++;
+        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) {
+            xMin--;
+        }
+        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) {
+            xMax++;
+        }
         int xSize = xMax - xMin + 1;
         if (xSize < 2 || xSize > maxSize) return false;
         int zMin = z0;
         int zMax = z0;
-        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) zMin--;
-        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) zMax++;
+        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) {
+            zMin--;
+        }
+        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) {
+            zMax++;
+        }
         int zSize = zMax - zMin + 1;
         if (zSize < 2 || zSize > maxSize) return false;
         for (int x = xMin; x <= xMax; x++) {
@@ -165,12 +173,20 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
         BlockPos.MutableBlockPos mpos = pos.mutable();
         int xMin = x0;
         int xMax = x0;
-        while (level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) xMin--;
-        while (level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) xMax++;
+        while (level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) {
+            xMin--;
+        }
+        while (level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) {
+            xMax++;
+        }
         int zMin = z0;
         int zMax = z0;
-        while (level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) zMin--;
-        while (level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) zMax++;
+        while (level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) {
+            zMin--;
+        }
+        while (level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) {
+            zMax++;
+        }
         for (int x = xMin; x <= xMax; x++) {
             for (int z = zMin; z <= zMax; z++) {
                 BlockState state = level.getBlockState(mpos.set(x, y0, z));

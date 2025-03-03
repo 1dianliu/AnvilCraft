@@ -140,7 +140,7 @@ public class BlockPattern {
                     int stackCount = stack.getCount();
                     if (stackCount <= 0) return;
                     stack.setCount(1);
-                    Integer totalCount = ingredients.computeIfAbsent(stack, $ -> 0);
+                    Integer totalCount = ingredients.computeIfAbsent(stack, ignore -> 0);
                     ingredients.put(stack, totalCount + stateCount * stackCount);
                 });
         });

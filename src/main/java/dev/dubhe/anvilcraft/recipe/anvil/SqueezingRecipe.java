@@ -70,8 +70,7 @@ public class SqueezingRecipe implements Recipe<SqueezingRecipe.Input> {
 
     @Override
     public boolean matches(Input input, Level level) {
-        return input.inputBlock == inputBlock &&
-            CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, 1);
+        return input.inputBlock == inputBlock && CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, 1);
     }
 
     @Override

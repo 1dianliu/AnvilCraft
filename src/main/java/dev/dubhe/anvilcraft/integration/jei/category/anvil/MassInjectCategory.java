@@ -46,9 +46,9 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
     public static final int WIDTH = 162;
     public static final int HEIGHT = 64;
 
-    private final String KEY_MASS_VALUE = "gui.anvilcraft.category.mass_inject.mass_value";
-    private final String KEY_MASS_NEEDED = "gui.anvilcraft.category.mass_inject.mass_needed";
-    private final String KEY_ITEMS_NEEDED = "gui.anvilcraft.category.mass_inject.items_needed";
+    private static final String KEY_MASS_VALUE = "gui.anvilcraft.category.mass_inject.mass_value";
+    private static final String KEY_MASS_NEEDED = "gui.anvilcraft.category.mass_inject.mass_needed";
+    private static final String KEY_ITEMS_NEEDED = "gui.anvilcraft.category.mass_inject.items_needed";
 
     private final IDrawable icon;
     private final IDrawable slot;

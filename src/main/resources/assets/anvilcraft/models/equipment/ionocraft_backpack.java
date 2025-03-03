@@ -16,6 +16,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 
+// CHECKSTYLE:OFF
 public class ionocraft_backpack<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "ionocraft_backpack"), "main");
@@ -72,3 +73,4 @@ public class ionocraft_backpack<T extends Entity> extends EntityModel<T> {
         Body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 }
+// CHECKSTYLE:ON

@@ -178,18 +178,17 @@ public class BlockStateUtil {
         Block block = state.getBlock();
         ItemStack baseItem = switch (block) {
             case CropBlock crop -> ((CropBlockAccessor) crop).invoker$getBaseSeedId().asItem().getDefaultInstance();
-            case FlowerPotBlock $ -> Items.FLOWER_POT.getDefaultInstance();
+            case FlowerPotBlock ignored -> Items.FLOWER_POT.getDefaultInstance();
             case GrowingPlantBodyBlock plantHead -> ((GrowingPlantAccessor) plantHead).invoker$getHeadBlock()
                 .asItem().getDefaultInstance();
-            case CandleCakeBlock $ -> Items.CAKE.getDefaultInstance();
+            case CandleCakeBlock ignored -> Items.CAKE.getDefaultInstance();
             default -> HARDCODED_SPECIAL_AS_ITEM.getOrDefault(block, block.asItem().getDefaultInstance());
         };
         if (state.hasProperty(DOUBLE_BLOCK_HALF) && state.getValue(DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             baseItem = ItemStack.EMPTY;
         } else if (state.hasProperty(BED_PART) && state.getValue(BED_PART) != BedPart.HEAD) {
             baseItem = ItemStack.EMPTY;
-        } else if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock &&
-            !multiplePartBlock.isMainPart(state)) {
+        } else if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock && !multiplePartBlock.isMainPart(state)) {
             baseItem = ItemStack.EMPTY;
         } else if (isMultifaceLike(block)) {
             long faceCount = PipeBlock.PROPERTY_BY_DIRECTION.values().stream()

@@ -1,17 +1,15 @@
 package dev.dubhe.anvilcraft.data.recipe;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItemTags;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.recipe.anvil.SuperHeatingRecipe;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 
 public class SuperHeatingRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {

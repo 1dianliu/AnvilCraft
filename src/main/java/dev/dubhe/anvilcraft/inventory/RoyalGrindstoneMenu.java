@@ -152,8 +152,7 @@ public class RoyalGrindstoneMenu extends AbstractContainerMenu {
             result.remove(DataComponents.REPAIR_COST);
         }
         int removedCurseCount = 0;
-        DataComponentType<ItemEnchantments> enchantmentComponent = result.is(Items.ENCHANTED_BOOK) ?
-            DataComponents.STORED_ENCHANTMENTS : DataComponents.ENCHANTMENTS;
+        DataComponentType<ItemEnchantments> enchantmentComponent = result.is(Items.ENCHANTED_BOOK) ? DataComponents.STORED_ENCHANTMENTS : DataComponents.ENCHANTMENTS;
         ItemEnchantments enchantments = result.get(enchantmentComponent);
         this.totalCurseCount = 0;
         if (enchantments != null) {
