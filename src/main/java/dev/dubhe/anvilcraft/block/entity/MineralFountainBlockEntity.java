@@ -63,7 +63,7 @@ public class MineralFountainBlockEntity extends BlockEntity {
             Block hotBlock = HeatableBlockManager.getHotBlock(aboveState.getBlock());
             if (hotBlock == null) return;
             level.setBlockAndUpdate(getBlockPos().above(), hotBlock.defaultBlockState());
-        } else if(aboveState.is(Blocks.AIR)){
+        } else if (aboveState.is(Blocks.AIR)) {
             level.setBlockAndUpdate(getBlockPos().above(), ModBlocks.CINERITE.getDefaultState());
         } else {
             MineralFountainRecipe.Input input =

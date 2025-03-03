@@ -94,10 +94,10 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
 
     @Override
     protected void onPlace(BlockState state,
-        Level level,
-        BlockPos pos,
-        BlockState oldState,
-boolean movedByPiston) {
+                           Level level,
+                           BlockPos pos,
+                           BlockState oldState,
+                           boolean movedByPiston) {
         if (!level.isClientSide) {
             checkIfTriggered(level, state, pos);
         }

@@ -25,35 +25,35 @@ public abstract class BetterBlock extends Block {
 
     @Override
     protected ItemInteractionResult useItemOn(
-            ItemStack pStack,
-            BlockState pState,
-            Level pLevel,
-            BlockPos pPos,
-            Player pPlayer,
-            InteractionHand pHand,
-            BlockHitResult pHitResult
+        ItemStack pStack,
+        BlockState pState,
+        Level pLevel,
+        BlockPos pPos,
+        Player pPlayer,
+        InteractionHand pHand,
+        BlockHitResult pHitResult
     ) {
         return Util.interactionResultConverter().apply(this.use(pState, pLevel, pPos, pPlayer, pHand, pHitResult));
     }
 
     @Override
     protected InteractionResult useWithoutItem(
-            BlockState pState,
-            Level pLevel,
-            BlockPos pPos,
-            Player pPlayer,
-            BlockHitResult pHitResult
+        BlockState pState,
+        Level pLevel,
+        BlockPos pPos,
+        Player pPlayer,
+        BlockHitResult pHitResult
     ) {
         return this.use(pState, pLevel, pPos, pPlayer, InteractionHand.MAIN_HAND, pHitResult);
     }
 
     public InteractionResult use(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            Player player,
-            InteractionHand hand,
-            BlockHitResult hit
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Player player,
+        InteractionHand hand,
+        BlockHitResult hit
     ) {
         return InteractionResult.PASS;
     }

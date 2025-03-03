@@ -33,11 +33,11 @@ public class ImpactPileBlock extends Block implements IHammerRemovable {
     }
 
     @Override
-    public  VoxelShape getShape(
-         BlockState state,
-         BlockGetter level,
-         BlockPos pos,
-         CollisionContext context) {
+    public VoxelShape getShape(
+        BlockState state,
+        BlockGetter level,
+        BlockPos pos,
+        CollisionContext context) {
         return SHAPE;
     }
 
@@ -47,7 +47,7 @@ public class ImpactPileBlock extends Block implements IHammerRemovable {
     }
 
     @Override
-    public  RenderShape getRenderShape( BlockState state) {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
@@ -88,8 +88,8 @@ public class ImpactPileBlock extends Block implements IHammerRemovable {
             ModBlocks.MINERAL_FOUNTAIN.getDefaultState());
     }
 
-    private static void setSturdyDeepslate(Level level, BlockPos pos){
-        if(level.getBlockState(pos).is(Blocks.BEDROCK)) return;
+    private static void setSturdyDeepslate(Level level, BlockPos pos) {
+        if (level.getBlockState(pos).is(Blocks.BEDROCK)) return;
         level.setBlockAndUpdate(pos, ModBlocks.STURDY_DEEPSLATE.getDefaultState());
     }
 }

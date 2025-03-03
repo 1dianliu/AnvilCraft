@@ -113,14 +113,14 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
     public boolean matches(Input input, Level level) {
         if (this.requiredFluidLevel > 0 &&
             !CauldronUtil.compatibleForDrain(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
-                return false;
+            return false;
         }
         if (this.produceFluid &&
             !CauldronUtil.compatibleForFill(input.cauldronState, this.cauldron, this.requiredFluidLevel)) {
-                return false;
+            return false;
         }
         int normalCraftCount = getMaxCraftTime(input);
-        if (exactIngredients.isEmpty()){
+        if (exactIngredients.isEmpty()) {
             return normalCraftCount >= 1;
         }
         int exactCraftCount = getMaxCraftTime(input, exactIngredients);
@@ -281,14 +281,14 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
             return requires(pTag, 1);
         }
 
-        public Builder requiresExactly(ItemLike item, int count){
+        public Builder requiresExactly(ItemLike item, int count) {
             for (int i = 0; i < count; i++) {
                 exactIngredients.add(Ingredient.of(item));
             }
             return this;
         }
 
-        public Builder requiresExactly(TagKey<Item> item, int count){
+        public Builder requiresExactly(TagKey<Item> item, int count) {
             for (int i = 0; i < count; i++) {
                 exactIngredients.add(Ingredient.of(item));
             }
@@ -296,12 +296,12 @@ public class TimeWarpRecipe implements Recipe<TimeWarpRecipe.Input> {
         }
 
 
-        public Builder requiresExactly(ItemLike item){
+        public Builder requiresExactly(ItemLike item) {
             exactIngredients.add(Ingredient.of(item));
             return this;
         }
 
-        public Builder requiresExactly(TagKey<Item> item){
+        public Builder requiresExactly(TagKey<Item> item) {
             exactIngredients.add(Ingredient.of(item));
             return this;
         }

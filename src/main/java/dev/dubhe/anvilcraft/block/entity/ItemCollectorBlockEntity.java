@@ -47,8 +47,7 @@ public class ItemCollectorBlockEntity extends BlockEntity
     IPowerConsumer,
     IDiskCloneable,
     IHasAffectRange,
-    IItemHandlerHolder
-{
+    IItemHandlerHolder {
     @Setter
     private PowerGrid grid;
 

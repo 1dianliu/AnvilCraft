@@ -42,7 +42,7 @@ public class CreateIntegration {
             if (block instanceof IncandescentMetalBlock) {
                 return INCANDESCENT_METAL;
             }
-            if (block instanceof GlowingMetalBlock){
+            if (block instanceof GlowingMetalBlock) {
                 return GLOWING_METAL;
             }
             if (block instanceof RedhotMetalBlock) {

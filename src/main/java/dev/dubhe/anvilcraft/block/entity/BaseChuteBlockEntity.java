@@ -122,7 +122,7 @@ public abstract class BaseChuteBlockEntity
                 inputBlockPos,
                 context
             );
-        if (input != null){
+        if (input != null) {
             return input;
         }
         AABB aabb = new AABB(inputBlockPos);

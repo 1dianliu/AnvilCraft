@@ -208,7 +208,6 @@ public class RenderHelper {
     }
 
 
-
     public static void renderBlock(
         GuiGraphics guiGraphics,
         BlockState block,
@@ -232,12 +231,12 @@ public class RenderHelper {
     }
 
     public static void renderLevelLike(
-            LevelLike level,
-            GuiGraphics guiGraphics,
-            int xPos,
-            int yPos,
-            float scaleFactor,
-            float rotationSpeed) {
+        LevelLike level,
+        GuiGraphics guiGraphics,
+        int xPos,
+        int yPos,
+        float scaleFactor,
+        float rotationSpeed) {
         RenderSystem.enableBlend();
         Minecraft minecraft = Minecraft.getInstance();
         DeltaTracker tracker = minecraft.getTimer();
@@ -310,7 +309,7 @@ public class RenderHelper {
         GuiGraphics guiGraphics,
         int xPos,
         int yPos,
-        float scale){
+        float scale) {
         renderLevelLike(level, guiGraphics, xPos, yPos, scale, 0.0f);
     }
 
@@ -319,7 +318,7 @@ public class RenderHelper {
         if (BLOCK_ENTITY_CACHE.containsKey(state)) return Optional.of(BLOCK_ENTITY_CACHE.get(state));
         Optional<BlockEntity> opt = Optional.of(state.getBlock())
             .filter(b -> b instanceof EntityBlock)
-            .map(b -> ((EntityBlock)b).newBlockEntity(BlockPos.ZERO, state));
+            .map(b -> ((EntityBlock) b).newBlockEntity(BlockPos.ZERO, state));
         opt.ifPresent(be -> {
             BLOCK_ENTITY_CACHE.put(state, be);
             if (BLOCK_ENTITY_CACHE.size() > MAX_CACHE_SIZE) {
