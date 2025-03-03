@@ -104,7 +104,7 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
 
     public void setPower(int power) {
         this.power = power;
-        if (level instanceof ServerLevel serverLevel){
+        if (level instanceof ServerLevel serverLevel) {
             if (grid != null) {
                 this.grid.markChanged();
                 return;
@@ -115,7 +115,7 @@ public class CreativeGeneratorBlockEntity extends BlockEntity implements IPowerP
 
     public void tick() {
         if (level instanceof ServerLevel) {
-            if (previousSyncFailed && grid != null){
+            if (previousSyncFailed && grid != null) {
                 previousSyncFailed = false;
                 grid.markChanged();
             }

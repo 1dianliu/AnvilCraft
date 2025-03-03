@@ -96,7 +96,7 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
 
     @Override
     public void setRecipe(
-            IRecipeLayoutBuilder builder, RecipeHolder<MassInjectRecipe> recipeHolder, IFocusGroup focuses) {
+        IRecipeLayoutBuilder builder, RecipeHolder<MassInjectRecipe> recipeHolder, IFocusGroup focuses) {
         MassInjectRecipe recipe = recipeHolder.value();
         builder.addSlot(RecipeIngredientRole.INPUT, 21, 24)
             .addIngredients(recipe.getIngredient());
@@ -109,21 +109,21 @@ public class MassInjectCategory implements IRecipeCategory<RecipeHolder<MassInje
 
     @Override
     public void draw(
-            RecipeHolder<MassInjectRecipe> recipeHolder,
-            IRecipeSlotsView recipeSlotsView,
-            GuiGraphics guiGraphics,
-            double mouseX,
-            double mouseY) {
+        RecipeHolder<MassInjectRecipe> recipeHolder,
+        IRecipeSlotsView recipeSlotsView,
+        GuiGraphics guiGraphics,
+        double mouseX,
+        double mouseY) {
         MassInjectRecipe recipe = recipeHolder.value();
         float anvilYOffset = JeiRenderHelper.getAnvilAnimationOffset(timer);
         RenderHelper.renderBlock(
-                guiGraphics,
-                Blocks.ANVIL.defaultBlockState(),
-                81,
-                22 + anvilYOffset,
-                20,
-                12,
-                RenderHelper.SINGLE_BLOCK);
+            guiGraphics,
+            Blocks.ANVIL.defaultBlockState(),
+            81,
+            22 + anvilYOffset,
+            20,
+            12,
+            RenderHelper.SINGLE_BLOCK);
         RenderHelper.renderBlock(guiGraphics, ModBlocks.SPACE_OVERCOMPRESSOR.getDefaultState(),
             81, 40, 10, 12, RenderHelper.SINGLE_BLOCK);
 

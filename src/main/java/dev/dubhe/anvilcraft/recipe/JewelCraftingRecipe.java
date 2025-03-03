@@ -143,7 +143,7 @@ public class JewelCraftingRecipe implements Recipe<JewelCraftingRecipe.Input> {
             return new JewelCraftingRecipe(ingredients, result);
         }
     }
-    
+
     @Setter
     @Accessors(fluent = true, chain = true)
     public static class Builder extends AbstractRecipeBuilder<JewelCraftingRecipe> {
@@ -176,7 +176,7 @@ public class JewelCraftingRecipe implements Recipe<JewelCraftingRecipe.Input> {
         public Builder requires(TagKey<Item> pTag) {
             return requires(pTag, 1);
         }
-        
+
         @Override
         public JewelCraftingRecipe buildRecipe() {
             return new JewelCraftingRecipe(ingredients, result);

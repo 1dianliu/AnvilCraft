@@ -28,8 +28,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 public class ChargerBlockEntity extends BlockEntity
-        implements IPowerConsumer, IPowerProducer, IFilterBlockEntity, StateListener<Boolean>, IItemHandlerHolder
-{
+    implements IPowerConsumer, IPowerProducer, IFilterBlockEntity, StateListener<Boolean>, IItemHandlerHolder {
 
     @Setter
     private boolean isCharger;

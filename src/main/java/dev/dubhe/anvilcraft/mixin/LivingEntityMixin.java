@@ -73,8 +73,8 @@ public abstract class LivingEntityMixin extends Entity {
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/advancements/critereon/UsedTotemTrigger;" +
-                     "trigger(Lnet/minecraft/server/level/ServerPlayer;" +
-                     "Lnet/minecraft/world/item/ItemStack;)V"
+                "trigger(Lnet/minecraft/server/level/ServerPlayer;" +
+                "Lnet/minecraft/world/item/ItemStack;)V"
         ),
         index = 1
     )

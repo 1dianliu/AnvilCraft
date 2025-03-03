@@ -98,7 +98,8 @@ public class BlockPredicateWithState implements Predicate<BlockState> {
     }
 
     @SuppressWarnings("unchecked")
-    @Nullable public <T extends Comparable<T>> T getPropertyValue(Property<T> property) {
+    @Nullable
+    public <T extends Comparable<T>> T getPropertyValue(Property<T> property) {
         return (T) properties.getOrDefault(property, null);
     }
 

@@ -104,7 +104,7 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
      * 若与该方块相连的所有透明工作台不构成一个长方形，构建失败。
      *
      * @param level 尝试构建矩阵的维度
-     * @param pos 尝试构建矩阵的方块位置
+     * @param pos   尝试构建矩阵的方块位置
      * @return 是否成功构建透明工作台矩阵
      */
     private boolean tryFormMatrix(Level level, BlockPos pos) {
@@ -156,7 +156,7 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
      * 以某个方块为起始点，尝试移除该方块所属的透明工作台组成的矩阵。
      *
      * @param level 尝试移除矩阵的维度
-     * @param pos 尝试移除矩阵的方块位置
+     * @param pos   尝试移除矩阵的方块位置
      */
     private void deformMatrix(Level level, BlockPos pos) {
         int x0 = pos.getX();

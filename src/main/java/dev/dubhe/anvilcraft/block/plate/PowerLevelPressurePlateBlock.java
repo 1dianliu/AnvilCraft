@@ -31,9 +31,9 @@ import java.util.Set;
 @ParametersAreNonnullByDefault
 public class PowerLevelPressurePlateBlock extends BasePressurePlateBlock {
     public static final MapCodec<PowerLevelPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(
-                    BlockSetType.CODEC.fieldOf("block_set_type").forGetter(block -> block.type), propertiesCodec()
-            ).apply(instance, PowerLevelPressurePlateBlock::new)
+        instance -> instance.group(
+            BlockSetType.CODEC.fieldOf("block_set_type").forGetter(block -> block.type), propertiesCodec()
+        ).apply(instance, PowerLevelPressurePlateBlock::new)
     );
 
     public static final IntegerProperty POWER = BlockStateProperties.POWER;
@@ -104,8 +104,8 @@ public class PowerLevelPressurePlateBlock extends BasePressurePlateBlock {
 
         for (Class<? extends Entity> entityClass : entityClasses) {
             count += level.getEntitiesOfClass(
-                    entityClass, box,
-                    EntitySelector.NO_SPECTATORS.and(entity -> !entity.isIgnoringBlockTriggers())
+                entityClass, box,
+                EntitySelector.NO_SPECTATORS.and(entity -> !entity.isIgnoringBlockTriggers())
             ).size();
         }
 

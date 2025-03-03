@@ -246,7 +246,7 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
     @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         if (this.hoveredSlot != null &&
-            this.hoveredSlot.index == SLOT_ID_RESULT  &&
+            this.hoveredSlot.index == SLOT_ID_RESULT &&
             !this.hoveredSlot.hasItem()) {
             guiGraphics.renderComponentTooltip(font, RESULT_SLOT_TOOLTIPS, x, y);
         }
@@ -361,8 +361,8 @@ public class StructureToolScreen extends AbstractContainerScreen<StructureToolMe
         state.getProperties().stream()
             .filter(p -> recordAllStates || DEFAULT_RECORDED_PROPERTIES.contains(p)
                 || (BlockStateUtil.isMultifaceLike(block) &&
-                    p instanceof BooleanProperty &&
-                    PipeBlock.PROPERTY_BY_DIRECTION.containsValue(p)))
+                p instanceof BooleanProperty &&
+                PipeBlock.PROPERTY_BY_DIRECTION.containsValue(p)))
             .forEach(p -> predicate.copyPropertyFrom(state, p));
         return predicate;
     }

@@ -48,11 +48,11 @@ public abstract class PowerProducerRenderer<T extends BlockEntity & IPowerProduc
         poseStack.popPose();
     }
 
-    protected float rotation(T blockEntity, float partialTick){
-       return ((float) blockEntity.getTime() + partialTick) * blockEntity.getServerPower() * magic();
+    protected float rotation(T blockEntity, float partialTick) {
+        return ((float) blockEntity.getTime() + partialTick) * blockEntity.getServerPower() * magic();
     }
 
-    protected float elevation(){
+    protected float elevation() {
         return 0.8f;
     }
 

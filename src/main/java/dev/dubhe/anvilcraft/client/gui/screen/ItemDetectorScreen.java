@@ -32,7 +32,7 @@ import java.util.Optional;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu>
-    implements IFilterScreen<ItemDetectorMenu>{
+    implements IFilterScreen<ItemDetectorMenu> {
 
     private static final ResourceLocation BACKGROUND_LOCATION =
         AnvilCraft.of("textures/gui/container/machine/background/item_detector.png");
@@ -65,7 +65,7 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
             leftPos + 75,
             topPos + 54,
             b -> {
-                if(!(b instanceof CycleFilterModeButton button)) return;
+                if (!(b instanceof CycleFilterModeButton button)) return;
                 PacketDistributor.sendToServer(new MachineCycleFilterModePacket(button.cycle()));
                 this.menu.setFilterMode(button.cycle());
             },
@@ -110,13 +110,13 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
         this.renderSlotTooltip(guiGraphics, x, y);
     }
 
-    private boolean hoveringNonEmptyFilterSlot(){
+    private boolean hoveringNonEmptyFilterSlot() {
         return Optional.ofNullable(this.hoveredSlot)
             .map(h -> h instanceof FilterOnlySlot && h.hasItem())
             .orElse(false);
     }
 
-    private boolean hoveringEmptyFilterSlot(){
+    private boolean hoveringEmptyFilterSlot() {
         return Optional.ofNullable(this.hoveredSlot)
             .map(h -> h instanceof FilterOnlySlot && !h.hasItem())
             .orElse(false);
@@ -131,7 +131,7 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
     @Override
     protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
         List<Component> components = super.getTooltipFromContainerItem(stack);
-        if(this.hoveringNonEmptyFilterSlot()){
+        if (this.hoveringNonEmptyFilterSlot()) {
             components.add(scrollToChangeTooltip);
             components.add(shiftToScrollFasterTooltip);
         }
@@ -163,7 +163,7 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
         super.slotClicked(slot, slotId, button, type);
     }
 
-    private int getScrollSpeed(){
+    private int getScrollSpeed() {
         return hasShiftDown() ? 5 : 1;
     }
 

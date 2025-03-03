@@ -43,8 +43,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ActiveSilencerBlockEntity
     extends BlockEntity
-    implements MenuProvider, ISoundEventListener, IDiskCloneable, IHasAffectRange
-{
+    implements MenuProvider, ISoundEventListener, IDiskCloneable, IHasAffectRange {
     public static final Codec<List<ResourceLocation>> CODEC =
         ResourceLocation.CODEC.listOf().fieldOf("mutedSound").codec();
 
