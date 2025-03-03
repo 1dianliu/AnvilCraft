@@ -223,8 +223,8 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
             }
             List<ItemStack> dropList = switch (anvil) {
                 case null -> BreakBlockUtil.drop(level, devourBlockPos);
-                case RoyalAnvilBlock $ -> BreakBlockUtil.dropSilkTouch(level, devourBlockPos);
-                case EmberAnvilBlock $ -> BreakBlockUtil.dropSmelt(level, devourBlockPos);
+                case RoyalAnvilBlock ignore -> BreakBlockUtil.dropSilkTouch(level, devourBlockPos);
+                case EmberAnvilBlock ignore -> BreakBlockUtil.dropSmelt(level, devourBlockPos);
                 default -> BreakBlockUtil.drop(level, devourBlockPos);
             };
             for (ItemStack itemStack : dropList) {

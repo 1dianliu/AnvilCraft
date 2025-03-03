@@ -400,7 +400,7 @@ public class RenderHelper {
         MultiBufferSource bufferSource,
         int combinedLight,
         int combinedOverlay,
-        BakedModel p_model,
+        BakedModel pModel,
         float alpha
     ) {
         if (!itemStack.isEmpty()) {
@@ -408,15 +408,15 @@ public class RenderHelper {
             boolean flag = displayContext == ItemDisplayContext.GUI || displayContext == ItemDisplayContext.GROUND || displayContext == ItemDisplayContext.FIXED;
             if (flag) {
                 if (itemStack.is(Items.TRIDENT)) {
-                    p_model = itemRenderer.getItemModelShaper().getModelManager().getModel(TRIDENT_MODEL);
+                    pModel = itemRenderer.getItemModelShaper().getModelManager().getModel(TRIDENT_MODEL);
                 } else if (itemStack.is(Items.SPYGLASS)) {
-                    p_model = itemRenderer.getItemModelShaper().getModelManager().getModel(SPYGLASS_MODEL);
+                    pModel = itemRenderer.getItemModelShaper().getModelManager().getModel(SPYGLASS_MODEL);
                 }
             }
 
-            p_model = net.neoforged.neoforge.client.ClientHooks.handleCameraTransforms(poseStack, p_model, displayContext, leftHand);
+            pModel = net.neoforged.neoforge.client.ClientHooks.handleCameraTransforms(poseStack, pModel, displayContext, leftHand);
             poseStack.translate(-0.5F, -0.5F, -0.5F);
-            if (!p_model.isCustomRenderer() && (!itemStack.is(Items.TRIDENT) || flag)) {
+            if (!pModel.isCustomRenderer() && (!itemStack.is(Items.TRIDENT) || flag)) {
                 boolean flag1;
                 if (displayContext != ItemDisplayContext.GUI && !displayContext.firstPerson() && itemStack.getItem() instanceof BlockItem blockitem) {
                     Block block = blockitem.getBlock();
@@ -425,7 +425,7 @@ public class RenderHelper {
                     flag1 = true;
                 }
 
-                for (BakedModel model : p_model.getRenderPasses(itemStack, flag1)) {
+                for (BakedModel model : pModel.getRenderPasses(itemStack, flag1)) {
                     for (RenderType rendertype : model.getRenderTypes(itemStack, flag1)) {
                         VertexConsumer vertexconsumer;
                         if (hasAnimatedTexture(itemStack) && itemStack.hasFoil()) {

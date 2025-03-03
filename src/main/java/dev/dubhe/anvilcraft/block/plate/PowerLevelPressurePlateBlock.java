@@ -89,16 +89,6 @@ public class PowerLevelPressurePlateBlock extends BasePressurePlateBlock {
         return getSignalStrength(level, TOUCH_AABB.move(pos), getEntityClasses());
     }
 
-    protected Set<Class<? extends Entity>> getEntityClasses() {
-        Class<? extends Entity> entityClass = switch (this.type.pressurePlateSensitivity()) {
-            case EVERYTHING -> Entity.class;
-            case MOBS -> LivingEntity.class;
-        };
-        HashSet<Class<? extends Entity>> newSet = Sets.newHashSet();
-        newSet.add(entityClass);
-        return newSet;
-    }
-
     protected int getSignalStrength(Level level, AABB box, Set<Class<? extends Entity>> entityClasses) {
         int count = 0;
 
@@ -110,6 +100,16 @@ public class PowerLevelPressurePlateBlock extends BasePressurePlateBlock {
         }
 
         return count > 0 ? 15 : 0;
+    }
+
+    protected Set<Class<? extends Entity>> getEntityClasses() {
+        Class<? extends Entity> entityClass = switch (this.type.pressurePlateSensitivity()) {
+            case EVERYTHING -> Entity.class;
+            case MOBS -> LivingEntity.class;
+        };
+        HashSet<Class<? extends Entity>> newSet = Sets.newHashSet();
+        newSet.add(entityClass);
+        return newSet;
     }
 
     protected void updateSignal(Level level, BlockPos pos, BlockState state, int currentSignal, int expectedSignal) {

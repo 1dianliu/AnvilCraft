@@ -1,15 +1,12 @@
 package dev.dubhe.anvilcraft.data.recipe;
 
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.recipe.anvil.BlockCompressRecipe;
-
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-
-import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 
 public class BlockCompressRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {

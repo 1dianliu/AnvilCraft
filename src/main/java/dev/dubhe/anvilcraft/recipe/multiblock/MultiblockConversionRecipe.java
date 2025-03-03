@@ -308,8 +308,7 @@ public class MultiblockConversionRecipe implements Recipe<MultiblockInput>, IDat
         @Override
         public void validate(ResourceLocation pId) {
             if (inputPattern.getSize() != outputPattern.getSize()) {
-                throw new IllegalArgumentException(("Input size must be same as output size: %s " +
-                    "input size: %d, output size: %d")
+                throw new IllegalArgumentException(("Input size must be same as output size: %s input size: %d, output size: %d")
                     .formatted(pId, inputPattern.getSize(), outputPattern.getSize()));
             }
             if (!inputPattern.checkSymbols()) {

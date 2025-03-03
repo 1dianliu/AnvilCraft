@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.UUID;
 
 @Mixin(ZombieVillager.class)
-abstract public class ZombieVillagerMixin extends Zombie {
+public abstract class ZombieVillagerMixin extends Zombie {
 
     @Shadow
     private UUID conversionStarter;

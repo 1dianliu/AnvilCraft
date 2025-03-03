@@ -1,7 +1,6 @@
 package dev.dubhe.anvilcraft.block.better;
 
 import dev.dubhe.anvilcraft.util.Util;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -20,8 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class BetterGrindstoneBlock extends GrindstoneBlock {
 
-    public BetterGrindstoneBlock(Properties p_53808_) {
-        super(p_53808_);
+    public BetterGrindstoneBlock(Properties properties) {
+        super(properties);
     }
 
     @Override

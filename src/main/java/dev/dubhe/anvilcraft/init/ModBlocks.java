@@ -519,8 +519,7 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
-                    , ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("ABA")
                 .pattern("BCB")
                 .pattern("BBB")
@@ -552,8 +551,7 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
-                    , ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
@@ -588,8 +586,7 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
-                    , ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("A")
                 .pattern("B")
                 .pattern("C")
@@ -624,8 +621,7 @@ public class ModBlocks {
         .build()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
-                    , ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
                 .pattern("ABA")
                 .pattern("ACA")
                 .pattern("ADA")
@@ -658,8 +654,7 @@ public class ModBlocks {
         .simpleItem()
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC
-                    , ctx.get(), 8)
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get(), 8)
                 .pattern("A")
                 .pattern("B")
                 .pattern("A")
@@ -1215,8 +1210,7 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
             provider.horizontalBlock(
                 ctx.get(),
-                state -> DangerUtil.genModModelFile("block/item_detector" +
-                    (state.getValue(ItemDetectorBlock.POWERED) ? "_on" : "")).get(),
+                state -> DangerUtil.genModModelFile("block/item_detector" + (state.getValue(ItemDetectorBlock.POWERED) ? "_on" : "")).get(),
                 0
             );
         })

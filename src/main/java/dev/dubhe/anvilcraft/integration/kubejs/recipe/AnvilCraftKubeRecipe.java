@@ -15,7 +15,7 @@ public abstract class AnvilCraftKubeRecipe extends KubeRecipe {
         return getValue(key);
     }
 
-    abstract protected void validate();
+    protected abstract void validate();
 
     @Override
     public void afterLoaded() {

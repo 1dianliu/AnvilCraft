@@ -146,9 +146,10 @@ public class ItemDetectorScreen extends AbstractContainerScreen<ItemDetectorMenu
 
     @Override
     protected void slotClicked(@NotNull Slot slot, int slotId, int button, @NotNull ClickType type) {
-        if (type == ClickType.PICKUP &&
-            slot instanceof FilterOnlySlot filterSlot &&
-            (button == InputConstants.MOUSE_BUTTON_LEFT || button == InputConstants.MOUSE_BUTTON_RIGHT)) {
+        if (type == ClickType.PICKUP
+            && slot instanceof FilterOnlySlot filterSlot
+            && (button == InputConstants.MOUSE_BUTTON_LEFT
+            || button == InputConstants.MOUSE_BUTTON_RIGHT)) {
             ItemStack filterStack = this.menu.getCarried();
             int id = slot.getContainerSlot();
             if (!filterStack.isEmpty() && button == InputConstants.MOUSE_BUTTON_RIGHT) {
