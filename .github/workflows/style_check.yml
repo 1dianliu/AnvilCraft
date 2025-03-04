@@ -1,17 +1,14 @@
 name: Style Check in CI
 on:
-  push:
-    branches:
-      - releases/**
-  pull_request:
-    branches:
-      - releases/**
+  pull_request_target:
 
 jobs:
   checkstyle:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      checks: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@v3.1.0
