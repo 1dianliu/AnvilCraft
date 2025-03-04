@@ -1,8 +1,6 @@
 name: Style Check in CI
 on:
   pull_request_target:
-    branches:
-      - releases/**
 
 jobs:
   checkstyle:
