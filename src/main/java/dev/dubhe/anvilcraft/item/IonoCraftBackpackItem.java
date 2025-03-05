@@ -85,39 +85,6 @@ public class IonoCraftBackpackItem extends ArmorItem implements IInventoryCarrie
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (level.isClientSide) return;
-        if (!(entity instanceof ServerPlayer serverPlayer)) return;
-        IDynamicPowerComponentHolder holder = IDynamicPowerComponentHolder.of(serverPlayer);
-        DynamicPowerComponent powerComponent = holder.anvilCraft$getPowerComponent();
-        ItemStack equipped = getByPlayer(serverPlayer);
-        if (equipped != stack && equipped.isEmpty()) {
-            powerComponent.getPowerConsumptions().remove(CONSUMPTION);
-            AttributeInstance instance = serverPlayer.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
-            if (instance.hasModifier(CREATIVE_FLIGHT_ID)) {
-                instance.removeModifier(CREATIVE_FLIGHT);
-            }
-            return;
-        }
-        if (powerComponent.getPowerGrid() != null) {
-            powerComponent.getPowerConsumptions().add(CONSUMPTION);
-        } else {
-            powerComponent.getPowerConsumptions().remove(CONSUMPTION);
-        }
-        if (getFlightTime(stack) > 0) {
-            AttributeInstance instance = serverPlayer.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
-            if (!instance.hasModifier(CREATIVE_FLIGHT_ID)) {
-                instance.addTransientModifier(CREATIVE_FLIGHT);
-            }
-        } else {
-            AttributeInstance instance = serverPlayer.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
-            if (instance.hasModifier(CREATIVE_FLIGHT_ID)) {
-                instance.removeModifier(CREATIVE_FLIGHT);
-            }
-        }
-    }
-
-    @Override
     public Holder<SoundEvent> getEquipSound() {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
@@ -171,6 +138,37 @@ public class IonoCraftBackpackItem extends ArmorItem implements IInventoryCarrie
         return ItemStack.EMPTY;
     }
 
+    public static void giveFlight(ServerPlayer player) {
+        if (player instanceof IDynamicPowerComponentHolder holder) {
+            DynamicPowerComponent powerComponent = holder.anvilCraft$getPowerComponent();
+            ItemStack equipped = getByPlayer(player);
+            if (!equipped.isEmpty()) {
+                if (powerComponent.getPowerGrid() != null) {
+                    powerComponent.getPowerConsumptions().add(CONSUMPTION);
+                } else {
+                    powerComponent.getPowerConsumptions().remove(CONSUMPTION);
+                }
+                int flightTime = getFlightTime(equipped);
+                AttributeInstance instance = player.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
+                if (flightTime > 0) {
+                    if (!instance.hasModifier(CREATIVE_FLIGHT_ID)) {
+                        instance.addTransientModifier(CREATIVE_FLIGHT);
+                    }
+                } else {
+                    if (instance.hasModifier(CREATIVE_FLIGHT_ID)) {
+                        instance.removeModifier(CREATIVE_FLIGHT);
+                    }
+                }
+            } else {
+                powerComponent.getPowerConsumptions().remove(CONSUMPTION);
+                AttributeInstance instance = player.getAttributes().getInstance(NeoForgeMod.CREATIVE_FLIGHT);
+                if (instance.hasModifier(CREATIVE_FLIGHT_ID)) {
+                    instance.removeModifier(CREATIVE_FLIGHT);
+                }
+            }
+        }
+    }
+
     public static void flightTick(ServerPlayer player) {
         if (player.isCreative()) return;
         if (player instanceof IDynamicPowerComponentHolder holder && player.getAbilities().flying) {
@@ -192,6 +190,7 @@ public class IonoCraftBackpackItem extends ArmorItem implements IInventoryCarrie
                 IonoCraftBackpackItem.setFlightTime(itemStack, flightTime);
             }
         }
+        giveFlight(player);
     }
 
     @Override
