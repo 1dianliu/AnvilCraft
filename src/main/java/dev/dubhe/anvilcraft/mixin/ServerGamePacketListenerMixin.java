@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-abstract class ServerGamePacketListenerMixin {
+public class ServerGamePacketListenerMixin {
 
     @Shadow
     public ServerPlayer player;
