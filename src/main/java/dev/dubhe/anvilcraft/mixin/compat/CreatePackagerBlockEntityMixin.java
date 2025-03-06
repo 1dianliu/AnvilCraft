@@ -7,10 +7,11 @@ import com.simibubi.create.content.logistics.packager.PackagerBlockEntity;
 import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
+import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil;
 import dev.dubhe.anvilcraft.block.entity.BatchCrafterBlockEntity;
-import dev.dubhe.anvilcraft.util.ItemHandlerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,13 +29,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Debug(export = true)
 abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
 
-    @Shadow public int animationTicks;
+    @Shadow
+    public int animationTicks;
 
-    @Shadow public ItemStack previouslyUnwrapped;
+    @Shadow
+    public ItemStack previouslyUnwrapped;
 
-    @Shadow public boolean animationInward;
+    @Shadow
+    public boolean animationInward;
 
-    @Shadow @Final public static int CYCLE;
+    @Shadow
+    @Final
+    public static int CYCLE;
 
     public CreatePackagerBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -65,12 +71,15 @@ abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
                 }
                 int itemCount = ItemHandlerUtil.countItemsInHandler(contents);
                 int craftSlots = 0;
+                int minStackSize = 64;
                 for (int slot = 0; slot < orderContext.stacks().size(); slot++) {
-                    if (!orderContext.stacks().get(slot).stack.isEmpty()) {
+                    ItemStack stack = orderContext.stacks().get(slot).stack;
+                    if (!stack.isEmpty()) {
                         craftSlots++;
+                        minStackSize = Math.min(stack.getMaxStackSize(), minStackSize);
                     }
                 }
-                if (craftSlots * 64 < itemCount) {
+                if (craftSlots * minStackSize < itemCount) {
                     cir.setReturnValue(false);
                     return;
                 }
@@ -78,22 +87,23 @@ abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
                     cir.setReturnValue(true);
                     return;
                 }
-                for (int boxSlot = 0; boxSlot < contents.getSlots(); boxSlot++) {
-                    ItemStack toInsert = contents.getStackInSlot(boxSlot);
-                    if (toInsert.isEmpty()) {
+                for (var entry : ItemHandlerUtil.mergeHandlerItems(contents).object2IntEntrySet()) {
+                    Item toInsertItem = entry.getKey();
+                    int toInsertCount = entry.getIntValue();
+                    if (toInsertCount <= 0) {
                         continue;
                     }
-                    while (toInsert.getCount() > 0) {
+                    while (toInsertCount > 0) {
                         for (int slot = 0; slot < orderContext.stacks().size(); slot++) {
                             BigItemStack bigItemStack = orderContext.stacks().get(slot);
-                            if (toInsert.getCount() > 0 && bigItemStack.stack.is(toInsert.getItem())) {
+                            if (toInsertCount > 0 && bigItemStack.stack.is(toInsertItem)) {
                                 ItemStack itemInSlot = itemHandler.getStackInSlot(slot);
                                 if (itemInSlot.isEmpty()) {
-                                    itemHandler.setStackInSlot(slot, toInsert.copyWithCount(1));
+                                    itemHandler.setStackInSlot(slot, toInsertItem.getDefaultInstance());
                                 } else {
                                     itemInSlot.grow(1);
                                 }
-                                toInsert.shrink(1);
+                                toInsertCount--;
                             }
                         }
                     }
