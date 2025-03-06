@@ -59,6 +59,7 @@ abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
                 FilteredItemStackHandler itemHandler = batchCrafter.getItemHandler();
                 // 有物品或者过滤开了就不接受包裹物品
                 if (itemHandler.isFilterEnabled() || !itemHandler.isEmpty()) {
+                    cir.setReturnValue(false);
                     return;
                 }
                 if (simulate) {
