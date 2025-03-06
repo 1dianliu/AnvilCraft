@@ -6,7 +6,6 @@ import com.simibubi.create.content.logistics.packager.PackagerBlock;
 import com.simibubi.create.content.logistics.packager.PackagerBlockEntity;
 import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
 import dev.dubhe.anvilcraft.block.entity.BatchCrafterBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -75,7 +74,6 @@ abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
                         for (int slot = 0; slot < orderContext.stacks().size(); slot++) {
                             BigItemStack bigItemStack = orderContext.stacks().get(slot);
                             if (toInsert.getCount() > 0 && bigItemStack.stack.is(toInsert.getItem())) {
-                                AnvilCraft.LOGGER.info("try insert {} to slot {}", toInsert.getItem(), slot);
                                 ItemStack itemInSlot = itemHandler.getStackInSlot(slot);
                                 if (itemInSlot.isEmpty()) {
                                     itemHandler.setStackInSlot(slot, toInsert.copyWithCount(1));
