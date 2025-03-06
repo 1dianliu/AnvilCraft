@@ -113,7 +113,7 @@ public class VisualizationUnsupported extends Level {
 
     @Override
     public void destroyBlockProgress(int breakerId, BlockPos pos, int progress) {
-        level.destroyBlockProgress(breakerId,pos,progress);
+        level.destroyBlockProgress(breakerId, pos, progress);
     }
 
     @Override
@@ -351,7 +351,7 @@ public class VisualizationUnsupported extends Level {
         return 14 - amount;
     }
 
-    public static Level wrap(Level level){
+    public static Level wrap(Level level) {
         return new VisualizationUnsupported(level);
     }
 }
