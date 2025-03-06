@@ -8,6 +8,7 @@ import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
 import dev.dubhe.anvilcraft.block.entity.BatchCrafterBlockEntity;
+import dev.dubhe.anvilcraft.util.ItemHandlerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -59,6 +60,17 @@ abstract class CreatePackagerBlockEntityMixin extends SmartBlockEntity {
                 FilteredItemStackHandler itemHandler = batchCrafter.getItemHandler();
                 // 有物品或者过滤开了就不接受包裹物品
                 if (itemHandler.isFilterEnabled() || !itemHandler.isEmpty()) {
+                    cir.setReturnValue(false);
+                    return;
+                }
+                int itemCount = ItemHandlerUtil.countItemsInHandler(contents);
+                int craftSlots = 0;
+                for (int slot = 0; slot < orderContext.stacks().size(); slot++) {
+                    if (!orderContext.stacks().get(slot).stack.isEmpty()) {
+                        craftSlots++;
+                    }
+                }
+                if (craftSlots * 64 < itemCount) {
                     cir.setReturnValue(false);
                     return;
                 }
