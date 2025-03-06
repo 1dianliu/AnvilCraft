@@ -179,7 +179,12 @@ public class FilteredItemStackHandler extends ItemStackHandler {
     }
 
     public boolean isEmpty() {
-        return stacks.stream().allMatch(ItemStack::isEmpty);
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
