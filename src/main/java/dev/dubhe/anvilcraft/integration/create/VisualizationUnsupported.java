@@ -207,6 +207,11 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
+    public LevelEntityGetter<Entity> getEntities() {
+        return level.getEntities();
+    }
+
+    @Override
     public List<Entity> getEntities(@Nullable Entity entity, AABB area, Predicate<? super Entity> predicate) {
         return level.getEntities(entity, area, predicate);
     }
@@ -244,11 +249,6 @@ public class VisualizationUnsupported extends Level {
     @Override
     public BiomeManager getBiomeManager() {
         return level.getBiomeManager();
-    }
-
-    @Override
-    public LevelEntityGetter<Entity> getEntities() {
-        return level.getEntities();
     }
 
     @Override
