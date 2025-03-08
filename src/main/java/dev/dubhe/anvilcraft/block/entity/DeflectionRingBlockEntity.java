@@ -173,18 +173,18 @@ public class DeflectionRingBlockEntity extends BlockEntity implements IPowerCons
             Vec3 fixedPos = switch (facing) {
                 case DOWN -> new Vec3(fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.x), entity instanceof FallingBlockEntity ? -0.5 : 0, -fixPos(deltaMovement.x, deltaMovement.z, deltaMovement.x));
                 case UP -> new Vec3(-fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.x), entity instanceof FallingBlockEntity ? -0.5 : 0, fixPos(deltaMovement.x, deltaMovement.z, deltaMovement.x));
-                case NORTH -> new Vec3(fixPos(deltaMovement.y, deltaMovement.y, deltaMovement.x), -fixPos(deltaMovement.x, deltaMovement.y, deltaMovement.x), 0);
-                case SOUTH -> new Vec3(-fixPos(deltaMovement.y, deltaMovement.y, deltaMovement.x), fixPos(deltaMovement.x, deltaMovement.y, deltaMovement.x), 0);
-                case WEST -> new Vec3(0, fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.y), -fixPos(deltaMovement.y, deltaMovement.z, deltaMovement.y));
-                case EAST -> new Vec3(0, -fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.y), fixPos(deltaMovement.y, deltaMovement.z, deltaMovement.y));
+                case SOUTH -> new Vec3(fixPos(deltaMovement.y, deltaMovement.y, deltaMovement.x), -fixPos(deltaMovement.x, deltaMovement.y, deltaMovement.x), 0);
+                case NORTH -> new Vec3(-fixPos(deltaMovement.y, deltaMovement.y, deltaMovement.x), fixPos(deltaMovement.x, deltaMovement.y, deltaMovement.x), 0);
+                case EAST -> new Vec3(0, fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.y), -fixPos(deltaMovement.y, deltaMovement.z, deltaMovement.y));
+                case WEST -> new Vec3(0, -fixPos(deltaMovement.z, deltaMovement.z, deltaMovement.y), fixPos(deltaMovement.y, deltaMovement.z, deltaMovement.y));
             };
             deltaMovement = switch (facing) {
                 case DOWN -> new Vec3(deltaMovement.z, 0, -deltaMovement.x);
                 case UP -> new Vec3(-deltaMovement.z, 0, deltaMovement.x);
-                case NORTH -> new Vec3(deltaMovement.y, -deltaMovement.x, 0);
-                case SOUTH -> new Vec3(-deltaMovement.y, deltaMovement.x, 0);
-                case WEST -> new Vec3(0, deltaMovement.z, -deltaMovement.y);
-                case EAST -> new Vec3(0, -deltaMovement.z, deltaMovement.y);
+                case SOUTH -> new Vec3(deltaMovement.y, -deltaMovement.x, 0);
+                case NORTH -> new Vec3(-deltaMovement.y, deltaMovement.x, 0);
+                case EAST -> new Vec3(0, deltaMovement.z, -deltaMovement.y);
+                case WEST -> new Vec3(0, -deltaMovement.z, deltaMovement.y);
             };
             entity.setDeltaMovement(deltaMovement);
             Vec3 blockCenter = getBlockPos().getCenter();

@@ -1,8 +1,11 @@
 package dev.dubhe.anvilcraft.mixin;
 
+import com.llamalad7.mixinextras.sugar.Share;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import dev.dubhe.anvilcraft.block.entity.DeflectionRingBlockEntity;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -49,7 +52,8 @@ public abstract class EntityMixin {
     @Shadow public abstract float distanceTo(Entity entity);
 
     @Redirect(method = "move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V", ordinal = 1))
-    public void fixMove(Entity instance, double x, double y, double z) {
+    public void anvilcraft$fixFallingBlockEntity(Entity instance, double x, double y, double z, @Share("isFixed") LocalBooleanRef isFixed) {
+        isFixed.set(false);
         Vec3 vec3 = new Vec3(x-getX(), y-getY(), z-getZ());
         if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98 ) {
             Vec3 s = position();
@@ -84,13 +88,24 @@ public abstract class EntityMixin {
                 return;
             }
             setPos(vec3.multiply(a, a, a).add(s));
+            isFixed.set(true);
             return;
         }
         setPos(x, y, z);
     }
 
+    @Redirect(method="move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value="INVOKE", target = "Lnet/minecraft/util/Mth;equal(DD)Z", ordinal = 0))
+    public boolean anvilcraft$cancelCollision1(double x, double y, @Share("isFixed") LocalBooleanRef isFixed) {
+        return isFixed.get() || Mth.equal(x, y);
+    }
+
+    @Redirect(method="move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value="INVOKE", target = "Lnet/minecraft/util/Mth;equal(DD)Z", ordinal = 1))
+    public boolean anvilcraft$cancelCollision2(double x, double y, @Share("isFixed") LocalBooleanRef isFixed) {
+        return isFixed.get() || Mth.equal(x, y);
+    }
+
     @Inject(method = "setPos(DDD)V", at = @At("HEAD"), cancellable = true)
-    public void setPos(double x, double y, double z, CallbackInfo ci) {
+    public void anvilcraft$changeProjectilePosSetResult(double x, double y, double z, CallbackInfo ci) {
         if (!((Object) this instanceof Projectile)) return;
         Vec3 vec3 = new Vec3(x-getX(), y-getY(), z-getZ());
         if (vec3.add(getDeltaMovement().scale(-1)).length() > 0.5) return;

@@ -188,7 +188,7 @@ public class AccelerationRingBlockEntity extends BlockEntity implements IPowerCo
                 deltaMovement = deltaMovement.add(fixMovement);
             else
                 entity.setPos(entity.position().add(fixMovement.multiply(5, 5, 5)));
-            deltaMovement = deltaMovement.add(new Vec3(0.16f, 0.16f, 0.16f).multiply(Vec3.atLowerCornerOf(direction.getNormal())));
+            deltaMovement = deltaMovement.scale(1.0204081632653061).add(new Vec3(0.16f, 0.16f, 0.16f).multiply(Vec3.atLowerCornerOf(direction.getNormal())));
             entity.setDeltaMovement(deltaMovement);
             entity.setDeltaMovement(entity.getDeltaMovement().add(0, entity.getGravity(), 0));
         }
