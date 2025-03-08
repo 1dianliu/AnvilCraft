@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -172,6 +173,11 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
     }
 
     @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        return false;
+    }
+
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Orientation orientation;
@@ -238,7 +244,7 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
                     .map(it -> (ContainerEntity) it)
                     .toList();
             if (!entities.isEmpty()) {
-                itemHandler = ((Entity)entities.getFirst()).getCapability(
+                itemHandler = ((Entity) entities.getFirst()).getCapability(
                     Capabilities.ItemHandler.ENTITY,
                     null
                 );

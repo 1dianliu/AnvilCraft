@@ -1,12 +1,12 @@
 package dev.dubhe.anvilcraft.block;
 
-import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
+import com.mojang.serialization.MapCodec;
 import dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior;
+import dev.dubhe.anvilcraft.api.hammer.IHammerChangeable;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.block.entity.SimpleChuteBlockEntity;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
 import dev.dubhe.anvilcraft.init.ModBlocks;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -42,8 +43,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.items.IItemHandler;
-
-import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,7 +104,6 @@ public class SimpleChuteBlock
         builder.add(FACING, WATERLOGGED, ENABLED, TALL);
     }
 
-
     @Override
     public void neighborChanged(
         BlockState state,
@@ -113,7 +111,8 @@ public class SimpleChuteBlock
         BlockPos pos,
         Block neighborBlock,
         BlockPos neighborPos,
-        boolean movedByPiston) {
+        boolean movedByPiston
+    ) {
         if (level.isClientSide) return;
         boolean bl = state.getValue(ENABLED);
         if (bl == level.hasNeighborSignal(pos)) {
@@ -122,12 +121,13 @@ public class SimpleChuteBlock
         }
         if (!neighborPos.equals(pos.relative(state.getValue(FACING)))) return;
         BlockState blockState = level.getBlockState(neighborPos);
+        Block neighbour = blockState.getBlock();
         if (blockState.is(ModBlocks.CHUTE.get())
             || blockState.is(ModBlocks.MAGNETIC_CHUTE.get())
             || blockState.is(ModBlocks.SIMPLE_CHUTE.get())
         ) {
             Direction neighbourFacing;
-            if (neighborBlock == ModBlocks.MAGNETIC_CHUTE.get()) {
+            if (neighbour == ModBlocks.MAGNETIC_CHUTE.get()) {
                 neighbourFacing = blockState.getValue(MagneticChuteBlock.FACING);
             } else {
                 neighbourFacing = blockState.getValue(FACING);
@@ -177,7 +177,6 @@ public class SimpleChuteBlock
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
-
 
     @Override
     public void onRemove(
@@ -256,6 +255,11 @@ public class SimpleChuteBlock
                 default -> AABB_TALL;
             };
         }
+    }
+
+    @Override
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        return false;
     }
 
     @Override

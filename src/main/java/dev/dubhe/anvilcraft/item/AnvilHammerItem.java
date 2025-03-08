@@ -42,16 +42,27 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
 import java.util.List;
-
-import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING;
-import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.FACING_HOPPER;
-import static dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior.HORIZONTAL_FACING;
+import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles {
+public class AnvilHammerItem extends Item implements Equipable {
+    public static final Property<?>[] SUPPORTED_PROPERTIES = {
+        BlockStateProperties.FACING,
+        BlockStateProperties.FACING_HOPPER,
+        BlockStateProperties.HORIZONTAL_FACING,
+        BlockStateProperties.ORIENTATION,
+        BlockStateProperties.AXIS,
+        BlockStateProperties.HORIZONTAL_AXIS
+    };
+    private static final List<Predicate<Player>> isWearingPredicates = new ArrayList<>();
     private final ItemAttributeModifiers modifiers;
+
+    static {
+        isWearingPredicates.add(player -> player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof AnvilHammerItem);
+    }
 
     /**
      * 初始化铁砧锤
@@ -83,7 +94,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         return 5;
     }
 
-    public Block getAnvil(){
+    public Block getAnvil() {
         return Blocks.ANVIL;
     }
 
@@ -94,15 +105,15 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         if (block instanceof AbstractMultiPartBlock<?> multiplePartBlock) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(pos, state);
             BlockState stateMainPart = level.getBlockState(posMainPart);
-            if(stateMainPart.is(block)){
+            if (stateMainPart.is(block)) {
                 pos = posMainPart;
                 state = stateMainPart;
             }
-        }else if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) &&
-            state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
+        } else if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
+            && state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             BlockPos posMainPart = pos.below();
             BlockState stateMainPart = level.getBlockState(posMainPart);
-            if(stateMainPart.is(block)){
+            if (stateMainPart.is(block)) {
                 pos = posMainPart;
                 state = stateMainPart;
             }
@@ -126,19 +137,14 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
      */
     public static boolean ableToUseAnvilHammer(Level level, BlockPos blockPos, Player player) {
         BlockState state = level.getBlockState(blockPos);
-        return state.getBlock() instanceof IHammerRemovable
-            || state.getBlock() instanceof IHammerChangeable
-            || state.is(ModBlockTags.HAMMER_REMOVABLE)
-            || state.is(ModBlockTags.HAMMER_CHANGEABLE)
-            || player.getOffhandItem().is(Items.FIREWORK_ROCKET);
-    }
-
-    public static boolean possibleToUseEnhancedHammerChange(BlockState state) {
-        return state.getBlock() instanceof IHammerChangeable || state.is(ModBlockTags.HAMMER_CHANGEABLE);
+        if (state.getBlock() instanceof IHammerChangeable hammerChangeable) {
+            return hammerChangeable.checkBlockState(state);
+        }
+        return true;
     }
 
     @Nullable
-    public static Property<?> findChangeableProperty(BlockState state) {
+    public static Property<?> findModifyableProperty(BlockState state) {
         Property<?> result = null;
         if (state.getBlock() instanceof IHammerChangeable changeable) {
             result = changeable.getChangeableProperty(state);
@@ -146,12 +152,10 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         if (result != null) {
             return result;
         }
-        if (state.hasProperty(FACING)) {
-            return FACING;
-        } else if (state.hasProperty(FACING_HOPPER)) {
-            return FACING_HOPPER;
-        } else if (state.hasProperty(HORIZONTAL_FACING)) {
-            return HORIZONTAL_FACING;
+        for (Property<?> supportedProperty : SUPPORTED_PROPERTIES) {
+            if (state.hasProperty(supportedProperty)) {
+                return supportedProperty;
+            }
         }
         return null;
     }
@@ -160,7 +164,7 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
         if (player == null || level.isClientSide) return false;
         ItemStack itemStack = player.getItemInHand(player.getUsedItemHand());
         Item item = itemStack.getItem();
-        if(!(item instanceof AnvilHammerItem anvilHammerItem)) return false;
+        if (!(item instanceof AnvilHammerItem anvilHammerItem)) return false;
         if (player.getCooldowns().isOnCooldown(anvilHammerItem)) {
             return false;
         }
@@ -287,5 +291,18 @@ public class AnvilHammerItem extends Item implements Equipable, IEngineerGoggles
     @Override
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.HEAD;
+    }
+
+    public static void addIsWearingPredicate(Predicate<Player> predicate) {
+        isWearingPredicates.add(predicate);
+    }
+
+    public static boolean isWearing(Player player) {
+        for (Predicate<Player> it : isWearingPredicates) {
+            if (it.test(player)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
