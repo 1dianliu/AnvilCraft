@@ -108,7 +108,7 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
      * @return 是否成功构建透明工作台矩阵
      */
     private boolean tryFormMatrix(Level level, BlockPos pos) {
-        if (!level.getBlockState(pos).is(this)) return false;
+        if (!isValidMatrixBlock(level.getBlockState(pos))) return false;
         int maxSize = AnvilCraft.config.transparentCraftingTableMaxMatrixSize;
         int x0 = pos.getX();
         int y0 = pos.getY();
@@ -116,20 +116,20 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
         BlockPos.MutableBlockPos mpos = pos.mutable();
         int xMin = x0;
         int xMax = x0;
-        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) {
+        while ((xMax - xMin < maxSize) && isValidMatrixBlock(level.getBlockState(mpos.set(xMin - 1, y0, z0)))) {
             xMin--;
         }
-        while ((xMax - xMin < maxSize) && level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) {
+        while ((xMax - xMin < maxSize) && isValidMatrixBlock(level.getBlockState(mpos.set(xMax + 1, y0, z0)))) {
             xMax++;
         }
         int xSize = xMax - xMin + 1;
         if (xSize < 2 || xSize > maxSize) return false;
         int zMin = z0;
         int zMax = z0;
-        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) {
+        while ((zMax - zMin < maxSize) && isValidMatrixBlock(level.getBlockState(mpos.set(x0, y0, zMin - 1)))) {
             zMin--;
         }
-        while ((zMax - zMin < maxSize) && level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) {
+        while ((zMax - zMin < maxSize) && isValidMatrixBlock(level.getBlockState(mpos.set(x0, y0, zMax + 1)))) {
             zMax++;
         }
         int zSize = zMax - zMin + 1;
@@ -138,22 +138,23 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
             if (x == x0) continue;
             for (int z = zMin; z <= zMax; z++) {
                 if (z == z0) continue;
-                if (!level.getBlockState(mpos.set(x, y0, z)).is(this)) return false;
+                if (!isValidMatrixBlock(level.getBlockState(mpos.set(x, y0, z)))) return false;
             }
         }
         for (int x = xMin; x <= xMax; x++) {
-            if (level.getBlockState(mpos.set(x, y0, zMin - 1)).is(this)) return false;
-            if (level.getBlockState(mpos.set(x, y0, zMax + 1)).is(this)) return false;
+            if (isValidMatrixBlock(level.getBlockState(mpos.set(x, y0, zMin - 1)))) return false;
+            if (isValidMatrixBlock(level.getBlockState(mpos.set(x, y0, zMax + 1)))) return false;
         }
         for (int z = zMin; z <= zMax; z++) {
-            if (level.getBlockState(mpos.set(xMin - 1, y0, z)).is(this)) return false;
-            if (level.getBlockState(mpos.set(xMax + 1, y0, z)).is(this)) return false;
+            if (isValidMatrixBlock(level.getBlockState(mpos.set(xMin - 1, y0, z)))) return false;
+            if (isValidMatrixBlock(level.getBlockState(mpos.set(xMax + 1, y0, z)))) return false;
         }
         for (int x = xMin; x <= xMax; x++) {
             for (int z = zMin; z <= zMax; z++) {
                 int xIndex = x == xMax ? 2 : x > xMin ? 1 : 0;
                 int zIndex = z == zMax ? 2 : z > zMin ? 1 : 0;
                 BlockState state = level.getBlockState(mpos.set(x, y0, z));
+                if (!state.is(this)) continue;
                 level.setBlockAndUpdate(mpos, state.setValue(TYPE, Type.LOOKUP[xIndex][zIndex]));
             }
         }
@@ -173,18 +174,18 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
         BlockPos.MutableBlockPos mpos = pos.mutable();
         int xMin = x0;
         int xMax = x0;
-        while (level.getBlockState(mpos.set(xMin - 1, y0, z0)).is(this)) {
+        while (isValidMatrixBlock(level.getBlockState(mpos.set(xMin - 1, y0, z0)))) {
             xMin--;
         }
-        while (level.getBlockState(mpos.set(xMax + 1, y0, z0)).is(this)) {
+        while (isValidMatrixBlock(level.getBlockState(mpos.set(xMax + 1, y0, z0)))) {
             xMax++;
         }
         int zMin = z0;
         int zMax = z0;
-        while (level.getBlockState(mpos.set(x0, y0, zMin - 1)).is(this)) {
+        while (isValidMatrixBlock(level.getBlockState(mpos.set(x0, y0, zMin - 1)))) {
             zMin--;
         }
-        while (level.getBlockState(mpos.set(x0, y0, zMax + 1)).is(this)) {
+        while (isValidMatrixBlock(level.getBlockState(mpos.set(x0, y0, zMax + 1)))) {
             zMax++;
         }
         for (int x = xMin; x <= xMax; x++) {
@@ -194,6 +195,9 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
                 level.setBlockAndUpdate(mpos, state.setValue(TYPE, Type.SINGLE));
             }
         }
+    }
+    public boolean isValidMatrixBlock(BlockState block){
+        return block.is(this) || block.is(ModBlocks.SPACE_OVERCOMPRESSOR.get());
     }
 
     public enum Type implements StringRepresentable {
