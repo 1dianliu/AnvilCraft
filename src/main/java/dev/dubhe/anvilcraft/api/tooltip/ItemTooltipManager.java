@@ -54,7 +54,7 @@ public class ItemTooltipManager {
             ModBlocks.FERRITE_CORE_MAGNET_BLOCK.asItem(),
             "Attracting the anvil below, "
                 + "when pushed and pulled by the piston, causes adjacent copper blocks to generate charges");
-        map.put(ModBlocks.BATCH_CRAFTER.asItem(), "consumes 1 kW");
+        map.put(ModBlocks.BATCH_CRAFTER.asItem(), "Received a redstone signal and synthesized all internal items at once, with a power consumption of 4 kW");
         map.put(ModBlocks.ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.SMOOTH_ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
         map.put(ModBlocks.CUT_ROYAL_STEEL_BLOCK.asItem(), "Explosion proof");
@@ -88,6 +88,37 @@ public class ItemTooltipManager {
         map.put(ModBlocks.CUT_EMBER_METAL_PILLAR.asItem(), "Wither proof");
         map.put(ModBlocks.CUT_EMBER_METAL_SLAB.asItem(), "Wither proof");
         map.put(ModBlocks.CUT_EMBER_METAL_STAIRS.asItem(), "Wither proof");
+
+        map.put(ModItems.TIN_CAN.asItem(), "Synthesize canned food with food to obtain canned food");
+        map.put(ModItems.CANNED_FOOD.asItem(), "Can be quickly consumed and stacked");
+        map.put(ModItems.IONOCRAFT.asItem(), "It will float when placed in the power grid");
+        map.put(ModItems.IONOCRAFT_BACKPACK.asItem(), """
+            Double click the space when equipping to start creating a flight
+            which requires power supply from the grid or capacitors in the backpack for use""");
+        map.put(ModItems.LEVITATION_POWDER.asItem(), "Slight weightlessness sensation");
+        map.put(ModItems.NEGATIVE_MATTER.asItem(), "Negative matter is not antimatter, it is anti gravity matter");
+        map.put(ModItems.NEGATIVE_MATTER_NUGGET.asItem(), "Negative matter is not antimatter, it is anti gravity matter");
+        map.put(ModBlocks.NEGATIVE_MATTER_BLOCK.asItem(), "Negative matter is not antimatter, it is anti gravity matter");
+        map.put(ModItems.STABLE_NEUTRONIUM_INGOT.asItem(), "No more passing through blocks");
+        map.put(ModItems.CHARGED_NEUTRONIUM_INGOT.asItem(), "No longer passing through blocks, storing a large amount of electrical energy");
+        map.put(ModBlocks.TESLA_TOWER.asItem(), "Electric shock to organisms or lightning rods within a range of 8 grids, with a power consumption of 128 kW");
+        map.put(ModBlocks.INDUCTION_LIGHT.asItem(), """
+            Lighting, with a power consumption of 1 kW
+            Right click on the block with redstone powder to change it to ripening mode
+            Right click on the block with fluorite powder to change it to anti brush monster mode
+            Right click on the block using Void Matter to change it to anti brush animal mode
+            and the power consumption of the above three modes will become 16 kW""");
+        map.put(ModBlocks.HELIOSTATS.asItem(), """
+            Right click on the lower boundary alloy block or tungsten block of the handheld heliostat to determine the irradiation point
+            and place it to heat and irradiate the block during the day""");
+        map.put(ModBlocks.ACTIVE_SILENCER.asItem(), "Eliminate selected nearby sounds");
+        map.put(ModBlocks.BLOCK_PLACER.asItem(), """
+            Redstone activation placed a block in front of me, but was hit by an anvil and placed further away.
+            There is no stock available and items need to be retrieved from the blocks behind, fallen objects, or physical inventory""");
+        map.put(ModBlocks.BLOCK_DEVOURER.asItem(), """
+            Redstone activates the devouring of 3x3 range blocks in front, but is hit by an anvil and devours larger range blocks.
+            There is no inventory, and items will be inputted into the block or physical inventory behind or form falling objects behind.
+            World base blocks such as stones, mud, lower bound rocks, and terminal stones will not drop 100%""");
     }
 
     public static final Map<Item, String> NEED_TOOLTIP_ITEM = Collections.unmodifiableMap(map);
