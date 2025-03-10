@@ -11,7 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.CraftingMenu;
@@ -221,7 +225,7 @@ public class TransparentCraftingTableBlock extends TransparentBlock implements I
      * @return 判断结果
      */
     public boolean isValidMatrixBlock(BlockState block, Boolean isSelfOnly) {
-        return block.is(this) ||( !isSelfOnly && (block.is(ModBlocks.SPACE_OVERCOMPRESSOR.get())));
+        return block.is(this) || (!isSelfOnly && (block.is(ModBlocks.SPACE_OVERCOMPRESSOR.get())));
     }
 
     public enum Type implements StringRepresentable {
