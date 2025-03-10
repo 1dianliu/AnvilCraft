@@ -119,6 +119,20 @@ public class ItemTooltipManager {
             Redstone activates the devouring of 3x3 range blocks in front, but is hit by an anvil and devours larger range blocks.
             There is no inventory, and items will be inputted into the block or physical inventory behind or form falling objects behind.
             World base blocks such as stones, mud, lower bound rocks, and terminal stones will not drop 100%""");
+
+        map.put(ModBlocks.COPPER_PRESSURE_PLATE.asItem(), "Redstone signal increases with pressing time, also a copper plate");
+        map.put(ModBlocks.EXPOSED_COPPER_PRESSURE_PLATE.asItem(), "Redstone signal increases with pressing time, also a copper plate");
+        map.put(ModBlocks.WEATHERED_COPPER_PRESSURE_PLATE.asItem(), "Redstone signal increases with pressing time, also a copper plate");
+        map.put(ModBlocks.OXIDIZED_COPPER_PRESSURE_PLATE.asItem(), "Redstone signal increases with pressing time, also a copper plate");
+        map.put(ModBlocks.ZINC_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the highest percentage of blood volume in the organisms above, also a zinc plate");
+        map.put(ModBlocks.TIN_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the lowest percentage of blood volume in the organisms above, also a tin plate");
+        map.put(ModBlocks.LEAD_PRESSURE_PLATE.asItem(), "Output redstone signals based on the number of biological species above, also a lead plate");
+        map.put(ModBlocks.SILVER_PRESSURE_PLATE.asItem(), "Output redstone signals based on the number of undead creatures above, also a silver plate");
+        map.put(ModBlocks.TUNGSTEN_PRESSURE_PLATE.asItem(), "Output redstone signals based on the number of fire-resistant entities above, also a tungsten plate");
+        map.put(ModBlocks.TITANIUM_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the highest durability among the items above, also a titanium plate");
+        map.put(ModBlocks.URANIUM_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the lowest durability among the items above, also a uranium plate");
+        map.put(ModBlocks.BRONZE_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the degree to which the player's backpack is filled above, also a bronze plate");
+        map.put(ModBlocks.BRASS_PRESSURE_PLATE.asItem(), "Output a redstone signal based on the player's satiety level above, also a brass plate");
     }
 
     public static final Map<Item, String> NEED_TOOLTIP_ITEM = Collections.unmodifiableMap(map);
