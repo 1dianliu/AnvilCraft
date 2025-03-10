@@ -76,7 +76,6 @@ public class ItemTooltipManager {
         map.put(ModBlocks.HEAVY_IRON_WALL.asItem(), "Explosion proof");
         map.put(ModBlocks.HEAVY_IRON_DOOR.asItem(), "Explosion proof");
         map.put(ModBlocks.HEAVY_IRON_TRAPDOOR.asItem(), "Explosion proof");
-        map.put(ModBlocks.INDUCTION_LIGHT.asItem(), "Catalyze crop growth, consumes 1 kW");
         map.put(
             ModBlocks.ITEM_COLLECTOR.asItem(),
             "Adjust power consumption based on range and cooling" + ", from 30kW to 150kW");
