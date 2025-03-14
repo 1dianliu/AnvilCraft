@@ -27,7 +27,9 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
     private static final int DECAY_COOLDOWN = 120;
 
     private int cooldownCount = 2;
-    private int decayCooldownCount = 120;
+    //注意：这里的decayCooldownCount初始值为2会让机器第一次发电（2秒后）时同时衰变一次空气
+    //这是为了防止放下来之后在“发电了”之后，在“衰变空气”之前破坏方块，来稳定白嫖电力
+    private int decayCooldownCount = 2;
     private int blockCount = 0;
     private PowerGrid grid = null;
     private int power = 0;
@@ -133,13 +135,18 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
         return y < minHeight || y >= maxHeight;
     }
 
+    /**
+     * Counts the number of blocks in 5x5x5 area.
+     * Also detects whether there is another void energy collector in 9x9x9;
+     * if there does be another void energy collector, this function returns 125 to disable power generation.
+     * @return count(normal) - count(negative) IF active ELSE 125
+     */
     private int countBlocksInRange(){
         if (level == null || level.isClientSide()) return 125;
         int count = 0;
-        //TODO: disable the collector when they overlap
-        for (int i = -2; i <= 2; i++){
-            for (int j = -2; j <= 2; j++){
-                for (int k = -2; k <= 2; k++){
+        for (int i = -4; i <= 4; i++){
+            for (int j = -4; j <= 4; j++){
+                for (int k = -4; k <= 4; k++){
                     BlockPos thisPos = this.getBlockPos();
                     BlockPos bp = new BlockPos(
                         thisPos.getX() + i,
@@ -147,11 +154,19 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
                         thisPos.getZ() + k);
                     if(isOutOfBuildLimits(level, bp)) continue;
                     BlockState b = level.getBlockState(bp);
-                    if(b.getBlock() instanceof NegativeMatterBlock)
-                        count -= 1;
-                    else if(!b.isAir()
-                        && !(b.getBlock() instanceof VoidMatterBlock))
-                        count += 1;
+                    //this disables the collector when there is another in 9x9x9
+                    if((i!=0 || j!=0 || k!=0) && b.getBlock() instanceof VoidEnergyCollectorBlock)
+                        return 125;
+                    //below is the 5x5x5 detection that counts how many blocks are there
+                    if(i>=-2 && i<=2 && j>=-2 && j<=2 && k>=-2 && k<=2){
+                        if(b.getBlock() instanceof NegativeMatterBlock)
+                            count -= 1;
+                        else if(!b.isAir()
+                            && !(b.getBlock() instanceof VoidMatterBlock)
+                            && !(b.getBlock() instanceof VoidEnergyCollectorBlock)
+                        )
+                            count += 1;
+                    }
                 }
             }
         }
