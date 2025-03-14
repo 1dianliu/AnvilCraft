@@ -43,7 +43,7 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
         super(type, pos, blockState);
     }
 
-    public VoidEnergyCollectorBlockEntity(BlockPos pos, BlockState blockState){
+    public VoidEnergyCollectorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.VOID_ENERGY_COLLECTOR.get(), pos, blockState);
     }
 
@@ -98,13 +98,13 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
         tag.putInt("power", this.power);
     }
 
-    private static int getPowerFromBlockCount(int count){
-        if(count >= 21) return 0;
-        if(count >= 11) return 128;
-        if(count >= 3) return 256;
-        if(count >= -10) return 512;
-        if(count >= -20) return 1024;
-        if(count >= -40) return 2048;
+    private static int getPowerFromBlockCount(int count) {
+        if (count >= 21) return 0;
+        if (count >= 11) return 128;
+        if (count >= 3) return 256;
+        if (count >= -10) return 512;
+        if (count >= -20) return 1024;
+        if (count >= -40) return 2048;
         return 4096;
     }
 
@@ -139,29 +139,30 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
      * Counts the number of blocks in 5x5x5 area.
      * Also detects whether there is another void energy collector in 9x9x9;
      * if there does be another void energy collector, this function returns 125 to disable power generation.
+     *
      * @return count(normal) - count(negative) IF active ELSE 125
      */
-    private int countBlocksInRange(){
+    private int countBlocksInRange() {
         if (level == null || level.isClientSide()) return 125;
         int count = 0;
-        for (int i = -4; i <= 4; i++){
-            for (int j = -4; j <= 4; j++){
-                for (int k = -4; k <= 4; k++){
+        for (int i = -4; i <= 4; i++) {
+            for (int j = -4; j <= 4; j++) {
+                for (int k = -4; k <= 4; k++) {
                     BlockPos thisPos = this.getBlockPos();
                     BlockPos bp = new BlockPos(
                         thisPos.getX() + i,
                         thisPos.getY() + j,
                         thisPos.getZ() + k);
-                    if(isOutOfBuildLimits(level, bp)) continue;
+                    if (isOutOfBuildLimits(level, bp)) continue;
                     BlockState b = level.getBlockState(bp);
                     //this disables the collector when there is another in 9x9x9
-                    if((i!=0 || j!=0 || k!=0) && b.getBlock() instanceof VoidEnergyCollectorBlock)
+                    if ((i != 0 || j != 0 || k != 0) && b.getBlock() instanceof VoidEnergyCollectorBlock)
                         return 125;
                     //below is the 5x5x5 detection that counts how many blocks are there
-                    if(i>=-2 && i<=2 && j>=-2 && j<=2 && k>=-2 && k<=2){
-                        if(b.getBlock() instanceof NegativeMatterBlock)
+                    if (i >= -2 && i <= 2 && j >= -2 && j <= 2 && k >= -2 && k <= 2) {
+                        if (b.getBlock() instanceof NegativeMatterBlock)
                             count -= 1;
-                        else if(!b.isAir()
+                        else if (!b.isAir()
                             && !(b.getBlock() instanceof VoidMatterBlock)
                             && !(b.getBlock() instanceof VoidEnergyCollectorBlock)
                         )
@@ -173,21 +174,21 @@ public class VoidEnergyCollectorBlockEntity extends BlockEntity implements IPowe
         return count;
     }
 
-    private void makeBlocksDecay(){
+    private void makeBlocksDecay() {
         if (level == null || level.isClientSide()) return;
         RandomSource random = level.getRandom();
         ArrayList<BlockPos> list = new ArrayList<>();
-        for (int i = -2; i <= 2; i++){
-            for (int j = -2; j <= 2; j++){
-                for (int k = -2; k <= 2; k++){
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                for (int k = -2; k <= 2; k++) {
                     BlockPos thisPos = this.getBlockPos();
                     BlockPos bp = new BlockPos(
                         thisPos.getX() + i,
                         thisPos.getY() + j,
                         thisPos.getZ() + k);
-                    if(isOutOfBuildLimits(level, bp)) continue;
+                    if (isOutOfBuildLimits(level, bp)) continue;
                     BlockState b = level.getBlockState(bp);
-                    if(b.isAir()){
+                    if (b.isAir()) {
                         list.add(bp);
                     }
                 }

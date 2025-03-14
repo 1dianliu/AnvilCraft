@@ -5,7 +5,7 @@ import dev.dubhe.anvilcraft.block.entity.VoidEnergyCollectorBlockEntity;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 
-public class VoidEnergyCollectorRenderer extends PowerProducerRenderer<VoidEnergyCollectorBlockEntity>{
+public class VoidEnergyCollectorRenderer extends PowerProducerRenderer<VoidEnergyCollectorBlockEntity> {
     public static final ModelResourceLocation MODEL = ModelResourceLocation.standalone(
         AnvilCraft.of("block/void_energy_collector_head")
     );
