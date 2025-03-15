@@ -54,11 +54,11 @@ public abstract class EntityMixin {
     @Redirect(method = "move(Lnet/minecraft/world/entity/MoverType;Lnet/minecraft/world/phys/Vec3;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setPos(DDD)V", ordinal = 1))
     public void anvilcraft$fixFallingBlockEntity(Entity instance, double x, double y, double z, @Share("isFixed") LocalBooleanRef isFixed) {
         isFixed.set(false);
-        Vec3 vec3 = new Vec3(x-getX(), y-getY(), z-getZ());
-        if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98 ) {
+        Vec3 vec3 = new Vec3(x - getX(), y - getY(), z - getZ());
+        if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98) {
             Vec3 s = position();
             Vec3 e = vec3.add(s);
-            ArrayList<Pair<BlockPos,Double>> blockPosList = new ArrayList<>();
+            ArrayList<Pair<BlockPos, Double>> blockPosList = new ArrayList<>();
             for (BlockPos blockPos : DeflectionRingBlockEntity.getAllBlocks(level)) {
                 Vec3 q = blockPos.getCenter();
                 double a = s.distanceTo(q);
@@ -112,7 +112,7 @@ public abstract class EntityMixin {
         if (((Object) this instanceof Projectile || (Object) this instanceof FallingBlockEntity) && vec3.length() > 0.98) {
             Vec3 s = position();
             Vec3 e = vec3.add(s);
-            ArrayList<Pair<BlockPos,Double>> blockPosList = new ArrayList<>();
+            ArrayList<Pair<BlockPos, Double>> blockPosList = new ArrayList<>();
             for (BlockPos blockPos : DeflectionRingBlockEntity.getAllBlocks(level)) {
                 Vec3 q = blockPos.getCenter();
                 double a = s.distanceTo(q);
