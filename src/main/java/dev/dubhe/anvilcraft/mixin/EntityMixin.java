@@ -64,7 +64,7 @@ public abstract class EntityMixin {
                 double a = s.distanceTo(q);
                 double b = e.distanceTo(q);
                 double c = s.distanceTo(e);
-                double d = -(b*b-c*c-a*a)/(2*c);
+                double d = -(b * b - c * c - a * a) / (2 * c);
                 double distance = Math.sqrt(a*a-d*d);
                 if (distance <= 0.56747 && d > 0)
                     blockPosList.add(Pair.of(blockPos, d));
@@ -118,8 +118,8 @@ public abstract class EntityMixin {
                 double a = s.distanceTo(q);
                 double b = e.distanceTo(q);
                 double c = s.distanceTo(e);
-                double d = -(b*b-c*c-a*a)/(2*c);
-                double distance = Math.sqrt(a*a-d*d);
+                double d = -(b * b - c * c - a * a) / (2 * c);
+                double distance = Math.sqrt(a * a - d * d);
                 if (distance <= 0.56747 && d > 0)
                     blockPosList.add(Pair.of(blockPos, d));
             }
