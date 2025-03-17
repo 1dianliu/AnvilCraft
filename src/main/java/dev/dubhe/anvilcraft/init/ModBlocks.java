@@ -97,6 +97,7 @@ import dev.dubhe.anvilcraft.block.TeslaTowerBlock;
 import dev.dubhe.anvilcraft.block.ThermoelectricConverterBlock;
 import dev.dubhe.anvilcraft.block.TransmissionPoleBlock;
 import dev.dubhe.anvilcraft.block.TransparentCraftingTableBlock;
+import dev.dubhe.anvilcraft.block.VoidEnergyCollectorBlock;
 import dev.dubhe.anvilcraft.block.VoidMatterBlock;
 import dev.dubhe.anvilcraft.block.multipart.FlexibleMultiPartBlock;
 import dev.dubhe.anvilcraft.block.multipart.SimpleMultiPartBlock;
@@ -1514,6 +1515,34 @@ public class ModBlocks {
         .blockstate((ctx, provider) -> {
         })
         .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .register();
+
+    public static final BlockEntry<VoidEnergyCollectorBlock> VOID_ENERGY_COLLECTOR = REGISTRATE
+        .block("void_energy_collector", VoidEnergyCollectorBlock::new)
+        .simpleItem()
+        .properties(BlockBehaviour.Properties::noOcclusion)
+        .blockstate((ctx, provider) -> {
+        })
+        .initialProperties(() -> Blocks.IRON_BLOCK)
+        .tag(BlockTags.MINEABLE_WITH_PICKAXE)
+        .recipe((ctx, provider) -> {
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("CCC")
+                .define('A', ModBlocks.VOID_MATTER_BLOCK)
+                .define('B', ModBlocks.CHARGE_COLLECTOR)
+                .define('C', ModBlocks.HEAVY_IRON_BLOCK)
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModBlocks.VOID_MATTER_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.VOID_MATTER_BLOCK))
+                .unlockedBy(
+                    AnvilCraftDatagen.hasItem(ModBlocks.CHARGE_COLLECTOR),
+                    AnvilCraftDatagen.has(ModBlocks.CHARGE_COLLECTOR))
+                .unlockedBy(AnvilCraftDatagen.hasItem(ModBlocks.HEAVY_IRON_BLOCK),
+                    AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
+                .save(provider);
+        })
         .register();
 
     public static final BlockEntry<MagnetoElectricCoreBlock> MAGNETO_ELECTRIC_CORE_BLOCK = REGISTRATE
