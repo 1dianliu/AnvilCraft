@@ -38,6 +38,7 @@ public class ItemSpawnEventListener {
                                     itemEntity.setItem(itemStack);
                                 } else {
                                     event.setCanceled(true);
+                                    return;
                                 }
                             }
                         }
