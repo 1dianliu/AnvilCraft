@@ -606,6 +606,16 @@ public class ModItems {
         .model((ctx, provider) -> {
         })
         .tag(ModItemTags.CAPACITOR)
+        .recipe((ctx, provider) -> ShapedRecipeBuilder.shaped(
+                RecipeCategory.MISC, ctx.get())
+            .pattern("A")
+            .pattern("B")
+            .pattern("A")
+            .define('A', ModItemTags.COPPER_PLATES)
+            .define('B', ModItems.RESIN)
+            .unlockedBy("has_copper_plates", RegistrateRecipeProvider.has(ModItemTags.COPPER_PLATES))
+            .unlockedBy("has_resin", RegistrateRecipeProvider.has(ModItems.RESIN))
+            .save(provider))
         .register();
     public static final ItemEntry<Item> CHOCOLATE = REGISTRATE
         .item("chocolate", properties -> new Item(properties.food(ModFoods.CHOCOLATE)))
