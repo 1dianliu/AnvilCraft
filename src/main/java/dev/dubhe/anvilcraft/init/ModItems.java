@@ -621,7 +621,7 @@ public class ModItems {
         .item("chocolate", properties -> new Item(properties.food(ModFoods.CHOCOLATE)))
         .tag(Tags.Items.FOODS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get(), 4)
                 .pattern("ABA")
                 .pattern("CDC")
                 .pattern("ABA")
@@ -644,7 +644,7 @@ public class ModItems {
         .item("chocolate_black", p -> new Item(p.food(ModFoods.CHOCOLATE_BLACK)))
         .tag(Tags.Items.FOODS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get(), 4)
                 .pattern("AAA")
                 .pattern("BCB")
                 .pattern("AAA")
@@ -665,7 +665,7 @@ public class ModItems {
         .item("chocolate_white", p -> new Item(p.food(ModFoods.CHOCOLATE_WHITE)))
         .tag(Tags.Items.FOODS)
         .recipe((ctx, provider) -> {
-            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get())
+            ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, ctx.get(), 4)
                 .pattern("AAA")
                 .pattern("BCB")
                 .pattern("AAA")
