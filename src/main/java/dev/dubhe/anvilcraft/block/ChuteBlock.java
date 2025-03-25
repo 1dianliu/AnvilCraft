@@ -159,12 +159,7 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
         Block neighborBlock,
         BlockPos neighborPos,
         boolean movedByPiston) {
-        if (level.isClientSide) return;
-        boolean bl = state.getValue(ENABLED);
-        if (bl == level.hasNeighborSignal(pos)) {
-            if (!bl) level.scheduleTick(pos, this, 4);
-            else level.setBlock(pos, state.cycle(ENABLED), 2);
-        }
+        level.setBlock(pos, state.setValue(ENABLED, !level.hasNeighborSignal(pos)), 2);
         if (!neighborPos.equals(pos.relative(state.getValue(FACING)))) return;
         BlockState blockState = level.getBlockState(neighborPos);
         if (blockState.is(ModBlocks.CHUTE.get())

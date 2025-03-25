@@ -52,14 +52,13 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static dev.dubhe.anvilcraft.block.ChuteBlock.ENABLED;
 import static dev.dubhe.anvilcraft.block.ChuteBlock.hasChuteFacing;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerRotateBehavior, IHammerRemovable {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
 
     public static final VoxelShape SHAPE_UP =
         Shapes.join(Block.box(4, 8, 4, 12, 16, 12), Block.box(0, 0, 0, 16, 8, 16), BooleanOp.OR);
@@ -82,7 +81,7 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
     public MagneticChuteBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-            this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(POWERED, false));
+            this.stateDefinition.any().setValue(FACING, Direction.DOWN).setValue(ENABLED, true));
     }
 
     @Override
@@ -202,6 +201,20 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState blockState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity instanceof MagneticChuteBlockEntity magneticChuteBlockEntity) {
+            return magneticChuteBlockEntity.getRedstoneSignal();
+        }
+        return 0;
+    }
+
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         Direction facing = context.getNearestLookingDirection();
         if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
@@ -209,7 +222,7 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
         }
         return this.defaultBlockState()
             .setValue(FACING, facing)
-            .setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
+            .setValue(ENABLED, !context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
 
@@ -226,7 +239,7 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, POWERED);
+        builder.add(FACING, ENABLED);
     }
 
     @Override
@@ -238,7 +251,7 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
         BlockPos neighborPos,
         boolean movedByPiston
     ) {
-        level.setBlock(pos, state.setValue(POWERED, level.hasNeighborSignal(pos)), 2);
+        level.setBlock(pos, state.setValue(ENABLED, !level.hasNeighborSignal(pos)), 2);
     }
 
     @Override

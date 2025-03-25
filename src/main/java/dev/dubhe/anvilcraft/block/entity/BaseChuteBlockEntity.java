@@ -144,6 +144,8 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
+        boolean success = false;
+        if(cooldown > 0) cooldown--;
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
@@ -152,8 +154,8 @@ public abstract class BaseChuteBlockEntity
                     getInputDirection().getOpposite()
                 );
                 if (source != null) {
-                    ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
-                    cooldown = AnvilCraft.config.chuteMaxCooldown;
+                    //吸容器物品
+                    success = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
                 } else {
                     List<ItemEntity> itemEntities = getLevel()
                         .getEntitiesOfClass(
@@ -169,10 +171,10 @@ public abstract class BaseChuteBlockEntity
                         itemEntity.discard();
                         break;
                     }
-                    if (prevSize > itemEntities.size()) {
-                        cooldown = AnvilCraft.config.chuteMaxCooldown;
-                    }
+                    success = prevSize > itemEntities.size();
                 }
+                // 检查物品栏是否为空
+                if (this.isEmpty()) return;
                 // 尝试向朝向容器输出
                 IItemHandler target = findItemHandler(
                     getBlockPos().relative(getOutputDirection()),
@@ -180,8 +182,7 @@ public abstract class BaseChuteBlockEntity
                 );
 
                 if (target != null) {
-                    ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
-                    cooldown = AnvilCraft.config.chuteMaxCooldown;
+                    success |= ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                 } else {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
                     List<ItemEntity> itemEntities = getLevel()
@@ -233,11 +234,20 @@ public abstract class BaseChuteBlockEntity
                 level.updateNeighbourForOutputSignal(
                     getBlockPos(), getBlockState().getBlock());
             }
-        } else {
-            cooldown--;
-        }
-    }
 
+        }
+        if (success) cooldown = AnvilCraft.config.chuteMaxCooldown;
+    }
+    private boolean isEmpty() {
+        boolean bool = true;
+        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
+            if (!this.itemHandler.getStackInSlot(i).isEmpty()) {
+                bool = false;
+                break;
+            }
+        }
+        return bool;
+    }
     /**
      * 获取红石信号强度
      *
