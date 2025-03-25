@@ -7,6 +7,9 @@ import dev.dubhe.anvilcraft.init.ModRecipeTypes;
 import dev.dubhe.anvilcraft.recipe.mineral.MineralFountainRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,21 +36,43 @@ public class MineralFountainBlockEntity extends BlockEntity {
         return new MineralFountainBlockEntity(type, pos, blockState);
     }
 
+    @Override
+    public void setLevel(@NotNull Level level) {
+        super.setLevel(level);
+        this.tickCount = (int) (20 - level.getGameTime() % 20L);
+        //根据gameTime设置初始值，保证所有的涌泉同时触发
+    }
+
+    @Override
+    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.tickCount = tag.getInt("tickCount");
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.loadAdditional(tag, registries);
+        tag.putInt("tickCount", this.tickCount);
+    }
+
     /**
-     * 矿物泉涌tick
+     * 矿物涌泉tick
      */
     public void tick() {
         if (level == null) return;
-        tickCount++;
-        if (tickCount < 20) return;
-        tickCount = 0;
-        BlockState aroundState = getAroundBlock();
+        tickCount--;
         // 冷却检查
-        if (aroundHas(Blocks.BEDROCK) || aroundHas(ModBlocks.MINERAL_FOUNTAIN.get())) {
+        if (tickCount > 0) return;
+        tickCount = 20;
+        BlockState aroundState = getAroundBlock();
+        /*
+            //退化机制
+            if (aroundHas(Blocks.BEDROCK) || aroundHas(ModBlocks.MINERAL_FOUNTAIN.get())) {
             level.destroyBlock(getBlockPos(), false);
             level.setBlockAndUpdate(getBlockPos(), ModBlocks.STURDY_DEEPSLATE.getDefaultState());
             return;
-        }
+            }
+        */
         // 高度检查
         if (level.getMinBuildHeight() > getBlockPos().getY() || getBlockPos().getY() > level.getMinBuildHeight() + 8)
             return;
@@ -113,7 +138,8 @@ public class MineralFountainBlockEntity extends BlockEntity {
         return count == 4 ? firstState : Blocks.AIR.defaultBlockState();
     }
 
-    private boolean aroundHas(Block block) {
+    /*
+        private boolean aroundHas(Block block) {
         if (level == null) {
             return false;
         }
@@ -124,4 +150,5 @@ public class MineralFountainBlockEntity extends BlockEntity {
         }
         return false;
     }
+    */
 }
