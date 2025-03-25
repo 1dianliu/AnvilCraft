@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,12 +35,12 @@ public class MineralFountainBlockEntity extends BlockEntity {
         return new MineralFountainBlockEntity(type, pos, blockState);
     }
 
-    @Override
+/*    @Override
     public void setLevel(@NotNull Level level) {
         super.setLevel(level);
         this.tickCount = (int) (20 - level.getGameTime() % 20L);
         //根据gameTime设置初始值，保证所有的涌泉同时触发
-    }
+    }*/
 
     @Override
     public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
@@ -60,10 +59,9 @@ public class MineralFountainBlockEntity extends BlockEntity {
      */
     public void tick() {
         if (level == null) return;
-        tickCount--;
-        // 冷却检查
-        if (tickCount > 0) return;
-        tickCount = 20;
+        if (tickCount > -1) tickCount--;
+        if (tickCount != 0) return;
+//        tickCount = 20;
         BlockState aroundState = getAroundBlock();
         /*
             //退化机制
@@ -71,7 +69,7 @@ public class MineralFountainBlockEntity extends BlockEntity {
             level.destroyBlock(getBlockPos(), false);
             level.setBlockAndUpdate(getBlockPos(), ModBlocks.STURDY_DEEPSLATE.getDefaultState());
             return;
-            }
+            }z
         */
         // 高度检查
         if (level.getMinBuildHeight() > getBlockPos().getY() || getBlockPos().getY() > level.getMinBuildHeight() + 8)
@@ -136,6 +134,10 @@ public class MineralFountainBlockEntity extends BlockEntity {
                 s.is(firstState.getBlock()) && (s.getFluidState().isEmpty() || s.getFluidState().isSource())
             ).count();
         return count == 4 ? firstState : Blocks.AIR.defaultBlockState();
+    }
+
+    public void resetTickCount() {
+        if (tickCount <= 0) tickCount = 20;
     }
 
     /*
