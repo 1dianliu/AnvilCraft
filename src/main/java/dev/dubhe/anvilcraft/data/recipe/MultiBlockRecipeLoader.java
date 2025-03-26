@@ -16,57 +16,54 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 public class MultiBlockRecipeLoader {
     public static void init(RegistrateRecipeProvider provider) {
         MultiblockRecipe.builder(ModBlocks.GIANT_ANVIL)
-            .layer("ABA", "CDE", "AFA")
-            .layer("   ", " D ", "   ")
-            .layer("GHG", "IGI", "GHG")
-            .symbol(
-                'A',
-                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_SLAB)
-                    .hasState(SlabBlock.TYPE, SlabType.BOTTOM)
-                    .hasState(SlabBlock.WATERLOGGED, false))
+            .layer("JGJ", "HDI", "JFJ")
+            .layer("EEE", "EDE", "EEE")
+            .layer("ACA", "BAB", "ACA")
+            .symbol('A', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
             .symbol(
                 'B',
-                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
-                    .hasState(StairBlock.FACING, Direction.SOUTH)
-                    .hasState(StairBlock.HALF, Half.BOTTOM)
-                    .hasState(StairBlock.WATERLOGGED, false))
+                BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
+                    .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.X))
             .symbol(
                 'C',
-                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
-                    .hasState(StairBlock.FACING, Direction.EAST)
-                    .hasState(StairBlock.HALF, Half.BOTTOM)
-                    .hasState(StairBlock.WATERLOGGED, false))
+                BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
+                    .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.Z))
             .symbol('D', ModBlocks.HEAVY_IRON_COLUMN)
-            .symbol(
-                'E',
-                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
-                    .hasState(StairBlock.FACING, Direction.WEST)
-                    .hasState(StairBlock.HALF, Half.BOTTOM)
-                    .hasState(StairBlock.WATERLOGGED, false))
+            .symbol('E', ModBlocks.HEAVY_IRON_PLATE)
             .symbol(
                 'F',
                 BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
                     .hasState(StairBlock.FACING, Direction.NORTH)
-                    .hasState(StairBlock.HALF, Half.BOTTOM)
-                    .hasState(StairBlock.WATERLOGGED, false))
-            .symbol('G', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
+                    .hasState(StairBlock.HALF, Half.BOTTOM))
+            .symbol(
+                'G',
+                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
+                    .hasState(StairBlock.FACING, Direction.SOUTH)
+                    .hasState(StairBlock.HALF, Half.BOTTOM))
             .symbol(
                 'H',
-                BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
-                    .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.Z))
+                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
+                    .hasState(StairBlock.FACING, Direction.EAST)
+                    .hasState(StairBlock.HALF, Half.BOTTOM))
             .symbol(
                 'I',
-                BlockPredicateWithState.of(ModBlocks.HEAVY_IRON_BEAM)
-                    .hasState(HeavyIronBeamBlock.AXIS, Direction.Axis.X))
+                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_STAIRS)
+                    .hasState(StairBlock.FACING, Direction.WEST)
+                    .hasState(StairBlock.HALF, Half.BOTTOM))
+            .symbol(
+                'J',
+                BlockPredicateWithState.of(ModBlocks.CUT_HEAVY_IRON_SLAB)
+                    .hasState(SlabBlock.TYPE, SlabType.BOTTOM))
             .save(provider, AnvilCraft.of("multiblock/giant_anvil_1"));
 
         MultiblockRecipe.builder(ModBlocks.GIANT_ANVIL)
             .layer("AAA", "AAA", "AAA")
-            .layer("   ", " B ", "   ")
-            .layer("CCC", "CCC", "CCC")
+            .layer("CCC", "CBC", "CCC")
+            .layer("DDD", "DDD", "DDD")
             .symbol('A', ModBlocks.CUT_HEAVY_IRON_BLOCK)
             .symbol('B', ModBlocks.HEAVY_IRON_COLUMN)
-            .symbol('C', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
+            .symbol('C', ModBlocks.HEAVY_IRON_PLATE)
+            .symbol('D', ModBlocks.POLISHED_HEAVY_IRON_BLOCK)
             .save(provider, AnvilCraft.of("multiblock/giant_anvil_2"));
 
         MultiblockRecipe.builder(ModBlocks.MENGER_SPONGE)
