@@ -40,6 +40,11 @@ public class ChuteBlockEntity extends BaseChuteBlockEntity {
     }
 
     @Override
+    protected boolean isEnabled() {
+        return getBlockState().getValue(ChuteBlock.ENABLED);
+    }
+
+    @Override
     protected DirectionProperty getFacingProperty() {
         return ChuteBlock.FACING;
     }
@@ -52,11 +57,6 @@ public class ChuteBlockEntity extends BaseChuteBlockEntity {
     @Override
     protected Direction getInputDirection() {
         return Direction.UP;
-    }
-
-    @Override
-    protected boolean isEnabled() {
-        return getBlockState().getValue(ChuteBlock.ENABLED);
     }
 
     public static ChuteBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
