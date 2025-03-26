@@ -144,6 +144,7 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
+        boolean success = false;
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
@@ -152,7 +153,7 @@ public abstract class BaseChuteBlockEntity
                     getInputDirection().getOpposite()
                 );
                 if (source != null) {
-                    ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
+                    success = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
                     cooldown = AnvilCraft.config.chuteMaxCooldown;
                 } else {
                     List<ItemEntity> itemEntities = getLevel()
@@ -180,7 +181,7 @@ public abstract class BaseChuteBlockEntity
                 );
 
                 if (target != null) {
-                    ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
+                    success |= ItemHandlerUtil.exportToTarget(getItemHandler(),64, stack -> true, target);
                     cooldown = AnvilCraft.config.chuteMaxCooldown;
                 } else {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
