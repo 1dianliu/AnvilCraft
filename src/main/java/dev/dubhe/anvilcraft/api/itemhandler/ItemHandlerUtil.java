@@ -25,7 +25,7 @@ public class ItemHandlerUtil {
             }
             if (filterItem == null) {
                 filterItem = sourceStack.getItem();
-                maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize();//根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
+                maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize(); //根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
             }
             if (sourceStack.getItem() != filterItem) continue;
             ItemStack remainder = ItemHandlerHelper.insertItem(target, sourceStack, true);
@@ -34,7 +34,7 @@ public class ItemHandlerUtil {
                 sourceStack = source.extractItem(srcIndex, Math.min(maxAmount, amountToInsert), false);
                 ItemHandlerHelper.insertItem(target, sourceStack, false);
                 success = true;
-                maxAmount -= amountToInsert ;
+                maxAmount -= amountToInsert;
                 if (maxAmount <= 0) break;
             }
         }
@@ -56,7 +56,7 @@ public class ItemHandlerUtil {
             }
             if (filterItem == null) {
                 filterItem = sourceStack.getItem();
-                maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize();//根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
+                maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize(); //根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
             }
             if (sourceStack.getItem() != filterItem) continue;
             ItemStack remainder = ItemHandlerHelper.insertItem(target, sourceStack, true);
@@ -65,7 +65,7 @@ public class ItemHandlerUtil {
                 sourceStack = source.extractItem(srcIndex, Math.min(maxAmount, amountToInsert), false);
                 ItemHandlerHelper.insertItem(target, sourceStack, false);
                 success = true;
-                maxAmount -= amountToInsert ;
+                maxAmount -= amountToInsert;
                 if (maxAmount <= 0) break;
             }
         }

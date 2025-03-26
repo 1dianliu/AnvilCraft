@@ -181,7 +181,7 @@ public abstract class BaseChuteBlockEntity
                 );
 
                 if (target != null) {
-                    success |= ItemHandlerUtil.exportToTarget(getItemHandler(),64, stack -> true, target);
+                    success |= ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                     cooldown = AnvilCraft.config.chuteMaxCooldown;
                 } else {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
