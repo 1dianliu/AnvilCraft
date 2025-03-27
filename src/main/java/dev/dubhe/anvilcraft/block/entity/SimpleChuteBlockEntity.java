@@ -9,22 +9,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
 
 @Getter
 public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerHolder {
@@ -61,9 +59,10 @@ public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerH
     public void tick() {
         if (cooldown <= 0) {
             if (getBlockState().getValue(SimpleChuteBlock.ENABLED)) {
-                IItemHandler target = findItemHandler(
+                IItemHandler target = getTargetItemHandler(
                     getBlockPos().relative(getOutputDirection()),
-                    getOutputDirection().getOpposite()
+                    getOutputDirection().getOpposite(),
+                    level
                 );
                 if (target != null) {
                     // 尝试向朝向容器输出
@@ -146,34 +145,5 @@ public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerH
 
     protected Direction getOutputDirection() {
         return getDirection();
-    }
-
-    @Nullable
-    protected IItemHandler findItemHandler(BlockPos inputBlockPos, Direction context) {
-        IItemHandler input = getLevel()
-            .getCapability(
-                Capabilities.ItemHandler.BLOCK,
-                inputBlockPos,
-                context
-            );
-        if (input != null) {
-            return input;
-        }
-        AABB aabb = new AABB(inputBlockPos);
-        List<ContainerEntity> entities =
-            level.getEntitiesOfClass(
-                    Entity.class,
-                    aabb,
-                    e -> e instanceof ContainerEntity
-                ).stream()
-                .map(it -> (ContainerEntity) it)
-                .toList();
-        if (!entities.isEmpty()) {
-            input = ((Entity) entities.getFirst()).getCapability(
-                Capabilities.ItemHandler.ENTITY,
-                null
-            );
-        }
-        return input;
     }
 }

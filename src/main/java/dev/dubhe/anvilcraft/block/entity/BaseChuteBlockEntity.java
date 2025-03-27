@@ -12,11 +12,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,13 +24,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
 
 @Getter
 @MethodsReturnNonnullByDefault
@@ -111,35 +110,6 @@ public abstract class BaseChuteBlockEntity
         itemHandler.deserializeNBT(provider, tag.getCompound("Inventory"));
     }
 
-    @Nullable
-    protected IItemHandler findItemHandler(BlockPos inputBlockPos, Direction context) {
-        IItemHandler input = getLevel()
-            .getCapability(
-                Capabilities.ItemHandler.BLOCK,
-                inputBlockPos,
-                context
-            );
-        if (input != null) {
-            return input;
-        }
-        AABB aabb = new AABB(inputBlockPos);
-        List<ContainerEntity> entities =
-            level.getEntitiesOfClass(
-                    Entity.class,
-                    aabb,
-                    e -> e instanceof ContainerEntity
-                ).stream()
-                .map(it -> (ContainerEntity) it)
-                .toList();
-        if (!entities.isEmpty()) {
-            input = ((Entity) entities.getFirst()).getCapability(
-                Capabilities.ItemHandler.ENTITY,
-                null
-            );
-        }
-        return input;
-    }
-
     /**
      * 溜槽 tick
      */
@@ -149,9 +119,10 @@ public abstract class BaseChuteBlockEntity
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
-                IItemHandler source = findItemHandler(
+                IItemHandler source = getTargetItemHandler(
                     getBlockPos().relative(getInputDirection()),
-                    getInputDirection().getOpposite()
+                    getInputDirection().getOpposite(),
+                    level
                 );
                 if (source != null) {
                     resetCD = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
@@ -173,9 +144,10 @@ public abstract class BaseChuteBlockEntity
                         resetCD = prevSize > itemEntities.size();
                 }
                 // 尝试向朝向容器输出
-                IItemHandler target = findItemHandler(
+                IItemHandler target = getTargetItemHandler(
                     getBlockPos().relative(getOutputDirection()),
-                    getOutputDirection().getOpposite()
+                    getOutputDirection().getOpposite(),
+                    level
                 );
 
                 if (target != null) {
