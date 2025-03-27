@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.AnvilCraft;
 import dev.dubhe.anvilcraft.api.power.IPowerComponent.Switch;
 import dev.dubhe.anvilcraft.block.AccelerationRingBlock;
 import dev.dubhe.anvilcraft.block.ActiveSilencerBlock;
+import dev.dubhe.anvilcraft.block.AmberBlock;
 import dev.dubhe.anvilcraft.block.ArrowBlock;
 import dev.dubhe.anvilcraft.block.BatchCrafterBlock;
 import dev.dubhe.anvilcraft.block.BerryCakeBlock;
@@ -2545,11 +2546,14 @@ public class ModBlocks {
         .register();
 
     public static final BlockEntry<? extends Block> AMBER_BLOCK = REGISTRATE
-        .block("amber_block", HalfTransparentBlock::new)
+        .block("amber_block", AmberBlock::new)
         .initialProperties(() -> Blocks.EMERALD_BLOCK)
         .blockstate((ctx, provider) -> {
         })
-        .properties(BlockBehaviour.Properties::noOcclusion)
+        .properties(properties -> properties
+            .noOcclusion()
+            .pushReaction(PushReaction.DESTROY)
+        )
         .item()
         .tag(Tags.Items.STORAGE_BLOCKS,
             ModItemTags.STORAGE_BLOCKS_AMBER)
