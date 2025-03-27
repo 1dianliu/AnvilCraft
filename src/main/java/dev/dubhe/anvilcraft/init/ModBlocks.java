@@ -159,7 +159,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ColoredFallingBlock;
-import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
@@ -1960,6 +1959,7 @@ public class ModBlocks {
                 .save(provider);
         })
         .register();
+
     public static final BlockEntry<? extends Block> POLISHED_HEAVY_IRON_BLOCK = REGISTRATE
         .block("polished_heavy_iron_block", Block::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -1971,11 +1971,13 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get())
+                    ctx.get(),
+                    2)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
         })
         .register();
+
     public static final BlockEntry<? extends Block> POLISHED_HEAVY_IRON_SLAB = REGISTRATE
         .block("polished_heavy_iron_slab", SlabBlock::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -1996,7 +1998,7 @@ public class ModBlocks {
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
                     ctx.get(),
-                    2)
+                    4)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_heavy_iron_block"));
             SingleItemRecipeBuilder.stonecutting(
@@ -2008,6 +2010,7 @@ public class ModBlocks {
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> POLISHED_HEAVY_IRON_STAIRS = REGISTRATE
         .block(
             "polished_heavy_iron_stairs",
@@ -2026,7 +2029,8 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get())
+                    ctx.get(),
+                    2)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_heavy_iron_block"));
             SingleItemRecipeBuilder.stonecutting(
@@ -2037,6 +2041,7 @@ public class ModBlocks {
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> CUT_HEAVY_IRON_BLOCK = REGISTRATE
         .block("cut_heavy_iron_block", Block::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -2049,11 +2054,19 @@ public class ModBlocks {
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
                     ctx.get(),
-                    4)
+                    8)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> CUT_HEAVY_IRON_SLAB = REGISTRATE
         .block("cut_heavy_iron_slab", SlabBlock::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -2073,17 +2086,27 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 8)
+                    ctx.get(),
+                    16)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_heavy_iron_block"));
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 2)
+                    ctx.get(),
+                    8)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    2)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> CUT_HEAVY_IRON_STAIRS = REGISTRATE
         .block(
             "cut_heavy_iron_stairs",
@@ -2101,17 +2124,26 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 4)
+                    ctx.get(),
+                    8)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_heavy_iron_block"));
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get())
+                    ctx.get(),
+                    4)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> HEAVY_IRON_PLATE = REGISTRATE
         .block("heavy_iron_plate", HeavyIronPlateBlock::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -2125,11 +2157,40 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 8)
+                    ctx.get(),
+                    16)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    8)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    2)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_SLAB),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_SLAB))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_slab"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_SLAB),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_SLAB))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_slab"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> HEAVY_IRON_COLUMN = REGISTRATE
         .block("heavy_iron_column", Block::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -2143,11 +2204,26 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 4)
+                    ctx.get(),
+                    8)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<? extends Block> HEAVY_IRON_BEAM = REGISTRATE
         .block("heavy_iron_beam", HeavyIronBeamBlock::new)
         .initialProperties(() -> Blocks.NETHERITE_BLOCK)
@@ -2164,11 +2240,26 @@ public class ModBlocks {
             SingleItemRecipeBuilder.stonecutting(
                     Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
                     RecipeCategory.BUILDING_BLOCKS,
-                    ctx.get(), 4)
+                    ctx.get(),
+                    8)
                 .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
                 .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
         })
         .register();
+
     public static final BlockEntry<HeavyIronWallBlock> HEAVY_IRON_WALL = REGISTRATE
         .block("heavy_iron_wall", HeavyIronWallBlock::new)
         .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -2179,6 +2270,26 @@ public class ModBlocks {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.WALLS)
         .recipe((ctx, provider) -> {
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    8)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
         })
         .item()
         .tag(ItemTags.WALLS)
@@ -2188,6 +2299,7 @@ public class ModBlocks {
         ))
         .build()
         .register();
+
     public static final BlockEntry<HeavyIronDoorBlock> HEAVY_IRON_DOOR = REGISTRATE
         .block("heavy_iron_door", HeavyIronDoorBlock::new)
         .initialProperties(() -> Blocks.IRON_DOOR)
@@ -2200,6 +2312,22 @@ public class ModBlocks {
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.DOORS)
+        .recipe((ctx, provider) -> {
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    2)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+        })
         .item()
         .tag(ItemTags.DOORS)
         .model((ctx, prov) -> {
@@ -2207,6 +2335,7 @@ public class ModBlocks {
         })
         .build()
         .register();
+
     public static final BlockEntry<HeavyIronTrapdoorBlock> HEAVY_IRON_TRAPDOOR = REGISTRATE
         .block("heavy_iron_trapdoor", HeavyIronTrapdoorBlock::new)
         .initialProperties(() -> Blocks.IRON_TRAPDOOR)
@@ -2217,6 +2346,28 @@ public class ModBlocks {
         .tag(BlockTags.MINEABLE_WITH_PICKAXE,
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.TRAPDOORS)
+        .recipe((ctx, provider) -> {
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    8)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName()));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.POLISHED_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get(),
+                    4)
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.POLISHED_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_polished_heavy_iron_block"));
+            SingleItemRecipeBuilder.stonecutting(
+                    Ingredient.of(ModBlocks.CUT_HEAVY_IRON_BLOCK),
+                    RecipeCategory.BUILDING_BLOCKS,
+                    ctx.get())
+                .unlockedBy("hasitem", AnvilCraftDatagen.has(ModBlocks.CUT_HEAVY_IRON_BLOCK))
+                .save(provider, AnvilCraft.of("stonecutting/" + ctx.getName() + "_from_cut_heavy_iron_block"));
+        })
         .item()
         .tag(ItemTags.TRAPDOORS)
         .model((c, p) -> {
@@ -2224,7 +2375,6 @@ public class ModBlocks {
         })
         .build()
         .register();
-
     public static final BlockEntry<? extends Block> CURSED_GOLD_BLOCK = REGISTRATE
         .block("cursed_gold_block", Block::new)
         .initialProperties(() -> Blocks.GOLD_BLOCK)
