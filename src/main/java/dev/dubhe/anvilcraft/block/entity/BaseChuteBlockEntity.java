@@ -144,7 +144,8 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
-        boolean success = false;
+        boolean resetCD = false;
+        if (cooldown  >0) cooldown--;
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
@@ -153,26 +154,23 @@ public abstract class BaseChuteBlockEntity
                     getInputDirection().getOpposite()
                 );
                 if (source != null) {
-                    success = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
-                    cooldown = AnvilCraft.config.chuteMaxCooldown;
+                    resetCD = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
                 } else {
                     List<ItemEntity> itemEntities = getLevel()
                         .getEntitiesOfClass(
                             ItemEntity.class,
                             new AABB(getBlockPos().relative(getInputDirection())),
                             itemEntity -> !itemEntity.getItem().isEmpty());
-                    int prevSize = itemEntities.size();
-                    for (ItemEntity itemEntity : itemEntities) {
-                        ItemStack remaining =
-                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
-                        if (!remaining.isEmpty()) continue;
-                        ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
-                        itemEntity.discard();
-                        break;
-                    }
-                    if (prevSize > itemEntities.size()) {
-                        cooldown = AnvilCraft.config.chuteMaxCooldown;
-                    }
+                        int prevSize = itemEntities.size();
+                        for (ItemEntity itemEntity : itemEntities) {
+                            ItemStack remaining =
+                                ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
+                            if (!remaining.isEmpty()) continue;
+                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
+                            itemEntity.discard();
+                            break;
+                        }
+                        resetCD = prevSize > itemEntities.size();
                 }
                 // 尝试向朝向容器输出
                 IItemHandler target = findItemHandler(
@@ -181,8 +179,7 @@ public abstract class BaseChuteBlockEntity
                 );
 
                 if (target != null) {
-                    success |= ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
-                    cooldown = AnvilCraft.config.chuteMaxCooldown;
+                    resetCD |= ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                 } else {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
                     List<ItemEntity> itemEntities = getLevel()
@@ -222,7 +219,7 @@ public abstract class BaseChuteBlockEntity
                                     itemEntity.setDefaultPickUpDelay();
                                     getLevel().addFreshEntity(itemEntity);
                                     this.itemHandler.setStackInSlot(i, stack);
-                                    cooldown = AnvilCraft.config.chuteMaxCooldown;
+                                    resetCD = true;
                                     break;
                                 }
                             }
@@ -234,9 +231,8 @@ public abstract class BaseChuteBlockEntity
                 level.updateNeighbourForOutputSignal(
                     getBlockPos(), getBlockState().getBlock());
             }
-        } else {
-            cooldown--;
         }
+        if (resetCD) cooldown = AnvilCraft.config.chuteMaxCooldown;
     }
 
     /**
