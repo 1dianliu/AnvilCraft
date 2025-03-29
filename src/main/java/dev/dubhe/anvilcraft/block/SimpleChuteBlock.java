@@ -112,7 +112,7 @@ public class SimpleChuteBlock
         if (level.isClientSide) return;
         BlockState neighborState = level.getBlockState(neighborPos);
         Block neighborBlock1 = neighborState.getBlock();
-        if (isChuteBlock(neighborBlock)||isChuteBlock(neighborBlock1)) {
+        if (isChuteBlock(neighborBlock) || isChuteBlock(neighborBlock1)) {
             BlockState newState = getState(level, pos, state.getValue(FACING));
             if (newState != null && newState != state)
                 level.setBlockAndUpdate(pos, newState);
@@ -164,8 +164,8 @@ public class SimpleChuteBlock
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             if (level.getBlockEntity(pos) instanceof SimpleChuteBlockEntity oldEntity) {
-                IItemHandler oldHandler = oldEntity.getItemHandler() ;
-                if (newState.is(ModBlocks.CHUTE.get())){
+                IItemHandler oldHandler = oldEntity.getItemHandler();
+                if (newState.is(ModBlocks.CHUTE.get())) {
                     level.removeBlockEntity(pos);
                     level.setBlock(pos, newState, 2);
                     IItemHandler newHandler = null;
@@ -173,8 +173,7 @@ public class SimpleChuteBlock
                         newHandler = newEntity.getItemHandler();
                     }
                     exportToTarget(oldHandler, 64, stack -> true, newHandler);
-                }
-                else level.removeBlockEntity(pos);
+                } else level.removeBlockEntity(pos);
                 Vec3 vec3 = oldEntity.getBlockPos().getCenter();
                 for (int slot = 0; slot < oldHandler.getSlots(); slot++) {
                     Containers.dropItemStack(level, vec3.x, vec3.y, vec3.z, oldHandler.getStackInSlot(slot));
@@ -285,7 +284,7 @@ public class SimpleChuteBlock
             BlockPos neighborPos = pos.relative(dir);
             BlockState neighborState = level.getBlockState(neighborPos);
             if (isChuteBlock(neighborState)) {
-                if (getFacing(neighborState) == dir.getOpposite()){
+                if (getFacing(neighborState) == dir.getOpposite()) {
                     success = true;
                     if (dir == Direction.UP) {
                         tall = !neighborState.is(ModBlocks.MAGNETIC_CHUTE.get());
@@ -294,7 +293,7 @@ public class SimpleChuteBlock
 
             }
         }
-        if(!success)
+        if (!success)
             result = ModBlocks.CHUTE.getDefaultState()
                 .setValue(FACING, facing)
                 .setValue(ENABLED, !level.hasNeighborSignal(pos));
