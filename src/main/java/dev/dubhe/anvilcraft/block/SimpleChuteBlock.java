@@ -51,6 +51,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.exportToTarget;
+import static dev.dubhe.anvilcraft.block.ChuteBlock.getFacing;
 import static dev.dubhe.anvilcraft.block.ChuteBlock.isChuteBlock;
 
 @ParametersAreNonnullByDefault
@@ -300,15 +301,5 @@ public class SimpleChuteBlock
         else
             result = result.setValue(TALL, tall);
         return result;
-    }
-
-    Direction getFacing(BlockState state) {
-        if (state.hasProperty(FACING)) {
-            return state.getValue(FACING);
-        }
-        if (state.hasProperty(MagneticChuteBlock.FACING)) {
-            return state.getValue(MagneticChuteBlock.FACING);
-        }
-        return Direction.UP;
     }
 }

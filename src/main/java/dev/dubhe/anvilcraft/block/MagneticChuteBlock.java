@@ -8,6 +8,7 @@ import dev.dubhe.anvilcraft.block.better.BetterBaseEntityBlock;
 import dev.dubhe.anvilcraft.block.entity.BaseChuteBlockEntity;
 import dev.dubhe.anvilcraft.block.entity.MagneticChuteBlockEntity;
 import dev.dubhe.anvilcraft.init.ModBlockEntities;
+import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.init.ModItems;
 import dev.dubhe.anvilcraft.init.ModMenuTypes;
 import dev.dubhe.anvilcraft.network.MachineEnableFilterPacket;
@@ -17,6 +18,7 @@ import dev.dubhe.anvilcraft.network.SlotFilterChangePacket;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -148,15 +150,31 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
         return 0;
     }
 
+    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Player player = context.getPlayer();
         Direction facing = context.getNearestLookingDirection();
         if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
             facing = facing.getOpposite();
         }
-        return this.defaultBlockState()
+        BlockState result = this.defaultBlockState()
             .setValue(FACING, facing)
             .setValue(ENABLED, !context.getLevel().hasNeighborSignal(context.getClickedPos()));
+        if (facing == Direction.UP) {
+            BlockState neighborState = level.getBlockState(pos.relative(facing));
+            if ((neighborState.is(ModBlocks.SIMPLE_CHUTE)
+                || neighborState.is(ModBlocks.CHUTE))
+                && neighborState.getValue(FACING_HOPPER) == Direction.DOWN) {
+                if (player != null) {
+                    player.displayClientMessage(Component.translatable("message.anvilcraft.chute.cannot_place"), true);
+                }
+                return null;
+            }
+        }
+        return result;
     }
 
 

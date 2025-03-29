@@ -125,6 +125,17 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
         return false;
     }
 
+    @Nullable
+    public static Direction getFacing(BlockState state) {
+        if (state.hasProperty(FACING)) {
+            return state.getValue(FACING);
+        }
+        if (state.hasProperty(MagneticChuteBlock.FACING)) {
+            return state.getValue(MagneticChuteBlock.FACING);
+        }
+        return null;
+    }
+
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return simpleCodec(ChuteBlock::new);
@@ -355,17 +366,6 @@ public class ChuteBlock extends BetterBaseEntityBlock implements HammerRotateBeh
                 .setValue(ENABLED, !level.hasNeighborSignal(pos))
                 .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
         return result;
-    }
-
-    @Nullable
-    Direction getFacing(BlockState state) {
-        if (state.hasProperty(FACING)) {
-            return state.getValue(FACING);
-        }
-        if (state.hasProperty(MagneticChuteBlock.FACING)) {
-            return state.getValue(MagneticChuteBlock.FACING);
-        }
-        return null;
     }
 }
 
