@@ -1,4 +1,4 @@
-package dev.dubhe.anvilcraft.api.ItemStack;
+package dev.dubhe.anvilcraft.api.itemstack;
 
 import net.minecraft.world.item.ItemStack;
 
