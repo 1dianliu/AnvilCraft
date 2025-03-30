@@ -82,6 +82,21 @@ public class ItemHandlerUtil {
         return success;
     }
 
+    public static void exportAllToTarget(IItemHandler source, Predicate<ItemStack> predicate, IItemHandler target) {
+        for (int srcIndex = 0; srcIndex < source.getSlots(); srcIndex++) {
+            ItemStack sourceStack = source.extractItem(srcIndex, Integer.MAX_VALUE, true);
+            if (sourceStack.isEmpty() || !predicate.test(sourceStack)) continue;
+
+            ItemStack remainder = ItemHandlerHelper.insertItem(target, sourceStack, true);
+
+            int amountToInsert = sourceStack.getCount() - remainder.getCount();
+            if (amountToInsert > 0) {
+                sourceStack = source.extractItem(srcIndex, amountToInsert, false);
+                ItemHandlerHelper.insertItem(target, sourceStack, false);
+            }
+        }
+    }
+
     public static IItemHandler getSourceItemHandlerList(BlockPos inputBlockPos, Direction context, Level level) {
         if (level == null) return null;
         IItemHandler input = level.getCapability(

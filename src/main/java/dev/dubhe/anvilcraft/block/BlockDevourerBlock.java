@@ -32,6 +32,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +40,9 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+import static dev.dubhe.anvilcraft.api.ItemStack.ItemStackUtil.isDefaultComponent;
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.exportAllToTarget;
 import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getTargetItemHandlerList;
 
 @ParametersAreNonnullByDefault
@@ -223,19 +226,19 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
                 continue;
             }
             List<ItemStack> dropList = switch (anvil) {
-                case null -> BreakBlockUtil.drop(level, devourBlockPos);
                 case RoyalAnvilBlock ignore -> BreakBlockUtil.dropSilkTouch(level, devourBlockPos);
                 case EmberAnvilBlock ignore -> BreakBlockUtil.dropSmelt(level, devourBlockPos);
-                default -> BreakBlockUtil.drop(level, devourBlockPos);
+                case null, default -> BreakBlockUtil.drop(level, devourBlockPos);
             };
+            IItemHandler source = level.getCapability(Capabilities.ItemHandler.BLOCK, devourBlockPos, Direction.UP);
             for (ItemStack itemStack : dropList) {
                 if (insertEnabled) {
-                    for (IItemHandler itemHandler : list) {
-                        ItemStack outItemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, true);
-                        if (outItemStack.isEmpty()) {
-                            itemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, false);
-                            break;
-                        }
+                    for (IItemHandler target : list) {
+                        ItemStack outItemStack = ItemHandlerHelper.insertItem(target, itemStack, true);
+                        boolean transferItems = source != null && isDefaultComponent(itemStack);
+                        if (outItemStack.isEmpty())
+                            itemStack = ItemHandlerHelper.insertItem(target, itemStack, false);
+                        if (transferItems) exportAllToTarget(source, stack -> true, target);
                     }
                 }
                 if (itemStack.isEmpty()) continue;
