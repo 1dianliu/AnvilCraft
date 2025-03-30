@@ -230,7 +230,8 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
         IItemHandler itemHandler = getTargetItemHandler(
             blockPos.relative(direction.getOpposite()),
             direction,
-            level
+            level,
+            true
         );
         int slot;
         for (slot = 0; itemHandler != null && slot < itemHandler.getSlots(); slot++) {

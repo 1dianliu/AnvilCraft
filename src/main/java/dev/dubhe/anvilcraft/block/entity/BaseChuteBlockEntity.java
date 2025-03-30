@@ -40,7 +40,6 @@ public abstract class BaseChuteBlockEntity
     extends BaseMachineBlockEntity
     implements IFilterBlockEntity, IDiskCloneable, IItemHandlerHolder {
 
-    private int cooldown = 0;
     private final FilteredItemStackHandler itemHandler = new FilteredItemStackHandler(9) {
         @Override
         public void onContentsChanged(int slot) {
@@ -48,6 +47,7 @@ public abstract class BaseChuteBlockEntity
             setChanged();
         }
     };
+    private int cooldown = 0;
 
     protected BaseChuteBlockEntity(BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -61,6 +61,17 @@ public abstract class BaseChuteBlockEntity
         return Direction.UP;
     }
 
+    @Override
+    public void setDirection(Direction direction) {
+        if (shouldSkipDirection(direction)) return;
+        BlockPos pos = this.getBlockPos();
+        Level level = this.getLevel();
+        if (null == level) return;
+        BlockState state = level.getBlockState(pos);
+        if (!validateBlockState(state)) return;
+        level.setBlockAndUpdate(pos, state.setValue(getFacingProperty(), direction));
+    }
+
     protected abstract boolean shouldSkipDirection(Direction direction);
 
     protected abstract boolean validateBlockState(BlockState state);
@@ -72,17 +83,6 @@ public abstract class BaseChuteBlockEntity
     protected abstract Direction getInputDirection();
 
     protected abstract boolean isEnabled();
-
-    @Override
-    public void setDirection(Direction direction) {
-        if (shouldSkipDirection(direction)) return;
-        BlockPos pos = this.getBlockPos();
-        Level level = this.getLevel();
-        if (null == level) return;
-        BlockState state = level.getBlockState(pos);
-        if (!validateBlockState(state)) return;
-        level.setBlockAndUpdate(pos, state.setValue(getFacingProperty(), direction));
-    }
 
     @Override
     public FilteredItemStackHandler getFilteredItemDepository() {
@@ -122,7 +122,8 @@ public abstract class BaseChuteBlockEntity
                 IItemHandler source = getTargetItemHandler(
                     getBlockPos().relative(getInputDirection()),
                     getInputDirection().getOpposite(),
-                    level
+                    level,
+                    true
                 );
                 if (source != null) {
                     resetCD = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
@@ -132,22 +133,23 @@ public abstract class BaseChuteBlockEntity
                             ItemEntity.class,
                             new AABB(getBlockPos().relative(getInputDirection())),
                             itemEntity -> !itemEntity.getItem().isEmpty());
-                        int prevSize = itemEntities.size();
-                        for (ItemEntity itemEntity : itemEntities) {
-                            ItemStack remaining =
-                                ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
-                            if (!remaining.isEmpty()) continue;
-                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
-                            itemEntity.discard();
-                            break;
-                        }
-                        resetCD = prevSize > itemEntities.size();
+                    int prevSize = itemEntities.size();
+                    for (ItemEntity itemEntity : itemEntities) {
+                        ItemStack remaining =
+                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
+                        if (!remaining.isEmpty()) continue;
+                        ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
+                        itemEntity.discard();
+                        break;
+                    }
+                    resetCD = prevSize > itemEntities.size();
                 }
                 // 尝试向朝向容器输出
                 IItemHandler target = getTargetItemHandler(
                     getBlockPos().relative(getOutputDirection()),
                     getOutputDirection().getOpposite(),
-                    level
+                    level,
+                    false
                 );
 
                 if (target != null) {

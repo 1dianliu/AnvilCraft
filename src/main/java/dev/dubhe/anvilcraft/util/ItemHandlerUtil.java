@@ -14,6 +14,38 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class ItemHandlerUtil implements IItemHandler {
+    /**
+     * 获取指定容器/实体容器的物品处理器(IItemHandler)。
+     *
+     * @param filterEmpty 是否忽略空容器 从容器中抽取物品时需要传入true
+     */
+    @Nullable
+    public static IItemHandler getTargetItemHandler(BlockPos inputBlockPos, Direction context, Level level, boolean filterEmpty) {
+        if (level == null) return null;
+        IItemHandler input = level.getCapability(
+            Capabilities.ItemHandler.BLOCK,
+            inputBlockPos,
+            context
+        );
+        if (input != null && input.getSlots() != 0) {
+            return input;
+        }
+        AABB aabb = new AABB(inputBlockPos);
+        //获取实体容器 input时过滤掉空容器
+        List<ContainerEntity> entities = level.getEntitiesOfClass(
+                Entity.class, aabb, e -> e instanceof ContainerEntity && (!filterEmpty || !((ContainerEntity) e).isEmpty()))
+            .stream()
+            .map(it -> (ContainerEntity) it)
+            .toList();
+        if (!entities.isEmpty()) {
+            input = ((Entity) entities.getFirst()).getCapability(
+                Capabilities.ItemHandler.ENTITY,
+                null
+            );
+        }
+        return input;
+    }
+
     @Override
     public int getSlots() {
         return 0;
@@ -42,34 +74,5 @@ public class ItemHandlerUtil implements IItemHandler {
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
         return false;
-    }
-
-    @Nullable
-    public static IItemHandler getTargetItemHandler(BlockPos inputBlockPos, Direction context, Level level) {
-        if (level == null) return null;
-        IItemHandler input = level.getCapability(
-            Capabilities.ItemHandler.BLOCK,
-            inputBlockPos,
-            context
-        );
-        if (input != null) {
-            return input;
-        }
-        AABB aabb = new AABB(inputBlockPos);
-        List<ContainerEntity> entities =
-            level.getEntitiesOfClass(
-                    Entity.class,
-                    aabb,
-                    e -> e instanceof ContainerEntity && !((ContainerEntity) e).isEmpty()
-                ).stream()
-                .map(it -> (ContainerEntity) it)
-                .toList();
-        if (!entities.isEmpty()) {
-            input = ((Entity) entities.getFirst()).getCapability(
-                Capabilities.ItemHandler.ENTITY,
-                null
-            );
-        }
-        return input;
     }
 }

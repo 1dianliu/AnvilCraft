@@ -189,7 +189,8 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         IItemHandler itemHandler = getTargetItemHandler(
             outputPos,
             devourerDirection,
-            level
+            level,
+            false
         );
         Vec3 center = outputPos.getCenter();
         AABB aabb = new AABB(center.add(-0.125, -0.125, -0.125), center.add(0.125, 0.125, 0.125));
