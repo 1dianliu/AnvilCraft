@@ -22,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getTargetItemHandlerList;
+
 
 @Getter
 public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerHolder {
@@ -59,16 +60,20 @@ public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerH
     public void tick() {
         if (cooldown <= 0) {
             if (getBlockState().getValue(SimpleChuteBlock.ENABLED)) {
-                IItemHandler target = getTargetItemHandler(
+                // 尝试向朝向容器输出
+                List<IItemHandler> targetList = getTargetItemHandlerList(
                     getBlockPos().relative(getOutputDirection()),
                     getOutputDirection().getOpposite(),
-                    level,
-                    false
+                    level
                 );
-                if (target != null) {
-                    // 尝试向朝向容器输出
-                    ItemHandlerUtil.exportToTarget(this.itemHandler, 64, stack -> true, target);
-                } else {
+                boolean success = false;
+                if (targetList != null && !targetList.isEmpty()) {
+                    for (IItemHandler target : targetList) {
+                        success = ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
+                        if (success) break;
+                    }
+                }
+                if (!success) {
                     Vec3 center = getBlockPos().relative(getDirection()).getCenter();
                     List<ItemEntity> itemEntities = getLevel()
                         .getEntitiesOfClass(

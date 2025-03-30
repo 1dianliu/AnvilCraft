@@ -2,11 +2,20 @@ package dev.dubhe.anvilcraft.api.itemhandler;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class ItemHandlerUtil {
@@ -28,6 +37,7 @@ public class ItemHandlerUtil {
                 maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize(); //根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
             }
             if (sourceStack.getItem() != filterItem) continue;
+
             ItemStack remainder = ItemHandlerHelper.insertItem(target, sourceStack, true);
             int amountToInsert = sourceStack.getCount() - remainder.getCount();
             if (amountToInsert > 0) {
@@ -70,6 +80,55 @@ public class ItemHandlerUtil {
             }
         }
         return success;
+    }
+
+    public static IItemHandler getSourceItemHandlerList(BlockPos inputBlockPos, Direction context, Level level) {
+        if (level == null) return null;
+        IItemHandler input = level.getCapability(
+            Capabilities.ItemHandler.BLOCK,
+            inputBlockPos,
+            context
+        );
+        if (input != null) {
+            return input;
+        }
+        AABB aabb = new AABB(inputBlockPos);
+        List<ContainerEntity> entities = level.getEntitiesOfClass(
+                Entity.class, aabb, e -> e instanceof ContainerEntity && !((ContainerEntity) e).isEmpty())
+            .stream()
+            .map(it -> (ContainerEntity) it)
+            .toList();
+        if (!entities.isEmpty()) {
+            input = ((Entity) entities.getFirst()).getCapability(
+                Capabilities.ItemHandler.ENTITY,
+                null
+            );
+        }
+        return input;
+    }
+
+    public static List<IItemHandler> getTargetItemHandlerList(BlockPos inputBlockPos, Direction context, Level level) {
+        if (level == null) return null;
+        List<IItemHandler> list = new ArrayList<>();
+        IItemHandler input = level.getCapability(
+            Capabilities.ItemHandler.BLOCK,
+            inputBlockPos,
+            context
+        );
+        if (input != null) {
+            list.add(input);
+            return list;
+        }
+        AABB aabb = new AABB(inputBlockPos);
+        list = level.getEntitiesOfClass(
+                Entity.class, aabb, e -> e instanceof ContainerEntity)
+            .stream()
+            .map(e -> e.getCapability(
+                Capabilities.ItemHandler.ENTITY,
+                null
+            ))
+            .toList();
+        return list;
     }
 
     public static int countItemsInHandler(IItemHandler handler) {

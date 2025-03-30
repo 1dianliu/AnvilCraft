@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
-import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getSourceItemHandlerList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -227,11 +227,10 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
         }
         // 获取放置方块类型
         ItemStack placeItem = null;
-        IItemHandler itemHandler = getTargetItemHandler(
+        IItemHandler itemHandler = getSourceItemHandlerList(
             blockPos.relative(direction.getOpposite()),
             direction,
-            level,
-            true
+            level
         );
         int slot;
         for (slot = 0; itemHandler != null && slot < itemHandler.getSlots(); slot++) {
@@ -291,9 +290,6 @@ public class BlockPlacerBlock extends Block implements IHammerRemovable, IHammer
         }
         // 清除消耗的物品
         if (itemHandler == null) {
-            if (itemEntity == null) {
-                return;
-            }
             int count = itemEntity.getItem().getCount();
             // 处理细雪桶
             if (itemEntity.getItem().is(Items.POWDER_SNOW_BUCKET)) {

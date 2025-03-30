@@ -31,7 +31,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getSourceItemHandlerList;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getTargetItemHandlerList;
 
 @Getter
 @MethodsReturnNonnullByDefault
@@ -119,11 +120,10 @@ public abstract class BaseChuteBlockEntity
         if (cooldown <= 0) {
             if (isEnabled()) {
                 // 尝试从上方容器输入
-                IItemHandler source = getTargetItemHandler(
+                IItemHandler source = getSourceItemHandlerList(
                     getBlockPos().relative(getInputDirection()),
                     getInputDirection().getOpposite(),
-                    level,
-                    true
+                    level
                 );
                 if (source != null) {
                     resetCD = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
@@ -145,16 +145,22 @@ public abstract class BaseChuteBlockEntity
                     resetCD = prevSize > itemEntities.size();
                 }
                 // 尝试向朝向容器输出
-                IItemHandler target = getTargetItemHandler(
+                List<IItemHandler> targetList = getTargetItemHandlerList(
                     getBlockPos().relative(getOutputDirection()),
                     getOutputDirection().getOpposite(),
-                    level,
-                    false
+                    level
                 );
-
-                if (target != null) {
-                    resetCD |= ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
-                } else {
+                boolean success = false;
+                if (targetList != null && !targetList.isEmpty()) {
+                    for (IItemHandler target : targetList) {
+                        success = ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
+                        if (success) {
+                            resetCD = true;
+                            break;
+                        }
+                    }
+                }
+                if (!success) {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
                     List<ItemEntity> itemEntities = getLevel()
                         .getEntitiesOfClass(
@@ -199,6 +205,7 @@ public abstract class BaseChuteBlockEntity
                             }
                         }
                     }
+
                 }
             }
             if (level != null) {

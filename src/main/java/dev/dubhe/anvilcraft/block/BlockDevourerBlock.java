@@ -40,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
-import static dev.dubhe.anvilcraft.util.ItemHandlerUtil.getTargetItemHandler;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getTargetItemHandlerList;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -186,11 +186,10 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         @Nullable Block anvil) {
         BlockPos outputPos = devourerPos.relative(devourerDirection.getOpposite());
         BlockPos devourCenterPos = devourerPos.relative(devourerDirection);
-        IItemHandler itemHandler = getTargetItemHandler(
+        List<IItemHandler> list = getTargetItemHandlerList(
             outputPos,
             devourerDirection,
-            level,
-            false
+            level
         );
         Vec3 center = outputPos.getCenter();
         AABB aabb = new AABB(center.add(-0.125, -0.125, -0.125), center.add(0.125, 0.125, 0.125));
@@ -208,7 +207,7 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
                 devourCenterPos.relative(Direction.DOWN, range).relative(Direction.SOUTH, range));
             default -> devourBlockBoundingBox = new AABB(devourCenterPos);
         }
-        boolean insertEnabled = itemHandler != null;
+        boolean insertEnabled = list != null && !list.isEmpty();
         boolean dropOriginalPlace = !level.noCollision(aabb);
         devourBlockPosList = BlockPos.betweenClosedStream(devourBlockBoundingBox)
             .map(blockPos -> new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ()))
@@ -231,9 +230,12 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
             };
             for (ItemStack itemStack : dropList) {
                 if (insertEnabled) {
-                    ItemStack outItemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, true);
-                    if (outItemStack.isEmpty()) {
-                        itemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, false);
+                    for (IItemHandler itemHandler : list) {
+                        ItemStack outItemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, true);
+                        if (outItemStack.isEmpty()) {
+                            itemStack = ItemHandlerHelper.insertItem(itemHandler, itemStack, false);
+                            break;
+                        }
                     }
                 }
                 if (itemStack.isEmpty()) continue;
