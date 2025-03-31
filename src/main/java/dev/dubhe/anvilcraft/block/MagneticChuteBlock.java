@@ -156,24 +156,22 @@ public class MagneticChuteBlock extends BetterBaseEntityBlock implements HammerR
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Player player = context.getPlayer();
-        Direction facing = context.getNearestLookingDirection();
-        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
+        Direction facing = context.getClickedFace().getOpposite();
+        BlockState neighborState = level.getBlockState(pos.relative(facing));
+        boolean cannotPlace = facing == Direction.UP
+            && (neighborState.is(ModBlocks.SIMPLE_CHUTE) || neighborState.is(ModBlocks.CHUTE)
+            && neighborState.getValue(FACING_HOPPER) == Direction.DOWN);
+        if (cannotPlace) {
+            if (player != null)
+                player.displayClientMessage(Component.translatable("message.anvilcraft.chute.cannot_place"), true);
+            return null;
+        }
+        if (player != null && player.isShiftKeyDown()) {
             facing = facing.getOpposite();
         }
         BlockState result = this.defaultBlockState()
             .setValue(FACING, facing)
             .setValue(ENABLED, !context.getLevel().hasNeighborSignal(context.getClickedPos()));
-        if (facing == Direction.UP) {
-            BlockState neighborState = level.getBlockState(pos.relative(facing));
-            if ((neighborState.is(ModBlocks.SIMPLE_CHUTE)
-                || neighborState.is(ModBlocks.CHUTE))
-                && neighborState.getValue(FACING_HOPPER) == Direction.DOWN) {
-                if (player != null) {
-                    player.displayClientMessage(Component.translatable("message.anvilcraft.chute.cannot_place"), true);
-                }
-                return null;
-            }
-        }
         return result;
     }
 

@@ -119,31 +119,6 @@ public abstract class BaseChuteBlockEntity
         if (cooldown > 0) cooldown--;
         if (cooldown <= 0) {
             if (isEnabled()) {
-                // 尝试从上方容器输入
-                IItemHandler source = getSourceItemHandlerList(
-                    getBlockPos().relative(getInputDirection()),
-                    getInputDirection().getOpposite(),
-                    level
-                );
-                if (source != null) {
-                    resetCD = ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
-                } else {
-                    List<ItemEntity> itemEntities = getLevel()
-                        .getEntitiesOfClass(
-                            ItemEntity.class,
-                            new AABB(getBlockPos().relative(getInputDirection())),
-                            itemEntity -> !itemEntity.getItem().isEmpty());
-                    int prevSize = itemEntities.size();
-                    for (ItemEntity itemEntity : itemEntities) {
-                        ItemStack remaining =
-                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
-                        if (!remaining.isEmpty()) continue;
-                        ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
-                        itemEntity.discard();
-                        break;
-                    }
-                    resetCD = prevSize > itemEntities.size();
-                }
                 // 尝试向朝向容器输出
                 List<IItemHandler> targetList = getTargetItemHandlerList(
                     getBlockPos().relative(getOutputDirection()),
@@ -162,13 +137,13 @@ public abstract class BaseChuteBlockEntity
                 }
                 if (!success) {
                     Vec3 center = getBlockPos().relative(getOutputDirection()).getCenter();
-                    List<ItemEntity> itemEntities = getLevel()
-                        .getEntitiesOfClass(
-                            ItemEntity.class,
-                            new AABB(getBlockPos().relative(getOutputDirection())),
-                            itemEntity -> !itemEntity.getItem().isEmpty());
                     AABB aabb = new AABB(center.add(-0.125, -0.125, -0.125), center.add(0.125, 0.125, 0.125));
                     if (getLevel().noCollision(aabb)) {
+                        List<ItemEntity> itemEntities = getLevel()
+                            .getEntitiesOfClass(
+                                ItemEntity.class,
+                                new AABB(getBlockPos().relative(getOutputDirection())),
+                                itemEntity -> !itemEntity.getItem().isEmpty());
                         for (int i = 0; i < this.itemHandler.getSlots(); i++) {
                             ItemStack stack = this.itemHandler.getStackInSlot(i);
                             if (!stack.isEmpty()) {
@@ -207,6 +182,33 @@ public abstract class BaseChuteBlockEntity
                     }
 
                 }
+                // 尝试从上方容器输入
+                IItemHandler source = getSourceItemHandlerList(
+                    getBlockPos().relative(getInputDirection()),
+                    getInputDirection().getOpposite(),
+                    level
+                );
+                if (source != null) {
+                    resetCD |= ItemHandlerUtil.importFromTarget(getItemHandler(), 64, stack -> true, source);
+                } else {
+                    List<ItemEntity> itemEntities = getLevel()
+                        .getEntitiesOfClass(
+                            ItemEntity.class,
+                            new AABB(getBlockPos().relative(getInputDirection())),
+                            itemEntity -> !itemEntity.getItem().isEmpty());
+                    int prevSize = itemEntities.size();
+                    for (ItemEntity itemEntity : itemEntities) {
+                        ItemStack remaining =
+                            ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), true);
+                        if (!remaining.isEmpty()) continue;
+                        ItemHandlerHelper.insertItem(this.itemHandler, itemEntity.getItem(), false);
+                        itemEntity.discard();
+                        itemEntities.remove(itemEntity);
+                        break;
+                    }
+                    resetCD = prevSize > itemEntities.size();
+                }
+
             }
             if (level != null) {
                 level.updateNeighbourForOutputSignal(
