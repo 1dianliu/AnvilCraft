@@ -78,12 +78,12 @@ public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerH
                 level
             );
             boolean success = false;
-            if (targetList != null && !targetList.isEmpty()) {
+            if (targetList != null && !targetList.isEmpty()){
                 for (IItemHandler target : targetList) {
                     success = ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                     if (success){
                         //特判溜槽cd7gt
-                        if(isTargetEmpty) setChuteCD(targetBE);
+                        if (isTargetEmpty) setChuteCD(targetBE);
                         break;
                     }
                 }
@@ -135,10 +135,10 @@ public class SimpleChuteBlockEntity extends BlockEntity implements IItemHandlerH
     }
 
     public boolean isTargetEmpty(BlockEntity blockEntity) {
-        if (blockEntity instanceof SimpleChuteBlockEntity chute) {
+        if (blockEntity instanceof SimpleChuteBlockEntity chute){
             return chute.isEmpty();
         }
-        if (blockEntity instanceof BaseChuteBlockEntity chute) {
+        if (blockEntity instanceof BaseChuteBlockEntity chute){
             return chute.isEmpty();
         }
         return false;
