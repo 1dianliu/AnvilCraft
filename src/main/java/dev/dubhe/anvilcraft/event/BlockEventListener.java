@@ -6,9 +6,9 @@ import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.item.AnvilHammerItem;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -74,7 +74,7 @@ public class BlockEventListener {
         if (item != ModBlocks.MAGNETIC_CHUTE.asItem()) return;
 
         BlockEntity blockEntity = event.getLevel().getBlockEntity(event.getPos());
-        if (blockEntity instanceof Container) {
+        if (blockEntity instanceof MenuProvider) {
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setUseItem(TriState.TRUE);
             event.setUseBlock(TriState.FALSE);

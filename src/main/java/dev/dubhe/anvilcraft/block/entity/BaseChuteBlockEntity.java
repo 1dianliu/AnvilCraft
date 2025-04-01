@@ -6,6 +6,7 @@ import dev.dubhe.anvilcraft.api.itemhandler.FilteredItemStackHandler;
 import dev.dubhe.anvilcraft.api.itemhandler.IItemHandlerHolder;
 import dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -48,7 +49,9 @@ public abstract class BaseChuteBlockEntity
             setChanged();
         }
     };
+    @Setter
     private int cooldown = 0;
+    private long tickedGameTime;
 
     protected BaseChuteBlockEntity(BlockEntityType<? extends BlockEntity> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -115,13 +118,19 @@ public abstract class BaseChuteBlockEntity
      * 溜槽 tick
      */
     public void tick() {
-        boolean resetCD = false;
+        if (level == null) return;
         if (cooldown > 0) cooldown--;
+        tickedGameTime = level.getGameTime();
+        boolean resetCD = false;
         if (cooldown <= 0) {
             if (isEnabled()) {
+                BlockPos targetPos = getBlockPos().relative(getOutputDirection());
+                BlockEntity targetBE = level.getBlockEntity(targetPos);
+                boolean isTargetEmpty = false;
+                if (targetBE != null) isTargetEmpty = isTargetEmpty(targetBE);
                 // 尝试向朝向容器输出
                 List<IItemHandler> targetList = getTargetItemHandlerList(
-                    getBlockPos().relative(getOutputDirection()),
+                    targetPos,
                     getOutputDirection().getOpposite(),
                     level
                 );
@@ -130,6 +139,8 @@ public abstract class BaseChuteBlockEntity
                     for (IItemHandler target : targetList) {
                         success = ItemHandlerUtil.exportToTarget(getItemHandler(), 64, stack -> true, target);
                         if (success) {
+                            //特判溜槽cd7gt
+                            if (isTargetEmpty) setChuteCD(targetBE);
                             resetCD = true;
                             break;
                         }
@@ -206,16 +217,37 @@ public abstract class BaseChuteBlockEntity
                         itemEntities.remove(itemEntity);
                         break;
                     }
-                    resetCD = prevSize > itemEntities.size();
+                    resetCD |= prevSize > itemEntities.size();
                 }
 
             }
-            if (level != null) {
-                level.updateNeighbourForOutputSignal(
-                    getBlockPos(), getBlockState().getBlock());
-            }
+
         }
+        level.updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
         if (resetCD) cooldown = AnvilCraft.config.chuteMaxCooldown;
+    }
+
+    private boolean isTargetEmpty(BlockEntity blockEntity) {
+        if (blockEntity instanceof SimpleChuteBlockEntity chute) {
+            return chute.isEmpty();
+        }
+        if (blockEntity instanceof BaseChuteBlockEntity chute) {
+            return chute.isEmpty();
+        }
+        return false;
+    }
+
+    private void setChuteCD(BlockEntity targetBE) {
+        if (targetBE instanceof BaseChuteBlockEntity chute) {
+            int k = 0;
+            if (chute.getTickedGameTime() >= this.tickedGameTime) k++;
+            chute.setCooldown(AnvilCraft.config.chuteMaxCooldown - k);
+        }
+        if (targetBE instanceof SimpleChuteBlockEntity chute) {
+            int k = 0;
+            if (chute.getTickedGameTime() >= this.tickedGameTime) k++;
+            chute.setCooldown(AnvilCraft.config.chuteMaxCooldown - k);
+        }
     }
 
     /**
@@ -253,5 +285,12 @@ public abstract class BaseChuteBlockEntity
     @Override
     public void applyDiskData(CompoundTag data) {
         itemHandler.deserializeFiltering(data.getCompound("Filtering"));
+    }
+
+    public boolean isEmpty() {
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            if (!itemHandler.getStackInSlot(i).isEmpty()) return false;
+        }
+        return true;
     }
 }
