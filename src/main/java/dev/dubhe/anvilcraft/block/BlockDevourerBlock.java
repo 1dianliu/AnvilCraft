@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import dev.dubhe.anvilcraft.api.hammer.HammerRotateBehavior;
 import dev.dubhe.anvilcraft.api.hammer.IHammerRemovable;
 import dev.dubhe.anvilcraft.api.itemstack.ItemStackUtil;
+import dev.dubhe.anvilcraft.block.multipart.AbstractMultiPartBlock;
+import dev.dubhe.anvilcraft.block.multipart.FlexibleMultiPartBlock;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
 import dev.dubhe.anvilcraft.util.AabbUtil;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
@@ -24,6 +26,7 @@ import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.TallFlowerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -76,12 +79,12 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
 
     public static BlockPos getMainPartPos(Level level, BlockPos devouredPos, BlockState devouredState) {
         Block devouredBlock = devouredState.getBlock();
-      /*多方块部分暂时弃用 目前会和吞噬部分冲突 产生复制bug
-        if (devouredBlock instanceof AbstractMultiPartBlock<?> multiplePartBlock) {
+        //FlexibleMultiPartBlock与吞噬器冲突 会有复制bug 先孤立一下 暂时不管()
+        if (devouredBlock instanceof AbstractMultiPartBlock<?> multiplePartBlock
+            && !(devouredBlock instanceof FlexibleMultiPartBlock)) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(devouredPos, devouredState);
             if (level.getBlockState(posMainPart).is(devouredBlock)) devouredPos = posMainPart;
-        }
-        else*/ if (devouredState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
+        } else if (devouredState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
             && devouredState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             BlockPos posMainPart = devouredPos.below();
             if (level.getBlockState(posMainPart).is(devouredBlock)) devouredPos = posMainPart;
@@ -278,9 +281,10 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
                     if (transferContents) dropAllToPos(source, level, center);
                 }
             }
-            devouredState
-                .getBlock()
-                .playerWillDestroy(level, devouredPos, devouredState, anvilCraftBlockPlacer.getPlayer());
+            if (!(devouredState.getBlock() instanceof TallFlowerBlock))
+                devouredState
+                    .getBlock()
+                    .playerWillDestroy(level, devouredPos, devouredState, anvilCraftBlockPlacer.getPlayer());
             level.destroyBlock(devouredPos, false);
         }
     }
