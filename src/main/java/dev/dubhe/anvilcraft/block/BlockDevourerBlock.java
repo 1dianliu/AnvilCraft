@@ -7,6 +7,7 @@ import dev.dubhe.anvilcraft.api.itemstack.ItemStackUtil;
 import dev.dubhe.anvilcraft.block.multipart.AbstractMultiPartBlock;
 import dev.dubhe.anvilcraft.block.multipart.FlexibleMultiPartBlock;
 import dev.dubhe.anvilcraft.init.ModBlockTags;
+import dev.dubhe.anvilcraft.init.ModBlocks;
 import dev.dubhe.anvilcraft.util.AabbUtil;
 import dev.dubhe.anvilcraft.util.AnvilUtil;
 import dev.dubhe.anvilcraft.util.BreakBlockUtil;
@@ -81,7 +82,8 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
         Block devouredBlock = devouredState.getBlock();
         //FlexibleMultiPartBlock与吞噬器冲突 会有复制bug 先孤立一下 暂时不管()
         if (devouredBlock instanceof AbstractMultiPartBlock<?> multiplePartBlock
-            && !(devouredBlock instanceof FlexibleMultiPartBlock)) {
+            && !(devouredBlock instanceof FlexibleMultiPartBlock)
+            && !devouredState.is(ModBlocks.LARGE_CAKE)) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(devouredPos, devouredState);
             if (level.getBlockState(posMainPart).is(devouredBlock)) devouredPos = posMainPart;
         } else if (devouredState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
