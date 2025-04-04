@@ -100,9 +100,9 @@ public class ItemHandlerUtil {
         }
     }
 
-    public static void dropAllToPos(@NotNull IItemHandler source, Level level, Vec3 pos){
+    public static void dropAllToPos(@NotNull IItemHandler source, Level level, Vec3 pos) {
         List<ItemStack> items = new ArrayList<>();
-        for (int slot = 0; slot < source.getSlots(); slot++){
+        for (int slot = 0; slot < source.getSlots(); slot++) {
             ItemStack stack = source.extractItem(slot, Integer.MAX_VALUE, false);
             if (!stack.isEmpty()) items.add(stack);
         }
