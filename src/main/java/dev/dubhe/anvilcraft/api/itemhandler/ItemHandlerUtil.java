@@ -1,5 +1,6 @@
 package dev.dubhe.anvilcraft.api.itemhandler;
 
+import dev.dubhe.anvilcraft.util.AnvilUtil;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -10,9 +11,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,15 @@ public class ItemHandlerUtil {
                 ItemHandlerHelper.insertItem(target, sourceStack, false);
             }
         }
+    }
+
+    public static void dropAllToPos(@NotNull IItemHandler source, Level level, Vec3 pos){
+        List<ItemStack> items = new ArrayList<>();
+        for (int slot = 0; slot < source.getSlots(); slot++){
+            ItemStack stack = source.extractItem(slot, Integer.MAX_VALUE, false);
+            if (!stack.isEmpty()) items.add(stack);
+        }
+        AnvilUtil.dropItems(items, level, pos);
     }
 
     public static IItemHandler getSourceItemHandlerList(BlockPos inputBlockPos, Direction context, Level level) {

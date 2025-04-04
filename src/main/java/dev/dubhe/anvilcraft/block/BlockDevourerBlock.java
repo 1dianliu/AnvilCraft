@@ -45,6 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 import static dev.dubhe.anvilcraft.api.entity.player.AnvilCraftBlockPlacer.anvilCraftBlockPlacer;
+import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.dropAllToPos;
 import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.exportAllToTarget;
 import static dev.dubhe.anvilcraft.api.itemhandler.ItemHandlerUtil.getTargetItemHandlerList;
 
@@ -75,13 +76,12 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
 
     public static BlockPos getMainPartPos(Level level, BlockPos devouredPos, BlockState devouredState) {
         Block devouredBlock = devouredState.getBlock();
-            /*多方块部分暂时弃用 目前会和吞噬部分冲突 产生复制bug
+      /*多方块部分暂时弃用 目前会和吞噬部分冲突 产生复制bug
         if (devouredBlock instanceof AbstractMultiPartBlock<?> multiplePartBlock) {
             BlockPos posMainPart = multiplePartBlock.getMainPartPos(devouredPos, devouredState);
             if (level.getBlockState(posMainPart).is(devouredBlock)) devouredPos = posMainPart;
         }
-        else*/
-        if (devouredState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
+        else*/ if (devouredState.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)
             && devouredState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER) {
             BlockPos posMainPart = devouredPos.below();
             if (level.getBlockState(posMainPart).is(devouredBlock)) devouredPos = posMainPart;
@@ -261,13 +261,13 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
             };
             IItemHandler source = level.getCapability(Capabilities.ItemHandler.BLOCK, devouredPos, Direction.UP);
             for (ItemStack itemStack : dropList) {
+                boolean transferContents = source != null && ItemStackUtil.isDefaultComponent(itemStack);
                 if (insertEnabled) {
                     for (IItemHandler target : list) {
                         ItemStack outItemStack = ItemHandlerHelper.insertItem(target, itemStack, true);
-                        boolean transferItems = source != null && ItemStackUtil.isDefaultComponent(itemStack);
                         if (outItemStack.isEmpty())
                             itemStack = ItemHandlerHelper.insertItem(target, itemStack, false);
-                        if (transferItems) exportAllToTarget(source, stack -> true, target);
+                        if (transferContents) exportAllToTarget(source, stack -> true, target);
                     }
                 }
                 if (itemStack.isEmpty()) continue;
@@ -275,6 +275,7 @@ public class BlockDevourerBlock extends DirectionalBlock implements HammerRotate
                     Block.popResource(level, devouredPos, itemStack);
                 } else {
                     AnvilUtil.dropItems(List.of(itemStack), level, center);
+                    if (transferContents) dropAllToPos(source, level, center);
                 }
             }
             devouredState
