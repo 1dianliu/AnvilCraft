@@ -60,6 +60,7 @@ public class ItemHandlerUtil {
         Predicate<ItemStack> predicate,
         IItemHandler source
     ) {
+        int amount = 64;
         boolean success = false;
         Item filterItem = null;
         for (int srcIndex = 0; srcIndex < source.getSlots(); srcIndex++) {
@@ -69,17 +70,21 @@ public class ItemHandlerUtil {
             }
             if (filterItem == null) {
                 filterItem = sourceStack.getItem();
-                maxAmount = maxAmount / 64 * sourceStack.getMaxStackSize(); //根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
+                amount = maxAmount / 64 * sourceStack.getMaxStackSize(); //根据最大堆叠设置maxAmount 默认情况完全等于最大堆叠
             }
             if (sourceStack.getItem() != filterItem) continue;
             ItemStack remainder = ItemHandlerHelper.insertItem(target, sourceStack, true);
             int amountToInsert = sourceStack.getCount() - remainder.getCount();
+            if (amountToInsert == 0) {
+                filterItem = null;
+                continue;
+            }
             if (amountToInsert > 0) {
-                sourceStack = source.extractItem(srcIndex, Math.min(maxAmount, amountToInsert), false);
+                sourceStack = source.extractItem(srcIndex, Math.min(amount, amountToInsert), false);
                 ItemHandlerHelper.insertItem(target, sourceStack, false);
                 success = true;
-                maxAmount -= amountToInsert;
-                if (maxAmount <= 0) break;
+                amount -= amountToInsert;
+                if (amount <= 0) break;
             }
         }
         return success;
